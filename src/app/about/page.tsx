@@ -332,7 +332,7 @@ export default function HomePage() {
     },
     {
       label: t("stats.cont"),
-      value: "2.8k",
+      value: "3.4k",
       icon: <HugeiconsIcon icon={FireIcon} className="h-4 w-4" />,
     },
     {
