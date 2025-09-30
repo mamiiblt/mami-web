@@ -327,17 +327,17 @@ export default function HomePage() {
   const stats = [
     {
       label: t("stats.stars"),
-      value: "350+",
+      value: "600+",
       icon: <HugeiconsIcon icon={StarIcon} className="h-4 w-4" />,
     },
     {
       label: t("stats.cont"),
-      value: "2.5k",
+      value: "2.8k",
       icon: <HugeiconsIcon icon={FireIcon} className="h-4 w-4" />,
     },
     {
       label: t("stats.repo"),
-      value: "10+",
+      value: "12+",
       icon: <HugeiconsIcon icon={CodeFolderIcon} className="h-4 w-4" />,
     },
     {
