@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { NavbarLoading } from "./loading";
 import { NavigationItem } from "./NavigationItem";
-import { Box } from "lucide-react";
+import { Box, PawPrint } from "lucide-react";
 import ThemeSwitcher from "./ThemeSwitcher";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,12 @@ import {
   SourceCodeIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { League_Spartan } from "next/font/google";
+
+const leagueSpartan = League_Spartan({
+  subsets: ["latin"],
+  weight: ["600"],
+});
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -92,21 +98,13 @@ export default function Navbar() {
           href="/"
           className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
         >
-          <motion.div
-            initial={{ opacity: 0, rotate: -10 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ rotate: -10 }}
-          >
-            <HugeiconsIcon icon={SourceCodeIcon} className="h-6 w-6" />
-          </motion.div>
           <motion.span
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="text-lg font-medium text-foreground"
+            className={`text-2xl font-medium text-foreground ${leagueSpartan.className}`}
           >
-            mamiiblt
+            mamii.
           </motion.span>
         </Link>
 
