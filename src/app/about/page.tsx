@@ -505,10 +505,6 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div className="mb-4 w-full max-w-2xl" variants={itemVariants}>
-            <SpotifyCard />
-          </motion.div>
-
-          <motion.div className="mb-4 w-full max-w-2xl" variants={itemVariants}>
             <Card className="p-6">
               <CardContent className="p-0">
                 <div className="mb-3 flex items-start justify-between">
@@ -596,6 +592,10 @@ export default function HomePage() {
                 <GithubCalendar username="mamiiblt" />
               </CardContent>
             </Card>
+          </motion.div>
+
+          <motion.div className="mb-4 w-full max-w-2xl" variants={itemVariants}>
+            <SpotifyCard />
           </motion.div>
 
           <motion.div

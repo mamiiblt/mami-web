@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
-  name: "mami.",
-  footerTitle: "mami.",
+  name: "mamii.",
+  footerTitle: "mamii.",
   siteName: "mamii.me",
   description: "A personal blog of mamiiblt",
   contactDescription:
