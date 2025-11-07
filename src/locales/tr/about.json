@@ -9,6 +9,7 @@
     "projects": "Projelerim",
     "articles": "Yazılarım",
     "support": "Beni Destekle",
+    "mail": "E-posta",
     "contactme": "İletişime Geç"
   },
   "stats": {
@@ -24,9 +25,10 @@
   "spotify": {
     "live": "Canlı",
     "offline": "Dinlemiyor",
-    "playing": "Şu An Dinliyor",
+    "playing": "Dinliyor",
     "paused": "Durdurdu",
     "open": "Spotify'da aç",
     "currentlyno": "mami şu an müzik dinlemiyor :("
-  }
+  },
+  "aboutMe": "Ben Kimim?"
 }

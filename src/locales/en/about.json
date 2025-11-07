@@ -9,6 +9,7 @@
     "projects": "My Projects",
     "articles": "My Articles",
     "support": "Support Me",
+    "mail": "Mail",
     "contactme": "Contact Me"
   },
   "stats": {
@@ -24,9 +25,10 @@
   "spotify": {
     "live": "Live",
     "offline": "Offline",
-    "playing": "Listening Now",
+    "playing": "Listening",
     "paused": "Paused",
     "open": "Open in Spotify",
     "currentlyno": "mami is not listening to music right now"
-  }
+  },
+  "aboutMe": "Who am I?"
 }
