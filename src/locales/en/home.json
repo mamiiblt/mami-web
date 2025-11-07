@@ -1,13 +1,12 @@
 {
   "hero": {
     "1": "Welcome to",
-    "2": "mamiiblt's island"
+    "2": "mamii's island"
   },
   "heroButtons": {
     "viewProjects": "View Projects",
-    "aboutMe": "About Me"
+    "aboutMe": "About Me",
+    "readArticles": "Read Articles"
   },
-  "desc": "You can find blogs, projects and everything about me!",
-  "recentPosts": "Recent Posts",
-  "viewAllPosts": "View All Posts"
+  "desc": "You can find blogs, projects and everything about me!"
 }

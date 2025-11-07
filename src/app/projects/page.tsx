@@ -4,10 +4,11 @@ import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, Send } from "lucide-react";
+import { Github, ExternalLink, Send, FolderGit2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { Page, PageHeader } from "@/components/PageUtils";
 
 const MotionButton = motion(Button);
 
@@ -101,20 +102,16 @@ export default function ProjectsPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="container mx-auto px-4 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
-        >
-          <h1 className="mb-4 text-4xl font-bold tracking-tight">
-            {t("title")}
-          </h1>
-          <p className="mx-auto max-w-2xl text-muted-foreground">{t("desc")}</p>
-        </motion.div>
-
+    <Page
+      width={6}
+      header={
+        <PageHeader
+          icon={<FolderGit2 />}
+          title={t("title")}
+          subtitle={t("desc")}
+        />
+      }
+      content={
         <motion.div
           className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
           variants={containerVariants}
@@ -238,7 +235,7 @@ export default function ProjectsPage() {
             </motion.div>
           ))}
         </motion.div>
-      </div>
-    </div>
+      }
+    />
   );
 }

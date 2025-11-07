@@ -93,7 +93,7 @@ export default function Navbar() {
           : "bg-background"
       }`}
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
+      <div className="container mx-auto grid grid-cols-3 items-center h-16 px-4 sm:px-6">
         <Link
           href="/"
           className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
@@ -108,8 +108,8 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex flex-1 justify-center">
-          <NavigationMenu className="relative">
+        <div className="md:flex justify-center">
+          <NavigationMenu className="hidden lg:relative lg:flex">
             <NavigationMenuList className="flex gap-1 md:gap-2">
               <AnimatePresence>
                 {navItems.map((link, index) => {
@@ -139,7 +139,7 @@ export default function Navbar() {
           </NavigationMenu>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -194,17 +194,10 @@ export default function Navbar() {
                 <div className="flex flex-col h-full">
                   <div className="border-b border-border p-5 bg-accent/10">
                     <div className="flex items-center space-x-3">
-                      <motion.div
-                        whileHover={{ rotate: -10 }}
-                        transition={{ duration: 0.2 }}
+                      <span
+                        className={`${leagueSpartan.className} text-2xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent`}
                       >
-                        <HugeiconsIcon
-                          icon={SourceCodeIcon}
-                          className="h-7 w-7"
-                        />
-                      </motion.div>
-                      <span className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                        mamiiblt
+                        mamii.
                       </span>
                     </div>
                   </div>
