@@ -1,4 +1,4 @@
-import { Geist } from "next/font/google";
+import { Geist, League_Spartan } from "next/font/google";
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Navbar from "@/components/Navbar";
@@ -8,6 +8,7 @@ import { defaultMetadata } from "@/config/metadata";
 import Footer from "@/components/Footer";
 import LocaleProvider from "@/i18n/LocaleProvider";
 const appleTitle = SITE_CONFIG.siteName;
+
 const geist = Geist({
   subsets: ["latin"],
 });

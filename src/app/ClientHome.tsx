@@ -11,15 +11,21 @@ export default function ClientHome({ posts }) {
 
   const heroButtons = [
     {
+      text: t("heroButtons.aboutMe"),
+      href: "/about",
+      variant: "default",
+      size: "lg",
+    },
+    {
       text: t("heroButtons.viewProjects"),
       href: "/projects",
       variant: "secondary",
       size: "lg",
     },
     {
-      text: t("heroButtons.aboutMe"),
-      href: "/about",
-      variant: "outline",
+      text: t("heroButtons.readArticles"),
+      href: "/articles",
+      variant: "secondary",
       size: "lg",
     },
   ];
@@ -29,7 +35,7 @@ export default function ClientHome({ posts }) {
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="space-y-8 sm:space-y-12 py-6 sm:py-8 md:py-12 lg:py-16">
           <div className="animate-fadeIn">
-            <section className="container relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 md:px-8 lg:px-12 py-12 md:py-24 lg:py-36">
+            <section className="container relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 md:px-8 lg:px-12 py-6 md:py-18 lg:py-30">
               <div className="mx-auto max-w-5xl flex flex-col items-center text-center space-y-8 md:space-y-10 lg:space-y-12">
                 <motion.h1
                   initial={{ opacity: 0, y: 50 }}
@@ -87,63 +93,6 @@ export default function ClientHome({ posts }) {
                       ))}
                     </motion.div>
                   )}
-                </AnimatePresence>
-              </div>
-            </section>
-          </div>
-          <div className="animate-slideUp">
-            <section className="container px-4 sm:px-8 lg:px-12 py-16 overflow-hidden">
-              <div className="mx-auto max-w-6xl space-y-12">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                  }}
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-                >
-                  <motion.h2
-                    className="text-3xl sm:text-4xl lg:text-5xl font-bold"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {t("recentPosts")}
-                  </motion.h2>
-                  <Button
-                    asChild
-                    variant="link"
-                    size="lg"
-                    className="text-lg hover:translate-x-1 transition-transform"
-                  >
-                    <Link href="/articles">{t("viewAllPosts")}</Link>
-                  </Button>
-                </motion.div>
-
-                <AnimatePresence>
-                  <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.8,
-                      ease: "easeOut",
-                      staggerChildren: 0.1,
-                    }}
-                    className="grid grid-cols-1 gap-8 sm:gap-12 max-w-6xl mx-auto"
-                  >
-                    {posts.map((post, index) => (
-                      <motion.div
-                        key={post.slug}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.02 }}
-                        className="h-full"
-                      >
-                        <ArticleCard post={post} index={index} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
                 </AnimatePresence>
               </div>
             </section>
