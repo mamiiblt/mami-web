@@ -73,7 +73,7 @@ export default function HomePage() {
               },
               {
                 icon: <HugeiconsIcon icon={Coffee01Icon} className="h-4 w-4" />,
-                url: "https://github.com/mamiiblt",
+                url: "https://buymeacoffee.com/mamiiblt",
               },
             ]} />
 
@@ -81,12 +81,12 @@ export default function HomePage() {
             <AboutCard_Statistics t={t} classNameVal="mb-4 w-full max-w-2xl" stats={[
               {
                 label: t("stats.stars"),
-                value: "600+",
+                value: "650+",
                 icon: <HugeiconsIcon icon={StarIcon} className="h-4 w-4"/>,
               },
               {
                 label: t("stats.cont"),
-                value: "3.4k",
+                value: "4.1k",
                 icon: <HugeiconsIcon icon={FireIcon} className="h-4 w-4"/>,
               },
               {
