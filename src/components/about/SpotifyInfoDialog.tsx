@@ -37,14 +37,13 @@ export function SpotifyInfoDialog({song, isOpen, isPlaying, onOpenChange, t}: Sp
                         />
                     )}
                 </AnimatePresence>
-                <DialogContent className="max-w-sm border-1 bg-card backdrop-blur-sm" onOpenAutoFocus={(e) => {
+                <DialogContent className="max-w-sm border-1 bg-card rounded-xl backdrop-blur-sm" onOpenAutoFocus={(e) => {
                     e.preventDefault();
                 }}>
                     <VisuallyHidden>
-                        <DialogTitle>BÖÖÖ</DialogTitle>
+                        <DialogTitle />
                     </VisuallyHidden>
                     <div className="flex flex-col items-center gap-4 py-4">
-
                         <motion.div
                             initial={{opacity: 0, y: 8}}
                             animate={{opacity: 1, y: 0}}
@@ -82,7 +81,7 @@ export function SpotifyInfoDialog({song, isOpen, isPlaying, onOpenChange, t}: Sp
                             className="w-full px-4"
                         >
                             <a href={song.external_url} target="_blank" rel="noopener noreferrer" className="block">
-                                <Button variant={"outline"} className="w-full">
+                                <Button variant={"default"} className="w-full">
                                     <HugeiconsIcon icon={SpotifyIcon} className="h-4 w-4"/>
                                     {t("spotify.open")}
                                 </Button>
