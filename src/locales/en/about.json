@@ -23,12 +23,8 @@
   },
   "tool-tech": "Tools & Technologies",
   "spotify": {
-    "live": "Live",
-    "offline": "Offline",
     "playing": "Listening",
-    "paused": "Paused",
-    "open": "Open in Spotify",
-    "currentlyno": "mami is not listening to music right now"
+    "open": "Open in Spotify"
   },
   "aboutMe": "Who am I?"
 }

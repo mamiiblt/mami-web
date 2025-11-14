@@ -208,13 +208,7 @@ export function AboutCard_AboutMe({
         <motion.div className={classNameVal} variants={itemVariants}>
             <Card className="p-6">
                 <CardContent className="p-0">
-                    <h4 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                        <HugeiconsIcon
-                            icon={UserArrowLeftRightIcon}
-                            className="h-5 w-5"
-                        />
-                        {t("aboutMe")}
-                    </h4>
+
                     <motion.div
                         className="space-y-3"
                         variants={containerVariants}

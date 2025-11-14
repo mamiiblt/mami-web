@@ -23,12 +23,8 @@
   },
   "tool-tech": "Araçlar & Teknolojiler",
   "spotify": {
-    "live": "Canlı",
-    "offline": "Dinlemiyor",
     "playing": "Dinliyor",
-    "paused": "Durdurdu",
-    "open": "Spotify'da aç",
-    "currentlyno": "mami şu an müzik dinlemiyor :("
+    "open": "Spotify'da Aç"
   },
   "aboutMe": "Ben Kimim?"
 }
