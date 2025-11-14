@@ -81,7 +81,7 @@ export default function HomePage() {
             <AboutCard_Statistics t={t} classNameVal="mb-4 w-full max-w-2xl" stats={[
               {
                 label: t("stats.stars"),
-                value: "650+",
+                value: "700+",
                 icon: <HugeiconsIcon icon={StarIcon} className="h-4 w-4"/>,
               },
               {
