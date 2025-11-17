@@ -81,7 +81,7 @@ export function SpotifyInfoDialog({song, isOpen, isPlaying, onOpenChange, t}: Sp
                             className="w-full px-4"
                         >
                             <a href={song.external_url} target="_blank" rel="noopener noreferrer" className="block">
-                                <Button variant={"default"} className="w-full">
+                                <Button variant={"default"} className="w-full bg-green-500">
                                     <HugeiconsIcon icon={SpotifyIcon} className="h-4 w-4"/>
                                     {t("spotify.open")}
                                 </Button>
