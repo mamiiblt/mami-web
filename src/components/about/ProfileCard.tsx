@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import {TFunction} from "i18next";
 import {useRouter} from "next/navigation";
-import {motion} from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import Image from "next/image";
 import {HugeiconsIcon} from "@hugeicons/react";
-import {PlayIcon, SpotifyIcon} from "@hugeicons/core-free-icons";
+import {PlayIcon, Rotate01FreeIcons, SpotifyIcon} from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import {containerVariants, itemVariants, profileVariants, socialButtonVariants} from "@/components/about/MotionSpecs";
 import {Button} from "@/components/ui/button";
@@ -64,6 +64,42 @@ function useSpotifyCurrentTrack() {
 
 const MotionButton = motion.create(Button);
 
+interface RotatingTextMotionProps {
+    contents: string[]
+    interval?: number
+    className?: string
+}
+
+function RotatingTextMotion({ contents, interval = 3500, className = "" }: RotatingTextMotionProps) {
+    const [currentIndex, setCurrentIndex] = useState(0)
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % contents.length)
+        }, interval)
+
+        return () => clearInterval(timer)
+    }, [contents.length, interval])
+
+    return (
+        <AnimatePresence mode="wait">
+            <motion.p
+                key={currentIndex}
+                className={className}
+                initial={{ opacity: 0 }}
+                animate={{
+                    opacity: 1,
+                    transition: { duration: 0.5, ease: "easeInOut" },
+                }}
+                exit={{ opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } }}
+            >
+                {contents[currentIndex]}
+            </motion.p>
+        </AnimatePresence>
+    )
+}
+
+
 export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; }) {
     const router = useRouter();
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -102,7 +138,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 {currentTrack && isPlaying && (
                    <>
                        <motion.div
-                           className="absolute inset-0 rounded-full border-2 border-green-500 opacity-50"
+                           className="absolute inset-0 rounded-4xl border-2 border-green-500 opacity-50"
                            animate={{
                                scale: [1, 1.15, 1],
                                opacity: [0.5, 0.2, 0.5],
@@ -116,7 +152,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 )}
 
                 <div
-                    className={`relative h-full w-full overflow-hidden rounded-full border-2 border-border ${
+                    className={`relative h-full w-full overflow-hidden rounded-4xl border-2 border-border ${
                         imageLoaded ? "opacity-100" : "opacity-0"
                     }`}
                 >
@@ -167,19 +203,10 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 {t("profile.name")}
             </motion.h1>
 
-            <motion.p
-                className="mb-4 text-base font-light tracking-wide text-muted-foreground"
-                variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { type: "spring", stiffness: 300, damping: 24 },
-                    },
-                }}
-            >
-                {t("profile.title")}
-            </motion.p>
+            <RotatingTextMotion className={"mb-4 text-base font-light tracking-wide text-muted-foreground"} contents={[
+                t("profile.subtitles.1"),
+                t("profile.subtitles.2"),
+            ]} />
 
             <motion.div
                 className={`${isPlaying ? "mb-4" : "mb-8"} flex flex-wrap justify-center gap-3`}

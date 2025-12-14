@@ -96,7 +96,7 @@ export default function Navbar() {
       <div className="container mx-auto grid grid-cols-3 items-center h-16 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
+          className="flex items-center space-x-2 transition-transform duration-200"
         >
           <motion.span
             initial={{ opacity: 0, x: -10 }}
