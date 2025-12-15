@@ -64,42 +64,6 @@ function useSpotifyCurrentTrack() {
 
 const MotionButton = motion.create(Button);
 
-interface RotatingTextMotionProps {
-    contents: string[]
-    interval?: number
-    className?: string
-}
-
-function RotatingTextMotion({ contents, interval = 3500, className = "" }: RotatingTextMotionProps) {
-    const [currentIndex, setCurrentIndex] = useState(0)
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % contents.length)
-        }, interval)
-
-        return () => clearInterval(timer)
-    }, [contents.length, interval])
-
-    return (
-        <AnimatePresence mode="wait">
-            <motion.p
-                key={currentIndex}
-                className={className}
-                initial={{ opacity: 0 }}
-                animate={{
-                    opacity: 1,
-                    transition: { duration: 0.5, ease: "easeInOut" },
-                }}
-                exit={{ opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } }}
-            >
-                {contents[currentIndex]}
-            </motion.p>
-        </AnimatePresence>
-    )
-}
-
-
 export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; }) {
     const router = useRouter();
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -203,10 +167,19 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 {t("profile.name")}
             </motion.h1>
 
-            <RotatingTextMotion className={"mb-4 text-base font-light tracking-wide text-muted-foreground"} contents={[
-                t("profile.subtitles.1"),
-                t("profile.subtitles.2"),
-            ]} />
+            <motion.p
+                className="mb-4 text-base font-light tracking-wide text-muted-foreground"
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { type: "spring", stiffness: 300, damping: 24 },
+                    },
+                }}
+            >
+                {t("profile.subtitle")}
+            </motion.p>
 
             <motion.div
                 className={`${isPlaying ? "mb-4" : "mb-8"} flex flex-wrap justify-center gap-3`}
