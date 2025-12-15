@@ -10,6 +10,7 @@ import {
   FireIcon,
   UserGroupIcon,
   CodeFolderIcon, GithubIcon, TelegramIcon, Linkedin02Icon, SpotifyIcon, NewTwitterIcon, InstagramIcon, Coffee01Icon,
+  DartIcon,
 } from "@hugeicons/core-free-icons";
 import { motion } from "framer-motion";
 import {
@@ -20,6 +21,19 @@ import {
 } from "@/components/about/ContentCards";
 import {containerVariants} from "@/components/about/MotionSpecs";
 import {ProfileCard} from "@/components/about/ProfileCard";
+import {DiJava} from "react-icons/di";
+import {
+  AmazonwebservicesOriginalWordmark,
+  AndroidOriginal,
+  AndroidstudioOriginal, ArchlinuxOriginal, AzureOriginal, BootstrapOriginal, DartOriginal,
+  DockerOriginal, ElectronOriginal, EslintOriginal, ExpressOriginal, FedoraPlain, FirebaseOriginal,
+  FlutterOriginal, GitpodOriginal, GooglecloudOriginal, IntellijOriginal,
+  JavaOriginal, JetpackcomposeOriginal,
+  KotlinOriginal, MongodbOriginal, NextjsOriginal, NodejsOriginal, NuxtjsOriginal, PostgresqlOriginal, PostmanOriginal,
+  ReactnativeOriginal,
+  ReactOriginal, SupabaseOriginal, VercelLine, VercelOriginal, VisualstudioOriginal, VscodeOriginal,
+  VuejsOriginal, WebstormOriginal
+} from "devicons-react";
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
@@ -101,50 +115,38 @@ export default function HomePage() {
               },
             ]}/>
             <AboutCard_Skills t={t} classNameVal="mb-4 w-full max-w-2xl" skills={[
-              {
-                name: "Java & Kotlin",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Native Android",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "React",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "React Native",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Flutter",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Compose",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "ExpressJS",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "ElectronJS",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Node.js",
-                icon: <HugeiconsIcon icon={CodeIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Firebase",
-                icon: <HugeiconsIcon icon={DatabaseIcon} className="h-3 w-3"/>,
-              },
-              {
-                name: "Postgres",
-                icon: <HugeiconsIcon icon={DatabaseIcon} className="h-3 w-3"/>,
-              },
+                // Software Languages & Frameworks
+              { name: "Java", icon: JavaOriginal },
+              { name: "Kotlin", icon: KotlinOriginal },
+              { name: "Android", icon: AndroidOriginal },
+              { name: "React", icon: ReactOriginal },
+              { name: "Dart", icon: DartOriginal },
+              { name: "Flutter", icon: FlutterOriginal },
+              { name: "Compose", icon: JetpackcomposeOriginal },
+              { name: "IntelliJ", icon: IntellijOriginal },
+              { name: "Webstorm", icon: WebstormOriginal },
+              { name: "VS Studio", icon: VisualstudioOriginal },
+              { name: "VS Code", icon: VscodeOriginal },
+              { name: "Gitpod", icon: GitpodOriginal },
+              // JS furyası
+              { name: "Node.js", icon: NodejsOriginal },
+              { name: "Vue.js", icon: VuejsOriginal },
+              { name: "Nuxt.js", icon: NuxtjsOriginal },
+              { name: "Electron.js", icon: ElectronOriginal },
+                // Database / Hostimh
+              { name: "Supabase", icon: SupabaseOriginal },
+              { name: "Firebase", icon: FirebaseOriginal },
+              { name: "Postgres", icon: PostgresqlOriginal },
+              { name: "MongoDB", icon: MongodbOriginal },
+              { name: "AWS", icon: AmazonwebservicesOriginalWordmark },
+              { name: "GCloud", icon: GooglecloudOriginal },
+              { name: "Azure", icon: AzureOriginal },
+                // Diğer ürünler / yan araçlar
+              { name: "Arch Linux", icon: ArchlinuxOriginal },
+              { name: "Bootstrap", icon: BootstrapOriginal },
+              { name: "Docker", icon: DockerOriginal },
+              { name: "ESLint", icon: EslintOriginal },
+              { name: "Postman", icon: PostmanOriginal },
             ]}/>
             <AboutCard_ContGraph t={t} classNameVal="mb-4 w-full max-w-2xl"/>
             <AboutCard_Contact t={t} classNameVal="mb-4 grid w-full max-w-2xl gap-4 md:grid-cols-2"/>

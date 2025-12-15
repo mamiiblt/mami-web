@@ -7,13 +7,15 @@ import {
     SourceCodeIcon, TelegramIcon,
     UserArrowLeftRightIcon
 } from "@hugeicons/core-free-icons";
-import {motion} from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import {buttonVariants, cardVariants, containerVariants, itemVariants} from "@/components/about/MotionSpecs";
 import {TFunction} from "i18next";
 import {Button} from "@/components/ui/button";
 import {Badge} from "@/components/ui/badge";
 import GithubCalendar from "react-github-calendar";
 import Link from "next/link";
+import {ComponentType, useState} from "react";
+import {ChevronDown} from "lucide-react";
 
 const MotionButton = motion.create(Button);
 const MotionCard = motion.create(Card);
@@ -97,51 +99,75 @@ export function AboutCard_ContGraph({classNameVal,t,
     )
 }
 
+interface Skill {
+    name: string,
+    icon: ComponentType<{ size: number, className?: string }>
+}
+
 export function AboutCard_Skills({
                                      classNameVal,
                                      t,
-                                     skills
+                                     skills,
                                  }: {
-    classNameVal?: string;
-    t: TFunction;
-    skills: any;
+    classNameVal?: string
+    t: TFunction
+    skills: Skill[]
 }) {
+    const [isExpanded, setIsExpanded] = useState(false)
+
     return (
         <motion.div className={classNameVal} variants={itemVariants}>
             <Card className="p-6">
                 <CardContent className="p-0">
-                    <div className="mb-3 flex items-start justify-between">
+                    <div
+                        className="mb-3 flex items-start justify-between cursor-pointer select-none"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
                         <h4 className="text-lg font-semibold flex items-center gap-2">
-                            <HugeiconsIcon
-                                icon={ComputerProgrammingIcon}
-                                className="h-5 w-5"
-                            />
+                            <HugeiconsIcon icon={ComputerProgrammingIcon} className="h-5 w-5" />
                             {t("tool-tech")}
                         </h4>
+                        <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                        </motion.div>
                     </div>
-                    <motion.div
-                        className="w-full max-w-2xl"
-                        variants={itemVariants}
-                    >
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {skills.map((skill, index) => (
+
+                    <div className="relative overflow-hidden">
+                        <motion.div
+                            className="w-full max-w-2xl"
+                            variants={itemVariants}
+                            animate={{
+                                height: isExpanded ? "auto" : "170px",
+                            }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            style={{ overflow: "hidden" }}
+                        >
+                            <div className="grid grid-cols-3 gap-3 sm:grid-cols-7">
+                                {skills.map((skill, index) => (
+                                    <Card key={index} className={"p-1"}>
+                                        <div key={index} className="flex flex-col items-center gap-1" title={skill.name}>
+                                            <div className="flex h-10 w-10 items-center justify-center">
+                                                <skill.icon size={25} />
+                                            </div>
+                                            <span className="text-[11px] text-center text-muted-foreground">{skill.name}</span>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        <AnimatePresence>
+                            {!isExpanded && (
                                 <motion.div
-                                    key={index}
-                                    initial={{opacity: 0, scale: 0.8}}
-                                    animate={{opacity: 1, scale: 1}}
-                                    transition={{delay: 0.1 * index}}
-                                >
-                                    <Badge
-                                        variant="secondary"
-                                        className="flex items-center gap-1 px-3 py-1"
-                                    >
-                                        {skill.icon}
-                                        <span>{skill.name}</span>
-                                    </Badge>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none"
+                                />
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </CardContent>
             </Card>
         </motion.div>
