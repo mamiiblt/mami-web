@@ -27,7 +27,7 @@ export async function generateMetadata(
     alternates: {
       canonical: `${baseUrl}/article/${slug}`,
       languages: {
-        en: `${baseUrl}/article/${slug}`,
+        en: `${baseUrl}/en/article/${slug}`,
         tr: `${baseUrl}/tr/article/${slug}`,
       },
     },
