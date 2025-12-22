@@ -2,12 +2,19 @@
 
 import { useTranslation } from "react-i18next";
 import { ClientBlogContent } from "./ClientArticleContent";
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
 
 export default function ArticlesContent({ posts }) {
   const { t } = useTranslation("articles");
+    const router = useRouter();
+
+    useEffect(() => {
+        router.refresh();
+    }, []);
 
   return (
-    <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+    <div className="container max-w-8xl mx-auto px-4">
       <div className="space-y-8 sm:space-y-12">
         {posts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20 text-center">

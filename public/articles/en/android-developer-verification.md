@@ -1,10 +1,10 @@
 ---
 author: mamiiblt
-title: "Instafel Updater Guide"
-description: "An article on how to install and use Instafel Updater"
-date: "4 Jan 2025"
-tags: ["instafel", "instafel-updater"]
-image: "/pbanners/instafel-updater.png"
+title: "What is the Android Developer Verification System?"
+description: "What is the system recently announced by Google (which directly affects APK installations)?"
+date: "22 Dec 2025"
+topic: "Android"
+banner: "/pbanners/Android_Verification_Banner02.png"
 ---
 
 # About Instafel Updater

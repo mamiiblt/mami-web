@@ -2,53 +2,61 @@ import { promises as fs } from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-const ARTICLES_DIR = path.join(process.cwd(), "public", "articles");
+export function getLocalizedArticlesDir(localeCode: string) {
+  var lc = "en";
+  if (localeCode == "tr") {
+    lc = "tr"
+  }
+  return path.join(process.cwd(), "public", "articles", lc);
+}
 
-export interface Post {
+export interface Article {
   slug: string;
+  locale: string;
   title: string;
   date: string;
   description: string;
   content: string;
-  tags: string[];
-  readingTime?: string;
-  image?: string | undefined;
-  author?: string | undefined;
+  topic: string;
+  readingTime: number;
+  banner: string;
 }
 
 interface FrontMatter {
   title: string;
   date: string;
   description: string;
-  tags?: string[];
+  banner: string;
+  topic: string;
 }
 
-export async function getAllPosts(): Promise<Post[]> {
+export async function getAllArticlePosts(localeCode): Promise<Article[]> {
   try {
     try {
-      await fs.access(ARTICLES_DIR);
+      await fs.access(getLocalizedArticlesDir(localeCode));
     } catch {
-      await fs.mkdir(ARTICLES_DIR, { recursive: true });
-      console.log(`Created directory: ${ARTICLES_DIR}`);
+      await fs.mkdir(getLocalizedArticlesDir(localeCode), { recursive: true });
+      console.log(`Created articles directory: ${getLocalizedArticlesDir(localeCode)}`);
     }
 
-    const files = await fs.readdir(ARTICLES_DIR);
+    const files = await fs.readdir(getLocalizedArticlesDir(localeCode));
 
     const posts = await Promise.all(
       files
         .filter((file) => file.endsWith(".md"))
         .map(async (file) => {
-          const filePath = path.join(ARTICLES_DIR, file);
+          const filePath = path.join(getLocalizedArticlesDir(localeCode), file);
           const source = await fs.readFile(filePath, "utf8");
           const { data, content } = matter(source);
 
           return {
             ...data,
             content,
+            locale: localeCode,
             slug: file.replace(".md", ""),
-            readingTime: calculateReadingTime(content),
-            tags: data.tags || [],
-          } as Post;
+            readingTime: calculateReadingTimeMin(content),
+            topic: data.topic,
+          } as Article;
         })
     );
 
@@ -61,10 +69,51 @@ export async function getAllPosts(): Promise<Post[]> {
   }
 }
 
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+interface SeoProperties {
+  title: string,
+  desc: string,
+  banner: string
+}
+
+export async function getArticleSeoPropsBySlug(slug: string, localeCode: string): Promise<SeoProperties | null> {
   try {
     const source = await fs.readFile(
-      path.join(ARTICLES_DIR, `${slug}.md`),
+        path.join(getLocalizedArticlesDir(localeCode), `${slug}.md`),
+        "utf8"
+    );
+
+    const { data } = matter(source) as unknown as {
+      data: FrontMatter;
+    };
+
+
+    console.log(data)
+
+
+    return {
+      title: data.title,
+      desc: data.description,
+      banner: data.banner
+    }
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function getArticleSEO(slug: string, locale: string) {
+  const post = await getArticleSeoPropsBySlug(slug, locale)
+
+  return {
+    title: post.title,
+    description: post.desc,
+    image: post.banner,
+  }
+}
+
+export async function getArticleBySlug(slug: string, localeCode: string): Promise<Article | null> {
+  try {
+    const source = await fs.readFile(
+      path.join(getLocalizedArticlesDir(localeCode), `${slug}.md`),
       "utf8"
     );
     const { data, content } = matter(source) as unknown as {
@@ -72,41 +121,25 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       content: string;
     };
 
-    const readingTime = calculateReadingTime(content);
+    const readingTime = calculateReadingTimeMin(content);
 
     return {
       ...data,
+      locale: localeCode,
       content: content,
       slug,
       readingTime,
-      tags: data.tags || [],
-    } as Post;
+      topic: data.topic,
+    } as Article;
   } catch (error) {
     return null;
   }
 }
 
-function calculateReadingTime(content: string): string {
+function calculateReadingTimeMin(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;
-  const minutes = Math.ceil(words / wordsPerMinute);
-  return `${minutes} min read`;
-}
-
-export async function BlogPost(slug: string) {
-  const post = await getPostBySlug(slug);
-
-  if (!post) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      post,
-    },
-  };
+  return Math.ceil(words / wordsPerMinute);
 }
 
 export function extractHeadings(

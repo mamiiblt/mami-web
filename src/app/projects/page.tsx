@@ -39,7 +39,6 @@ export default function ProjectsPage() {
       technologies: ["Java", "Smali", "React"],
       github: "https://github.com/mamiiblt/instafel",
       website: "https://instafel.app",
-      telegram: "https://t.me/instafel",
       featured: true,
     },
     {

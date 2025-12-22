@@ -41,7 +41,6 @@ export const defaultMetadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
     other: [
       {
@@ -56,11 +55,6 @@ export const defaultMetadata: Metadata = {
         sizes: "16x16",
         url: "/favicon-16x16.png",
       },
-      {
-        rel: "manifest",
-        url: "/site.webmanifest",
-      },
     ],
   },
-  manifest: "/site.webmanifest",
 };

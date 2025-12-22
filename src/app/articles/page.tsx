@@ -1,13 +1,19 @@
 import { Suspense } from "react";
 import ArticlesContent from "./ArticlesContent";
-import { getAllPosts } from "@/lib/article";
+import { getAllArticlePosts } from "@/lib/article";
+import { cookies } from "next/headers"
+import {cookieName} from "@/i18n/settings";
+
+export const dynamic = "force-dynamic";
 
 export default async function BlogPage() {
-  const posts = await getAllPosts();
+    const cookieStore = await cookies()
+    const localeCode = cookieStore.get(cookieName)
+    const posts = await getAllArticlePosts(localeCode.value);
 
-  return (
-    <Suspense>
-      <ArticlesContent posts={posts} />
-    </Suspense>
-  );
+    return (
+        <Suspense>
+            <ArticlesContent posts={posts} />
+        </Suspense>
+    );
 }

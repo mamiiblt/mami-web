@@ -1,8 +1,13 @@
 {
-  "noPostsTitle": "Gönderiler Bulunamadı",
+  "noPostsTitle": "Yazılar Bulunamadı",
   "noPostsDescription": "Gösterilecek gönderi yok. Lütfen daha sonra tekrar kontrol edin.",
-  "allTitle": "Tüm Yazılarım",
-  "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz.",
+  "allTitle": "Yazılarım",
+  "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz",
   "searchPlaceholder": "Yazılarda ara...",
-  "loadingPosts": "Gönderiler yükleniyor..."
+  "loadingPosts": "Gönderiler yükleniyor...",
+  "found": "{{count}} yazı bulundu",
+  "clearFilters": "Filtreleri Temizle",
+  "readDur": "{{minutes}} dk okuma süresi",
+  "backToArticles": "Yazılara geri dön",
+  "otpTitle": "Bu makalede"
 }

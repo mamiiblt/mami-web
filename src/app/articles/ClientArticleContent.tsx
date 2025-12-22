@@ -1,319 +1,304 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArticleCard } from "@/components/articles/ArticleCard";
-import { Post } from "@/lib/article";
-import { ChevronLeft, ChevronRight, RefreshCcw, Search } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import {useState, useEffect, useMemo} from "react";
+import {motion, AnimatePresence} from "framer-motion";
+import {
+    ArrowUpRight, Calendar,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    NewspaperIcon,
+    Search, SearchSlash
+} from "lucide-react";
+import {useTranslation} from "react-i18next";
+import {Page, PageHeader} from "@/components/PageUtils";
+import {Button} from "@/components/ui/button";
+import {Card} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import Link from "next/link";
+import Image from "next/image";
+import {Article} from "@/lib/article";
 
 interface ClientArticleContentProps {
-  title: string;
-  description: string;
-  posts: Post[];
+    title: string;
+    description: string;
+    posts: Article[];
 }
 
-const POSTS_PER_PAGE = 6;
+const POSTS_PER_PAGE = 15;
 const DEBOUNCE_DELAY = 300;
-const REFRESH_COOLDOWN = 2000;
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.3,
+    hidden: {opacity: 0},
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
     },
-  },
-  exit: { opacity: 0 },
+    exit: {opacity: 0},
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
+    hidden: {opacity: 0, y: 20},
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            type: "spring",
+            stiffness: 100,
+        },
     },
-  },
 };
 
 export function ClientBlogContent({
-  title,
-  description,
-  posts: initialPosts,
-}: ClientArticleContentProps) {
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [canRefresh, setCanRefresh] = useState(true);
-  const { t } = useTranslation("articles");
+                                      title,
+                                      description,
+                                      posts: articlePosts,
+                                  }: ClientArticleContentProps) {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+    const {t, i18n} = useTranslation("articles");
 
-  const fetchLatestPosts = async () => {
-    if (!canRefresh || isRefreshing) return;
 
-    try {
-      setIsRefreshing(true);
-      setIsLoading(true);
-      setCanRefresh(false);
+    const allTopics = useMemo(() => {
+        const topics = new Set<string>();
+        articlePosts.forEach((post) => {
+            topics.add(post.topic);
+        });
+        return Array.from(topics).sort();
+    }, [articlePosts]);
 
-      const response = await fetch("/api/admin/posts");
-      const data = await response.json();
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, DEBOUNCE_DELAY);
 
-      if (data.posts) {
-        setPosts([]);
-        setTimeout(() => {
-          setPosts(data.posts);
-        }, 300);
-      }
-    } catch (error) {
-      console.error("Failed to fetch latest posts:", error);
-    } finally {
-      setIsRefreshing(false);
-      setIsLoading(false);
-      setTimeout(() => setCanRefresh(true), REFRESH_COOLDOWN);
-    }
-  };
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
-  useEffect(() => {
-    const intervalId = setInterval(fetchLatestPosts, 30000);
-    return () => clearInterval(intervalId);
-  }, [fetchLatestPosts]);
+    const filteredPosts = articlePosts.filter((post) => {
+        const matchesSearch =
+            post.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            post.topic
+                ?.toLowerCase()
+                .includes(debouncedSearchQuery.toLowerCase());
 
-  const allTags = useMemo(() => {
-    const tags = new Set<string>();
-    posts.forEach((post) => {
-      post.tags?.forEach((tag) => tags.add(tag));
+        const matchesTags =
+            selectedTopics.length === 0 ||
+            selectedTopics.every((tag) => post.topic.includes(tag));
+
+        return matchesSearch && matchesTags;
     });
-    return Array.from(tags).sort();
-  }, [posts]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, DEBOUNCE_DELAY);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearchQuery, selectedTopics]);
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    const toggleTag = (tag: string) => {
+        setSelectedTopics((prev) =>
+            prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+        );
+    };
 
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-      post.tags?.some((tag) =>
-        tag.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-      );
-
-    const matchesTags =
-      selectedTags.length === 0 ||
-      selectedTags.every((tag) => post.tags?.includes(tag));
-
-    return matchesSearch && matchesTags;
-  });
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [debouncedSearchQuery, selectedTags]);
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+    const paginatedPosts = filteredPosts.slice(
+        (currentPage - 1) * POSTS_PER_PAGE,
+        currentPage * POSTS_PER_PAGE
     );
-  };
 
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const paginatedPosts = filteredPosts.slice(
-    (currentPage - 1) * POSTS_PER_PAGE,
-    currentPage * POSTS_PER_PAGE
-  );
-
-  return (
-    <>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="space-y-6"
-      >
-        <div className="flex flex-col md:flex-row gap-6 md:justify-between md:items-center">
-          <motion.div variants={itemVariants} className="space-y-3">
-            <motion.h1
-              variants={itemVariants}
-              className="text-3xl md:text-4xl font-bold tracking-tighter"
-            >
-              {title}
-            </motion.h1>
-            <motion.p
-              variants={itemVariants}
-              className="text-base md:text-lg text-muted-foreground"
-            >
-              {description}
-            </motion.p>
-          </motion.div>
-          <motion.div
-            variants={itemVariants}
-            className="flex gap-4 w-full md:w-auto"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={fetchLatestPosts}
-              className={`p-2.5 border rounded-lg shadow-sm hover:bg-secondary transition-all ${
-                !canRefresh ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              disabled={!canRefresh || isRefreshing}
-            >
-              <motion.div
-                animate={{
-                  rotate: isRefreshing ? 360 : 0,
-                }}
-                transition={{
-                  duration: 1,
-                  ease: "linear",
-                  repeat: isRefreshing ? Infinity : 0,
-                }}
-              >
-                <RefreshCcw className="h-5 w-5" />
-              </motion.div>
-            </motion.button>
-            <motion.div
-              variants={itemVariants}
-              className="w-full md:w-auto relative"
-            >
-              <input
-                type="text"
-                placeholder={t("searchPlaceholder")}
-                className="w-full md:w-72 pl-10 pr-4 py-2.5 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 transition-all bg-background dark:bg-background"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-            </motion.div>
-          </motion.div>
-        </div>
-
-        <motion.div
-          variants={containerVariants}
-          className="overflow-x-auto scrollbar-hide"
-        >
-          <div className="flex flex-nowrap md:flex-wrap gap-3 py-4">
-            {allTags.map((tag, i) => (
-              <motion.button
-                key={tag}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => toggleTag(tag)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all
-                  ${
-                    selectedTags.includes(tag)
-                      ? "bg-primary text-primary-foreground shadow-md scale-105"
-                      : "bg-secondary hover:bg-secondary/80"
-                  }`}
-              >
-                #{tag}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scaleX: 0 }}
-        animate={{ opacity: 1, scaleX: 1 }}
-        transition={{
-          duration: 0.8,
-          ease: "easeInOut",
-        }}
-        className="border-b border-accent my-8"
-      />
-
-      <AnimatePresence mode="wait">
-        {isLoading ? (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="text-center py-12 text-muted-foreground text-lg"
-          >
-            {t("loadingPosts")}
-          </motion.div>
-        ) : paginatedPosts.length === 0 ? (
-          <motion.div
-            key="empty"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3, type: "spring" }}
-            className="text-center py-12 text-muted-foreground text-lg"
-          >
-            No blog posts found.
-          </motion.div>
-        ) : (
-          <motion.div
-            key="grid"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-            className="grid gap-8 md:gap-10"
-          >
-            {paginatedPosts.map((post, index) => (
-              <motion.div
-                key={post.slug}
-                variants={itemVariants}
-                custom={index}
-              >
-                <ArticleCard post={post} index={index} />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {totalPages > 1 && (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="flex justify-center items-center gap-3 md:gap-5 mt-12"
-        >
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="p-2 md:p-2.5 rounded-lg hover:bg-secondary disabled:opacity-50 transition-all"
-          >
-            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-          </motion.button>
-          <motion.span
-            variants={itemVariants}
-            className="text-sm md:text-base font-medium"
-          >
-            Page {currentPage} of {totalPages}
-          </motion.span>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+    return (
+        <Page
+            width={6}
+            header={
+                <PageHeader
+                    icon={<NewspaperIcon/>}
+                    title={title}
+                    subtitle={description}
+                />
             }
-            disabled={currentPage === totalPages}
-            className="p-2 md:p-2.5 rounded-lg hover:bg-secondary disabled:opacity-50 transition-all"
-          >
-            <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-          </motion.button>
-        </motion.div>
-      )}
-    </>
-  );
+            content={<>
+                <motion.div variants={containerVariants} initial="hidden" animate="show" className="mb-6 space-y-6">
+                    <motion.div variants={itemVariants} className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"/>
+                        <Input
+                            type="text"
+                            placeholder={t("searchPlaceholder")}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-12 h-13 text-lg bg-card border-border focus-visible:ring-secondary"
+                        />
+                    </motion.div>
+
+                    <motion.div variants={itemVariants}>
+                        <div className="flex flex-wrap gap-2">
+                            {allTopics.map((topic) => (
+                                <motion.button
+                                    key={topic}
+                                    whileHover={{scale: 1.05}}
+                                    whileTap={{scale: 0.95}}
+                                    onClick={() => toggleTag(topic)}
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                        selectedTopics.includes(topic)
+                                            ? "bg-primary text-primary-foreground shadow-lg"
+                                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                                    }`}
+                                >
+                                    {topic}
+                                </motion.button>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {(searchQuery || selectedTopics.length > 0) && (
+                        <motion.div variants={itemVariants} className="flex items-center gap-3 text-sm">
+                <span className="text-muted-foreground">
+                    {t("found", { count: filteredPosts.length })}
+                </span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                    setSearchQuery("")
+                                    setSelectedTopics([])
+                                }}
+                                className="h-8"
+                            >
+                                {t("clearFilters")}
+                            </Button>
+                        </motion.div>
+                    )}
+                </motion.div>
+
+                <AnimatePresence mode="wait">
+                    {paginatedPosts.length === 0 ? (
+                        <motion.div
+                            key="empty"
+                            initial={{opacity: 0, scale: 0.95}}
+                            animate={{opacity: 1, scale: 1}}
+                            exit={{opacity: 0, scale: 0.95}}
+                            className="text-center py-24 justify-items-center"
+                        >
+                            <SearchSlash className="w-20 h-20 mb-4" />
+                            <h2 className="text-2xl font-semibold mb-2">{t("noPostsTitle")}</h2>
+                            <p className="text-muted-foreground">{t("noPostsDescription")}</p>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="grid"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                        >
+                            {paginatedPosts.map((post, index) => (
+                                <Link key={post.slug} href={`/article/${post.locale}/${post.slug}`}>
+                                    <motion.div  variants={itemVariants} custom={index}>
+                                        <Card className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/50 relative">
+                                            <div className="relative w-full h-48 overflow-hidden bg-secondary">
+                                                <Image
+                                                    src={
+                                                        post.banner ||
+                                                        `/placeholder.svg?height=192&width=384&query=${encodeURIComponent(post.title)}`
+                                                    }
+                                                    alt={post.title}
+                                                    fill
+                                                    className="object-cover transition-transform duration-300"
+                                                />
+                                            </div>
+
+                                            <div className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                                                {post.topic}
+                                            </div>
+
+                                            <div className="p-6">
+                                                <div className="flex flex-col h-full">
+                                                    <div className="flex-1 space-y-3">
+                                                        <h3 className="text-xl font-bold group-hover:text-primary transition-colors text-balance leading-snug">
+                                                            {post.title}
+                                                        </h3>
+                                                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+                                                            {post.description}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="mt-3 space-y-4">
+                                                        <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border">
+                                                            <div className="flex items-center gap-4">
+                                  <span className="flex items-center gap-1.5">
+                                    <Calendar className="h-3.5 w-3.5" />
+                                      {new Date(post.date).toLocaleDateString(i18n.language, {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                      })}
+                                  </span>
+                                                                <span className="flex items-center gap-1.5">
+                                    <Clock className="h-3.5 w-3.5" />
+                                                                    {t("readDur", { minutes: post.readingTime})}
+                                  </span>
+                                                            </div>
+                                                            <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    </motion.div>
+
+                                </Link>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {totalPages > 1 && paginatedPosts.length > 0 && (
+                    <motion.div
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{delay: 0.3}}
+                        className="flex items-center justify-center gap-2 mt-12"
+                    >
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="h-10 w-10"
+                        >
+                            <ChevronLeft className="h-5 w-5"/>
+                        </Button>
+
+                        <div className="flex items-center gap-2">
+                            {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                                <Button
+                                    key={page}
+                                    variant={currentPage === page ? "default" : "outline"}
+                                    size="icon"
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`h-10 w-10 ${currentPage === page ? "bg-primary text-primary-foreground" : ""}`}
+                                >
+                                    {page}
+                                </Button>
+                            ))}
+                        </div>
+
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="h-10 w-10"
+                        >
+                            <ChevronRight className="h-5 w-5"/>
+                        </Button>
+                    </motion.div>
+                )}
+            </>
+            }
+        />
+    )
 }
