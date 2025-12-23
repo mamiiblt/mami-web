@@ -1,54 +1,9 @@
-import {extractHeadings, getArticleBySlug, getArticleSEO} from "@/lib/article";
+import {extractHeadings, getArticleBySlug} from "@/lib/article";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ArticlePostContent from "@/app/article/[locale]/[slug]/ArticlePostContent";
 
-export async function generateMetadata(
-    { params }: { params: Promise<{ locale: string; slug: string }> }
-) {
-  const { slug, locale } = await params;
-
-  const seo = await getArticleSEO(slug, locale);
-
-  if (!seo) {
-    return {
-      title: "Article not found",
-      robots: { index: false },
-    };
-  }
-
-  const baseUrl = "https://mamii.me";
-
-  return {
-    title: seo.title,
-    description: seo.description,
-
-    alternates: {
-      canonical: `${baseUrl}/article/${slug}`,
-      languages: {
-        en: `${baseUrl}/en/article/${slug}`,
-        tr: `${baseUrl}/tr/article/${slug}`,
-      },
-    },
-
-    openGraph: {
-      title: seo.title,
-      description: seo.description,
-      images: seo.image ? [seo.image] : [],
-      type: "article",
-      locale,
-      url: `${baseUrl}/${locale}/article/${slug}`,
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: seo.title,
-      description: seo.description,
-      images: seo.image ? [seo.image] : [],
-    },
-  };
-}
 export default async function BlogPostPage({
   params,
 }: {

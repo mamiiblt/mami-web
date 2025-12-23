@@ -1,9 +1,9 @@
 ---
-author: mamiiblt
 title: "What is the Android Developer Verification System?"
 description: "What is the system recently announced by Google (which directly affects APK installations)?"
-date: "22 Dec 2025"
+date: "22.12.2025"
 topic: "Android"
+seoKeywords: ["Android Developer Verification", "APK", "APK install restrictions"]
 banner: "/pbanners/Android_Verification_Banner02.png"
 ---
 

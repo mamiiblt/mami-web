@@ -1,9 +1,9 @@
 ---
-author: mamiiblt
 title: "Android Geliştirici Doğrulama Sistemi Nedir?"
 description: "Google tarafından yakın zamanda duyurulan (APK kurulumlarını doğrudan etkileyen) sistem nedir?"
-date: "22 Dec 2025"
+date: "22.12.2025"
 topic: "Android"
+seoKeywords: ["Android geliştirici doğrulaması", "APK", "APK kurma kısıtlamaları"]
 banner: "/pbanners/Android_Verification_Banner02.png"
 ---
 

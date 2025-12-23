@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {useTranslation} from "react-i18next";
 import {usePathname, useRouter} from "next/navigation";
-import {cookieName} from "@/i18n/settings";
+import {convertDateToStr} from "@/app/articles/ClientArticleContent";
 
 interface BlogPostContentProps {
   post: Article;
@@ -34,23 +34,10 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
       }
   }, []);
 
+
   return (
       <div className="min-h-screen bg-background">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-          <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4 }}
-              className="mb-8"
-          >
-            <Link
-                href="/articles"
-                className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
-            >
-              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-medium">{t("backToArticles")}</span>
-            </Link>
-          </motion.div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-20">
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 xl:gap-16">
             <article className="min-w-0">
@@ -60,24 +47,24 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
                   transition={{ duration: 0.5 }}
                   className="mb-12 space-y-6"
               >
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <time dateTime={post.date} className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {formatDate(post.date, i18n.language)}
-                  </time>
-                  <span className="text-border">•</span>
-                  <span className="flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5" />
-                    {t("readDur", { minutes: post.readingTime})}
-                    <span className="text-border">•</span>
-                  <HashIcon className="h-3.5 w-3.5" />
-                    {post.topic}
-                </span>
-                </div>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-5xl font-serif font-bold text-balance leading-tight tracking-tight">
                   {post.title}
                 </h1>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <time dateTime={post.date} className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {formatDate(convertDateToStr(post.date).toISOString(), i18n.language)}
+                      </time>
+                      <span className="text-border">•</span>
+                      <span className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" />
+                          {t("readDur", { minutes: post.readingTime})}
+                          <span className="text-border">•</span>
+                  <HashIcon className="h-3.5 w-3.5" />
+                          {post.topic}
+                </span>
+                  </div>
 
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-pretty">{post.description}</p>
               </motion.header>

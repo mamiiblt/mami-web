@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_SITE_URL: "https://mamii.me",
   },
+  htmlLimitedBots: /.*/
 };
 
 export default nextConfig;

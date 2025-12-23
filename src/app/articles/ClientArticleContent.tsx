@@ -230,7 +230,7 @@ export function ClientBlogContent({
                                                             <div className="flex items-center gap-4">
                                   <span className="flex items-center gap-1.5">
                                     <Calendar className="h-3.5 w-3.5" />
-                                      {new Date(post.date).toLocaleDateString(i18n.language, {
+                                      {new Date(convertDateToStr(post.date)).toLocaleDateString(i18n.language, {
                                           month: "short",
                                           day: "numeric",
                                           year: "numeric",
@@ -301,4 +301,9 @@ export function ClientBlogContent({
             }
         />
     )
+}
+
+export function convertDateToStr(dateText: string): Date {
+    const [day, month, year] = dateText.split(".").map(Number);
+    return new Date(year, month - 1, day);
 }

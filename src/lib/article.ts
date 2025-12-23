@@ -72,7 +72,9 @@ export async function getAllArticlePosts(localeCode): Promise<Article[]> {
 interface SeoProperties {
   title: string,
   desc: string,
-  banner: string
+  banner: string,
+  publishDateISO: string,
+  topic: string
 }
 
 export async function getArticleSeoPropsBySlug(slug: string, localeCode: string): Promise<SeoProperties | null> {
@@ -86,14 +88,12 @@ export async function getArticleSeoPropsBySlug(slug: string, localeCode: string)
       data: FrontMatter;
     };
 
-
-    console.log(data)
-
-
     return {
       title: data.title,
       desc: data.description,
-      banner: data.banner
+      banner: data.banner,
+      publishDateISO: convertDateToStr(data.date).toISOString(),
+      topic: data.topic
     }
   } catch (error) {
     return null;
@@ -107,6 +107,8 @@ export async function getArticleSEO(slug: string, locale: string) {
     title: post.title,
     description: post.desc,
     image: post.banner,
+    publishDateISO: post.publishDateISO,
+    topic: post.topic
   }
 }
 
@@ -172,3 +174,10 @@ export function extractHeadings(
   }
   return headings;
 }
+
+
+function convertDateToStr(dateText: string): Date {
+  const [day, month, year] = dateText.split(".").map(Number);
+  return new Date(year, month - 1, day);
+}
+

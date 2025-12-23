@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "devicons-react": "^1.5.0",
+    "file-type": "^21.1.1",
     "framer-motion": "^12.7.4",
     "gray-matter": "^4.0.3",
     "i18next": "^25.0.2",
