@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
   if (!seo) return { title: "Not found", robots: { index: false } };
 
   const baseUrl = "https://mamii.me";
-  const pageUrl = `${baseUrl}/${locale}/article/${slug}`;
+  const pageUrl = `${baseUrl}/article/${locale}/${slug}`;
 
   return {
     title: seo.title,
