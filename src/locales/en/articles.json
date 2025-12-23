@@ -9,5 +9,10 @@
   "clearFilters": "Clear Filters",
   "readDur": "{{minutes}} min read",
   "backToArticles": "Back to articles",
-  "otpTitle": "On this article"
+  "otpTitle": "On this article",
+  "writtenBy": "Written by <b>M. Ali BULUT</b>",
+  "viewText": "Viewed {{count}} times",
+  "commentText": "{{count}} comment",
+  "like": "Like",
+  "unlike": "Liked"
 }

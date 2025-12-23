@@ -1,4 +1,6 @@
 import React from "react";
+import {motion} from "framer-motion";
+import {Skeleton} from "@/components/ui/skeleton";
 import {getArticleSEO} from "@/lib/article";
 
 function getFileTypeFromName(filename: string) {
@@ -24,21 +26,28 @@ export async function generateMetadata({ params }) {
 
   return {
     title: seo.title,
-    description: seo.description,
+    description: seo.desc,
+    keywords: seo.seoKeywords,
+    authors: [{ name: 'mamiiblt', url: 'https://mamii.me/about' }],
     alternates: {
       canonical: pageUrl,
+      languages: {
+        'en-US': `${baseUrl}/article/en/${slug}`,
+        'tr-TR': `${baseUrl}/article/tr/${slug}`,
+      }
     },
     openGraph: {
       title: seo.title,
-      description: seo.description,
+      description: seo.desc,
       url: pageUrl,
       type: "article",
+      siteName: "mamii's articles",
       publishedTime: seo.publishDateISO,
       authors: ["M. Ali BULUT"],
       section: seo.topic,
       locale: locale === "tr" ? "tr_TR" : "en_US",
-      images: seo.image
-          ? [{ url: seo.image, width: 1200, height: 630, alt: seo.title, type: getFileTypeFromName(seo.image) }]
+      images: seo.banner
+          ? [{ url: seo.banner, width: 1200, height: 630, alt: seo.title, type: getFileTypeFromName(seo.banner) }]
           : undefined,
     },
     twitter: {
@@ -48,8 +57,8 @@ export async function generateMetadata({ params }) {
       creator: "@mamiiblt",
       label1: "Written by",
       data1: "M. Ali BULUT",
-      description: seo.description,
-      images: seo.image ? [seo.image] : undefined,
+      description: seo.desc ,
+      images: seo.banner ? [seo.banner] : undefined,
     },
   };
 }

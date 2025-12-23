@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 interface Heading {
@@ -39,8 +39,8 @@ export function TableOfContents({ headings, otpTitle }: TableOfContentsProps) {
 
   return (
       <nav className="space-y-1">
-        <p className="text-sm font-semibold text-foreground mb-4">{otpTitle}</p>
-        <ul className="space-y-2.5 text-sm border-l-2 border-border pl-4">
+          <p className="text-sm font-semibold text-foreground mb-4">{otpTitle}</p>
+          <ul className="space-y-2.5 text-sm border-l-2 border-border pl-4">
           {headings.map((heading) => (
               <li key={heading.id} className={cn("transition-colors", heading.level === 3 && "ml-3")}>
                 <a

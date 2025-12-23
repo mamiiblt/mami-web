@@ -7,8 +7,6 @@ seoKeywords: ["Android geliştirici doğrulaması", "APK", "APK kurma kısıtlam
 banner: "/pbanners/Android_Verification_Banner02.png"
 ---
 
-# About Instafel Updater
-
 Instafel Updater is actually designed to eliminate the hassle of automatic updates **for root users**. It does this by checking for Instafel updates at certain intervals in the background with **WorkManager** and **Foreground Service** and installing them silently with Shizuku. This guide covers how you can use Instafel Updater.
 
 ## Download and Setup Shizuku

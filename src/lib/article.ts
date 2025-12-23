@@ -28,6 +28,7 @@ interface FrontMatter {
   description: string;
   banner: string;
   topic: string;
+  seoKeywords: string[];
 }
 
 export async function getAllArticlePosts(localeCode): Promise<Article[]> {
@@ -74,7 +75,8 @@ interface SeoProperties {
   desc: string,
   banner: string,
   publishDateISO: string,
-  topic: string
+  topic: string,
+  seoKeywords: string[]
 }
 
 export async function getArticleSeoPropsBySlug(slug: string, localeCode: string): Promise<SeoProperties | null> {
@@ -93,22 +95,21 @@ export async function getArticleSeoPropsBySlug(slug: string, localeCode: string)
       desc: data.description,
       banner: data.banner,
       publishDateISO: convertDateToStr(data.date).toISOString(),
-      topic: data.topic
+      topic: data.topic,
+      seoKeywords: data.seoKeywords
     }
   } catch (error) {
     return null;
   }
 }
 
-export async function getArticleSEO(slug: string, locale: string) {
+export async function getArticleSEO(slug: string, locale: string): Promise<SeoProperties | null> {
   const post = await getArticleSeoPropsBySlug(slug, locale)
 
-  return {
-    title: post.title,
-    description: post.desc,
-    image: post.banner,
-    publishDateISO: post.publishDateISO,
-    topic: post.topic
+  if (post != null) {
+    return post
+  } else {
+    return null
   }
 }
 

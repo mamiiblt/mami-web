@@ -92,7 +92,8 @@ export function ClientBlogContent({
             selectedTopics.every((tag) => post.topic.includes(tag));
 
         return matchesSearch && matchesTags;
-    });
+        // @ts-ignore
+    }).sort((a, b) => new Date(new Date(convertDateToStr(b.date)).getTime() - convertDateToStr(a.date)).getTime());
 
     useEffect(() => {
         setCurrentPage(1);
