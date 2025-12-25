@@ -1,12 +1,4 @@
 {
-  "noPostsTitle": "No Posts Found",
-  "noPostsDescription": "There are no posts to display. Please check back later.",
-  "allTitle": "Articles",
-  "allDescription": "You can find all of the my articles in here",
-  "searchPlaceholder": "Search in articles...",
-  "loadingPosts": "Loading posts...",
-  "found": "{{count}} article found",
-  "clearFilters": "Clear Filters",
   "readDur": "{{minutes}} min read",
   "backToArticles": "Back to articles",
   "otpTitle": "On this article",
@@ -17,6 +9,10 @@
   "liked": "Liked",
   "likeText": "{{count}} like",
   "aboutArticle": "About article",
+  "loading": "Article Loading",
+  "pleaseWait": "Please wait...",
+  "notFound": "Article Not Found",
+  "notFoundDesc": "This article not found right now. It maybe deleted or moved.",
   "comments": {
     "header": "Comments",
     "countComment": "{{count}} comment shared",

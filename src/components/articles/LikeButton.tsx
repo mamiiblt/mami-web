@@ -12,11 +12,11 @@ export interface LikeButtonProps {
     setIsPostLiked: React.Dispatch<React.SetStateAction<boolean>>;
     setLikeCount: React.Dispatch<React.SetStateAction<number>>;
     sessionId: string;
-    articleId: number;
+    articleDbId: number;
     className?: string;
 }
 
-export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId, articleId, className}: LikeButtonProps) {
+export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId, articleDbId, className}: LikeButtonProps) {
     const { t } = useTranslation("articles")
     const [isProcessing, setIsProcessing] = useState(false)
 
@@ -33,7 +33,7 @@ export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    article_id: articleId,
+                    article_db_id: articleDbId,
                     session_id: sessionId
                 }),
             });

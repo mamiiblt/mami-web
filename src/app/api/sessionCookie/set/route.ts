@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     cookieStore.set(SESSION_ID_COOKIE, value, {
         path: "/",
         sameSite: "lax",
+        maxAge: (30 * 24 * 60 * 60) * 6
     });
 
     return NextResponse.json({ STATUS: true });

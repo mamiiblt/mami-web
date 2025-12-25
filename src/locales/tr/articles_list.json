@@ -1,0 +1,10 @@
+{
+  "loading": "Makale Listesi Yükleniyor",
+  "pleaseWait": "Lütfen bekleyin...",
+  "allTitle": "Yazılarım",
+  "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz",
+  "searchPlaceholder": "Yazılarda ara...",
+  "found": "{{count}} yazı bulundu",
+  "clearFilters": "Filtreleri Temizle",
+  "readDur": "{{minutes}} dk okuma süresi"
+}

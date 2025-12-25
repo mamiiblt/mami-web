@@ -1,0 +1,10 @@
+{
+  "loading": "List of Articles Loading",
+  "pleaseWait": "Please wait...",
+  "allTitle": "Articles",
+  "allDescription": "You can find all of the my articles in here",
+  "searchPlaceholder": "Search in articles...",
+  "found": "{{count}} article found",
+  "clearFilters": "Clear Filters",
+  "readDur": "{{minutes}} min read"
+}

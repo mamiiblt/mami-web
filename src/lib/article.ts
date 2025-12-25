@@ -147,36 +147,7 @@ function calculateReadingTimeMin(content: string): number {
   return Math.ceil(words / wordsPerMinute);
 }
 
-export function extractHeadings(
-  content: string
-): Array<{ id: string; text: string; level: number }> {
-  const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-  const headings: Array<{ id: string; text: string; level: number }> = [];
-  const usedIds = new Set<string>();
 
-  let match;
-  while ((match = headingRegex.exec(content)) !== null) {
-    const level = match[1].length;
-    const text = match[2].trim();
-    let id = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-
-    if (usedIds.has(id)) {
-      let counter = 1;
-      while (usedIds.has(`${id}-${counter}`)) {
-        counter++;
-      }
-      id = `${id}-${counter}`;
-    }
-
-    usedIds.add(id);
-    headings.push({ id, text, level });
-  }
-  return headings;
-}
 
 
 function convertDateToStr(dateText: string): Date {

@@ -1,12 +1,4 @@
 {
-  "noPostsTitle": "Yazılar Bulunamadı",
-  "noPostsDescription": "Gösterilecek gönderi yok. Lütfen daha sonra tekrar kontrol edin.",
-  "allTitle": "Yazılarım",
-  "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz",
-  "searchPlaceholder": "Yazılarda ara...",
-  "loadingPosts": "Gönderiler yükleniyor...",
-  "found": "{{count}} yazı bulundu",
-  "clearFilters": "Filtreleri Temizle",
   "readDur": "{{minutes}} dk okuma süresi",
   "backToArticles": "Yazılara geri dön",
   "otpTitle": "İçindekiler",
@@ -17,6 +9,10 @@
   "liked": "Beğenildi",
   "likeText": "{{count}} beğeni",
   "aboutArticle": "Makale hakkında",
+  "loading": "Makale Yükleniyor",
+  "pleaseWait": "Lütfen bekleyin...",
+  "notFound": "Makale Bulunamadı",
+  "notFoundDesc": "Bu makale maalesef bulunamadı. Silinmiş veya taşınmış olabilir.",
   "comments": {
     "header": "Yorumlar",
     "countComment": "{{count}} yorum paylaşıldı",
@@ -34,4 +30,5 @@
     "POST_UNLIKE_SUCCESS": "Beğenmeni geri çektin",
     "SESSION_ID_INVALID": "Session ID geçersiz, lütfen çerezlere izin ver.",
     "USER_NOT_LIKED_POST": "Bu postu önceden beğenmediğin için beğenmeni geri çekemezsin."
-  }}
+  }
+}
