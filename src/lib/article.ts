@@ -11,6 +11,7 @@ export function getLocalizedArticlesDir(localeCode: string) {
 }
 
 export interface Article {
+  article_id: number;
   slug: string;
   locale: string;
   title: string;
@@ -23,6 +24,7 @@ export interface Article {
 }
 
 interface FrontMatter {
+  article_id: number;
   title: string;
   date: string;
   description: string;

@@ -10,9 +10,29 @@
   "readDur": "{{minutes}} min read",
   "backToArticles": "Back to articles",
   "otpTitle": "On this article",
-  "writtenBy": "Written by <b>M. Ali BULUT</b>",
+  "writtenBy": "Written by",
   "viewText": "Viewed {{count}} times",
   "commentText": "{{count}} comment",
   "like": "Like",
-  "unlike": "Liked"
+  "liked": "Liked",
+  "likeText": "{{count}} like",
+  "aboutArticle": "About article",
+  "comments": {
+    "header": "Comments",
+    "countComment": "{{count}} comment shared",
+    "yourName": "Your name...",
+    "writeCom": "Write a comment...",
+    "shareCom": "Share Comment",
+    "like": "Like",
+    "dislike": "Dislike"
+  },
+  "likeToasts": {
+    "buttonOkay": "Okay",
+    "STATUS_SUCCESS": "Successfully",
+    "STATUS_FAILURE": "An error occurred...",
+    "POST_LIKE_SUCCESS": "You liked this article.",
+    "POST_UNLIKE_SUCCESS": "You unliked this article.",
+    "SESSION_ID_INVALID": "Session ID is invalid, please allow browser cookies.",
+    "USER_NOT_LIKED_POST": "You aren't liked this article already, so you cannot unlike it."
+  }
 }

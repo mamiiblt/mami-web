@@ -1,4 +1,5 @@
 ---
+article_id: 2
 title: "Örnek Blog"
 description: "SEO aşamalarını test etmek için oluşturuldu"
 date: "23.12.2025"

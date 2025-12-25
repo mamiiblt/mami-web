@@ -1,4 +1,5 @@
 ---
+article_id: 2
 title: "Example Blog"
 description: "A example blog written for SEO test puproses."
 date: "23.12.2025"

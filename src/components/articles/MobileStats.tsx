@@ -1,32 +1,19 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { ThumbsUp, Clock, Eye, MessageCircle, Hash } from "lucide-react"
+import {Clock, MessageCircle, ThumbsUpIcon, Tag} from "lucide-react"
 import { motion } from "framer-motion"
+import React, {ReactElement} from "react";
+import {LikeButtonProps} from "@/components/articles/LikeButton";
 
 interface MobileStatsProps {
-    readingTime: string
-    topic: string
-    views: string
-    comments: string
-    likeSize: number
-    liked: boolean
-    onLikeToggle: () => void
-    likedText: string
-    unlikedText: string
+    publishTxt: string
+    topicTxt: string
+    commentTxt: string
+    likeTxt: string
+    likeButton: React.ReactElement<LikeButtonProps>
 }
 
-export function MobileStats({
-                                readingTime,
-                                topic,
-                                views,
-                                comments,
-                                likeSize,
-                                liked,
-                                onLikeToggle,
-                                likedText,
-                                unlikedText,
-                            }: MobileStatsProps) {
+export function MobileStats({publishTxt, topicTxt, commentTxt, likeTxt, likeButton}: MobileStatsProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -35,37 +22,27 @@ export function MobileStats({
             className="lg:hidden my-8 space-y-4"
         >
             <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 border border-border/50">
-                    <Clock className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{readingTime}</span>
-                </div>
-
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 border border-border/50">
-                    <Hash className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground truncate">{topic}</span>
-                </div>
-
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 border border-border/50">
-                    <Eye className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{views}</span>
-                </div>
-
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 border border-border/50">
-                    <MessageCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{comments}</span>
-                </div>
+                <StatTile icon={<Clock />} text={publishTxt} />
+                <StatTile icon={<Tag />} text={topicTxt} />
+                <StatTile icon={<MessageCircle />} text={commentTxt} />
+                <StatTile icon={<ThumbsUpIcon />} text={likeTxt} />
             </div>
 
-            <Button
-                onClick={onLikeToggle}
-                variant={liked ? "default" : "outline"}
-                size="lg"
-                className="w-full flex items-center justify-center gap-2.5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-                <ThumbsUp className={`h-5 w-5 transition-all ${liked ? "fill-current" : ""}`} />
-                <span className="font-semibold">{liked ? likedText : unlikedText}</span>
-                <span className="ml-1 text-sm opacity-80">({likeSize})</span>
-            </Button>
+            {React.cloneElement(likeButton, {
+                className: "w-full flex items-center justify-center gap-2.5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]",
+            })}
         </motion.div>
+    )
+}
+
+export function StatTile({ icon, text }: { icon: ReactElement, text: string}) {
+    return (
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50 border border-border/50">
+                {React.cloneElement(icon, {
+                ...(icon.props as any),
+                className: "h-4 w-4 text-primary flex-shrink-0",
+            })}
+            <span className="text-sm text-muted-foreground">{text}</span>
+        </div>
     )
 }

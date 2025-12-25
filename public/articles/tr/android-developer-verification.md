@@ -1,4 +1,5 @@
 ---
+article_id: 1
 title: "Android Geliştirici Doğrulama Sistemi Nedir?"
 description: "Google tarafından yakın zamanda duyurulan (APK kurulumlarını doğrudan etkileyen) sistem nedir?"
 date: "22.12.2025"

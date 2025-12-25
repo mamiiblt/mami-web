@@ -4,45 +4,124 @@ import { motion } from "framer-motion"
 import type { Article } from "@/lib/article"
 import { TableOfContents } from "@/components/articles/TableOfContents"
 import ReactMarkdown from "react-markdown"
-import { type ComponentPropsWithoutRef, useEffect, useState } from "react"
+import React, {type ComponentPropsWithoutRef, ReactElement, useEffect, useState} from "react"
 import remarkGfm from "remark-gfm"
 import rehypeHighlight from "rehype-highlight"
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import { formatDate } from "@/lib/utils"
-import { Calendar, Clock } from "lucide-react"
+import {Calendar, EyeIcon, Github, GlobeIcon, Linkedin, Mail, SendIcon, Twitter} from "lucide-react"
 import Image from "next/image"
-import {Trans, useTranslation} from "react-i18next"
+import {useTranslation} from "react-i18next"
 import { usePathname, useRouter } from "next/navigation"
 import { convertDateToStr } from "@/app/articles/ClientArticleContent"
 import { DesktopStats } from "@/components/articles/DesktopStats"
 import { MobileStats } from "@/components/articles/MobileStats"
+import {LoadingBar} from "@/components/ifl";
+import {LikeButton} from "@/components/articles/LikeButton";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import Link from "next/link"
+import {ArticleComments} from "@/components/articles/ArticleComments";
 
 interface BlogPostContentProps {
     post: Article
     headings: Array<{ id: string; text: string; level: number }>
 }
 
+export interface ArticleViewResponse {
+    status: string;
+    data: {
+        id: number;
+        sessionId: string;
+        isPostLiked: boolean;
+        isSessionCreatedNow: boolean;
+        likeCount: number;
+        viewCount: number;
+    }
+}
+
+export const API_BASE = "https://api.instafel.app/content/mami"
+
 export default function ArticlePostContent({ post, headings }: BlogPostContentProps) {
     const { t, i18n } = useTranslation("articles")
     const router = useRouter()
     const pathname = usePathname()
-    const [liked, setLiked] = useState(false)
-    const [likeCount, setLikeCount] = useState(41)
+    const [likeCount, setLikeCount] = useState(0) // will be changed with request
+    const [isPostLiked, setIsPostLiked] = useState(false)
+    const [isLoading, setIsLoading] = useState(true);
+    const [sessionId, setSessionId] = useState<string>("undefined")
+    const [articleViewData, setArticleViewData] = useState<ArticleViewResponse | undefined>(undefined)
 
     useEffect(() => {
-        const pathLocale = pathname.split("/")[2]
-        if (pathLocale != i18n.language) {
-            router.push(pathname.replace(pathLocale, i18n.language))
-        }
-    }, [])
+        let isMounted = true;
 
-    const handleLikeToggle = () => {
-        setLiked(!liked)
-        setLikeCount((prev) => (liked ? prev - 1 : prev + 1))
+        const init = async () => {
+            try {
+                // redirect to correct language
+                const pathLocale = pathname.split("/")[2]
+                if (pathLocale != i18n.language) {
+                    router.push(pathname.replace(pathLocale, i18n.language))
+                }
+
+                const sessionRes = await fetch("/api/sessionCookie/get");
+                const { sessionIdValue } = await sessionRes.json();
+
+                if (isMounted) setSessionId(sessionIdValue);
+
+                const postRes = await fetch(
+                    `${API_BASE}/article_view/${post.article_id}?session_id=${sessionIdValue}`
+                );
+                const postData: ArticleViewResponse = await postRes.json();
+
+
+                if (postData.data.isSessionCreatedNow) {
+                    await fetch("/api/sessionCookie/set", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ value: postData.data.sessionId }),
+                    });
+
+                    if (isMounted) setSessionId(postData.data.sessionId);
+                }
+                if (isMounted) setArticleViewData(postData);
+                if (isMounted) setLikeCount(postData.data.likeCount)
+                if (isMounted) setIsPostLiked(postData.data.isPostLiked)
+
+                console.log("Article ID:", post.article_id);
+                console.log("Session ID used:", sessionIdValue);
+
+            } catch (err) {
+                console.error("Init error:", err);
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        };
+
+        init();
+        return () => { isMounted = false };
+    }, [post.article_id]);
+
+    if (isLoading) {
+        return <LoadingBar/>;
     }
+
+    /*
+                                </Link>
+
+<Link href={"/about"}>
+                                    <span className="flex items-center gap-1.5">
+                                    <Avatar className={"h-7 w-7"}>
+                                        <AvatarImage src="/mamiiblt.png" alt="@shadcn" />
+                                        <AvatarFallback>MA</AvatarFallback>
+                                    </Avatar>
+                                        <Trans
+                                            t={t}
+                                            i18nKey="writtenBy"
+                                            components={{
+                                                b: <span className="font-bold" />,
+                                            }}
+                                        />
+                                    </span>
+     */
 
     return (
         <div className="min-h-screen bg-background">
@@ -64,21 +143,8 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
                                     {formatDate(convertDateToStr(post.date).toISOString(), i18n.language)}
                                 </time>
                                 <span className="text-border">•</span>
-                                <Link href={"/about"}>
-                                    <span className="flex items-center gap-1.5">
-                                    <Avatar className={"h-7 w-7"}>
-                                        <AvatarImage src="/mamiiblt.png" alt="@shadcn" />
-                                        <AvatarFallback>MA</AvatarFallback>
-                                    </Avatar>
-                                        <Trans
-                                            t={t}
-                                            i18nKey="writtenBy"
-                                            components={{
-                                                b: <span className="font-bold" />,
-                                            }}
-                                        />
-                                    </span>
-                                </Link>
+                                <EyeIcon className="h-3.5 w-3.5" />
+                                {t("viewText", { count: articleViewData.data.viewCount })}
                             </div>
 
                             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-pretty">{post.description}</p>
@@ -102,15 +168,17 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
                         )}
 
                         <MobileStats
-                            readingTime={t("readDur", { minutes: post.readingTime })}
-                            topic={post.topic}
-                            views="45 görüntülenme"
-                            comments="47 yorum"
-                            likeSize={likeCount}
-                            liked={liked}
-                            onLikeToggle={handleLikeToggle}
-                            likedText="Beğendim"
-                            unlikedText="Beğen"
+                            publishTxt={t("readDur", { minutes: post.readingTime })}
+                            topicTxt={post.topic}
+                            likeTxt={t("likeText", { count: likeCount })}
+                            commentTxt={t("commentText", { count: 0 })}
+                            likeButton={<LikeButton
+                                isPostLiked={isPostLiked}
+                                setIsPostLiked={setIsPostLiked}
+                                setLikeCount={setLikeCount}
+                                sessionId={sessionId}
+                                articleId={post.article_id}
+                            />}
                         />
 
                         <motion.div
@@ -191,7 +259,29 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
                                 {post.content}
                             </ReactMarkdown>
                         </motion.div>
+
+                        <div className="flex items-center justify-between py-6 mt-8 border-t border-border">
+                            <div className="flex items-center gap-3">
+                                <Avatar className="h-12 w-12">
+                                    <AvatarImage src="/mamiiblt.png" alt="M. Ali BULUT" />
+                                    <AvatarFallback>MAB</AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                    <span className="text-sfm text-muted-foreground">{t("writtenBy")}</span>
+                                    <span className="text-base font-medium text-foreground">M. Ali BULUT</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <SocialButton icon={<GlobeIcon />} href={"/about"} ariaLabel={"About"} />
+                                <SocialButton icon={<Github />} href={"https://github.com/mamiiblt"} ariaLabel={"GitHub"} />
+                                <SocialButton icon={<SendIcon />} href={"https://t.me/mamiiblt"} ariaLabel={"Telegram"} />
+                                <SocialButton icon={<Mail />} href={"mailto:mami@mamii.me"} ariaLabel={"Telegram"} />
+                            </div>
+                        </div>
+
+                        <ArticleComments />
                     </article>
+
 
                     <aside className="hidden lg:block">
                         <motion.div
@@ -205,19 +295,38 @@ export default function ArticlePostContent({ post, headings }: BlogPostContentPr
                             <DesktopStats
                                 publishTxt={t("readDur", { minutes: post.readingTime })}
                                 topicTxt={post.topic}
-                                visitTxt={t("viewText", { count: 45 })}
-                                likeSize={likeCount}
-                                likedText={t("unlike")}
-                                unlikedText={t("like")}
-                                commentTxt={t("commentText", { count: 10 })}
-                                liked={liked}
-                                setLiked={setLiked}
-                                contentTitle={"Makale hakkında?"}
+                                commentTxt={t("commentText", { count: 0 })} // i'll code it later
+                                contentTitle={t("aboutArticle")}
+                                likeTxt={t("likeText", { count: likeCount })}
+                                likeButton={<LikeButton
+                                    isPostLiked={isPostLiked}
+                                    setIsPostLiked={setIsPostLiked}
+                                    setLikeCount={setLikeCount}
+                                    sessionId={sessionId}
+                                    articleId={post.article_id}
+                                />}
                             />
                         </motion.div>
                     </aside>
                 </div>
             </div>
         </div>
+    )
+}
+
+function SocialButton({ icon, href, ariaLabel }: {icon: ReactElement, href: string, ariaLabel: string}) {
+    return (
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={ariaLabel}
+        >
+            {React.cloneElement(icon, {
+                ...(icon.props as any),
+                className: "h-5 w-5",
+            })}
+        </a>
     )
 }

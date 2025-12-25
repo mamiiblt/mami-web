@@ -10,9 +10,28 @@
   "readDur": "{{minutes}} dk okuma süresi",
   "backToArticles": "Yazılara geri dön",
   "otpTitle": "İçindekiler",
-  "writtenBy": "<b>M. Ali BULUT</b> tarafından yazıldı",
+  "writtenBy": "Yazan",
   "viewText": "{{count}} kez görüntülendi",
   "commentText": "{{count}} yorum",
   "like": "Beğen",
-  "unlike": "Beğendim"
-}
+  "liked": "Beğenildi",
+  "likeText": "{{count}} beğeni",
+  "aboutArticle": "Makale hakkında",
+  "comments": {
+    "header": "Yorumlar",
+    "countComment": "{{count}} yorum paylaşıldı",
+    "yourName": "Adınız...",
+    "writeCom": "Yorumunuzu yazın...",
+    "shareCom": "Yorumu Paylaş",
+    "like": "Beğen",
+    "dislike": "Beğenme"
+  },
+  "likeToasts": {
+    "buttonOkay": "Tamam",
+    "STATUS_SUCCESS": "Başarılı",
+    "STATUS_FAILURE": "Bir hata oluştu...",
+    "POST_LIKE_SUCCESS": "Bu makaleyi beğendin",
+    "POST_UNLIKE_SUCCESS": "Beğenmeni geri çektin",
+    "SESSION_ID_INVALID": "Session ID geçersiz, lütfen çerezlere izin ver.",
+    "USER_NOT_LIKED_POST": "Bu postu önceden beğenmediğin için beğenmeni geri çekemezsin."
+  }}

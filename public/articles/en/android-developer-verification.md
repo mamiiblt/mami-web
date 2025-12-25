@@ -1,4 +1,5 @@
 ---
+article_id: 1
 title: "What is the Android Developer Verification System?"
 description: "What is the system recently announced by Google (which directly affects APK installations)?"
 date: "22.12.2025"
