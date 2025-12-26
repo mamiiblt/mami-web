@@ -5,6 +5,10 @@
   "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz",
   "searchPlaceholder": "Yazılarda ara...",
   "found": "{{count}} yazı bulundu",
-  "clearFilters": "Filtreleri Temizle",
-  "readDur": "{{minutes}} dk okuma süresi"
+  "readDur": "{{minutes}} dk okuma süresi",
+  "nPTitle": "Makaleler Bulunamadı",
+  "nPDesc": "Bu kritlerlere uygun makaleler bulunamadı. Arama terimlerini değiştirmeyi deneyin.",
+  "prev": "Önceki",
+  "next": "Sonraki",
+  "all": "Hepsi"
 }

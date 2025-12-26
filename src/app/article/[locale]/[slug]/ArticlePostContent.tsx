@@ -1,7 +1,6 @@
 "use client"
 
 import {motion} from "framer-motion"
-import type {Article} from "@/lib/article"
 import {TableOfContents} from "@/components/articles/TableOfContents"
 import ReactMarkdown from "react-markdown"
 import React, {type ComponentPropsWithoutRef, ReactElement, useEffect, useState} from "react"
@@ -10,14 +9,12 @@ import rehypeHighlight from "rehype-highlight"
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import {formatDate} from "@/lib/utils"
-import {Calendar, EyeIcon, FileX, Github, GlobeIcon, Linkedin, Mail, SendIcon, Twitter} from "lucide-react"
+import {Calendar, EyeIcon, FileX, Github, GlobeIcon, Mail, SendIcon} from "lucide-react"
 import Image from "next/image"
 import {useTranslation} from "react-i18next"
 import {usePathname, useRouter} from "next/navigation"
-import {convertDateToStr} from "@/app/articles/ClientArticleContent"
 import {DesktopStats} from "@/components/articles/DesktopStats"
 import {MobileStats} from "@/components/articles/MobileStats"
-import {LoadingBar} from "@/components/ifl";
 import {LikeButton} from "@/components/articles/LikeButton";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {ArticleComments} from "@/components/articles/ArticleComments";
@@ -31,22 +28,22 @@ interface BlogPostContentProps {
 
 export interface ArticleViewResponse {
     status: string;
-    data: {
-        id: string;
-        articleDbId: number;
-        sessionId: string;
-        isPostLiked: boolean;
-        isSessionCreatedNow: boolean;
-        likeCount: number;
-        viewCount: number;
-        articleData: {
-            title: string
-            desc: string
-            date: string
-            banner_url: string
-            topic: string
-            cont: string
-        }
+    gen: {
+        id: string
+        sid: string
+        ipl: boolean
+        iscn: boolean
+    }
+    articleData: {
+        lc: number
+        vc: number
+        dt: string
+        tp: string
+        bn: string
+        id_a: number
+        tt: string
+        dc: string
+        cn: string
     }
 }
 
@@ -79,9 +76,17 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
 
                 if (isMounted) setSessionId(sessionIdValue);
 
-                const postRes = await fetch(
-                    `${API_BASE}/article_view/${slug}?session_id=${sessionIdValue}&lang_code=${locale}`
-                );
+                const postRes = await fetch(`${API_BASE}/article_view`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        article_id: slug,
+                        session_id: sessionIdValue,
+                        locale: i18n.language
+                    })
+                });
 
                 const postData: ArticleViewResponse = await postRes.json();
 
@@ -90,21 +95,21 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                     return;
                 }
 
-                if (postData.data.isSessionCreatedNow) {
+                if (postData.gen.iscn) {
                     await fetch("/api/sessionCookie/set", {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({value: postData.data.sessionId}),
+                        body: JSON.stringify({value: postData.gen.sid}),
                     });
 
-                    if (isMounted) setSessionId(postData.data.sessionId);
+                    if (isMounted) setSessionId(postData.gen.sid);
                 }
                 if (isMounted) setArticleViewData(postData);
-                if (isMounted) setLikeCount(postData.data.likeCount)
-                if (isMounted) setIsPostLiked(postData.data.isPostLiked)
+                if (isMounted) setLikeCount(postData.articleData.lc)
+                if (isMounted) setIsPostLiked(postData.gen.ipl)
 
                 console.log("Article ID:", slug);
-                console.log("Article DB ID:", postData.data.articleDbId)
+                console.log("Article DB ID:", postData.articleData.id_a)
                 console.log("Session ID used:", sessionIdValue);
 
                 console.log(postData)
@@ -167,20 +172,20 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                             className="mb-8 space-y-6"
                         >
                             <h1 className="text-4xl sm:text-5xl lg:text-5xl font-serif font-bold text-balance leading-tight tracking-tight">
-                                {articleViewData.data.articleData.title}
+                                {articleViewData.articleData.tt}
                             </h1>
                             <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                <time dateTime={articleViewData.data.articleData.date}
+                                <time dateTime={articleViewData.articleData.dt}
                                       className="flex items-center gap-1.5">
                                     <Calendar className="h-3.5 w-3.5"/>
-                                    {formatDate(articleViewData.data.articleData.date, i18n.language)}
+                                    {formatDate(articleViewData.articleData.dt, i18n.language)}
                                 </time>
                                 <span className="text-border">•</span>
                                 <EyeIcon className="h-3.5 w-3.5"/>
-                                {t("viewText", {count: articleViewData.data.viewCount})}
+                                {t("viewText", {count: articleViewData.articleData.vc})}
                             </div>
 
-                            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-pretty">{articleViewData.data.articleData.desc}</p>
+                            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-pretty">{articleViewData.articleData.dc}</p>
                         </motion.header>
 
                         <motion.div
@@ -190,8 +195,8 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                             className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-8 shadow-sm border border-border/50"
                         >
                             <Image
-                                src={articleViewData.data.articleData.banner_url || "/placeholder.svg"}
-                                alt={articleViewData.data.articleData.title}
+                                src={articleViewData.articleData.bn}
+                                alt={articleViewData.articleData.tt}
                                 fill
                                 className="object-cover"
                                 priority
@@ -199,8 +204,8 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                         </motion.div>
 
                         <MobileStats
-                            publishTxt={t("readDur", {minutes: calculateReadingTimeMin(articleViewData.data.articleData.cont)})}
-                            topicTxt={articleViewData.data.articleData.topic}
+                            publishTxt={t("readDur", {minutes: calculateReadingTimeMin(articleViewData.articleData.cn)})}
+                            topicTxt={articleViewData.articleData.tp}
                             likeTxt={t("likeText", {count: likeCount})}
                             commentTxt={t("commentText", {count: 0})}
                             likeButton={<LikeButton
@@ -208,7 +213,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                                 setIsPostLiked={setIsPostLiked}
                                 setLikeCount={setLikeCount}
                                 sessionId={sessionId}
-                                articleDbId={articleViewData.data.articleDbId}
+                                articleDbId={articleViewData.articleData.id_a}
                             />}
                         />
 
@@ -299,7 +304,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                                     ),
                                 }}
                             >
-                                {articleViewData.data.articleData.cont}
+                                {articleViewData.articleData.cn}
                             </ReactMarkdown>
                         </motion.div>
 
@@ -334,12 +339,12 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                             transition={{delay: 0.4, duration: 0.5}}
                             className="sticky top-24 space-y-4"
                         >
-                            <TableOfContents headings={extractHeadings(articleViewData.data.articleData.cont)}
+                            <TableOfContents headings={extractHeadings(articleViewData.articleData.cn)}
                                              otpTitle={t("otpTitle")}/>
 
                             <DesktopStats
-                                publishTxt={t("readDur", {minutes: calculateReadingTimeMin(articleViewData.data.articleData.cont)})}
-                                topicTxt={articleViewData.data.articleData.topic}
+                                publishTxt={t("readDur", {minutes: calculateReadingTimeMin(articleViewData.articleData.cn)})}
+                                topicTxt={articleViewData.articleData.tp}
                                 commentTxt={t("commentText", {count: 0})}
                                 contentTitle={t("aboutArticle")}
                                 likeTxt={t("likeText", {count: likeCount})}
@@ -348,7 +353,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                                     setIsPostLiked={setIsPostLiked}
                                     setLikeCount={setLikeCount}
                                     sessionId={sessionId}
-                                    articleDbId={articleViewData.data.articleDbId}
+                                    articleDbId={articleViewData.articleData.id_a}
                                 />}
                             />
                         </motion.div>

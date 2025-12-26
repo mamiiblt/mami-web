@@ -5,6 +5,10 @@
   "allDescription": "You can find all of the my articles in here",
   "searchPlaceholder": "Search in articles...",
   "found": "{{count}} article found",
-  "clearFilters": "Clear Filters",
-  "readDur": "{{minutes}} min read"
+  "readDur": "{{minutes}} min read",
+  "nPTitle": "Articles Not Found",
+  "nPDesc": "No articles matching these criteria were found. Try to search with different words.",
+  "prev": "Previous",
+  "next": "Next",
+  "all": "All"
 }
