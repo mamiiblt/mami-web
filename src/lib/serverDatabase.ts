@@ -9,10 +9,7 @@ export const pgPool =
     new Pool({
       user: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      host:
-          process.env.NODE_ENV === "development"
-              ? process.env.DB_HOSTNAME_PUBLIC
-              : process.env.DB_HOSTNAME_INTERNAL,
+      host: process.env.DB_HOSTNAME,
       port: Number(process.env.DB_PORT),
       database: process.env.DB_DATABASE
     });
