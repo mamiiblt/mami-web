@@ -3,6 +3,7 @@
 import React, {ReactElement} from "react"
 import {ClockIcon, MessageCircle, TagIcon, ThumbsUpIcon} from "lucide-react";
 import {LikeButtonProps} from "@/components/articles/LikeButton";
+import {ShareButton} from "@/components/articles/ShareButton";
 
 interface DesktopStatsProps {
     publishTxt: string,
@@ -28,6 +29,8 @@ export function DesktopStats({publishTxt, topicTxt, commentTxt, likeTxt, content
                         className: "flex items-center gap-3 px-6 py-3 transition-all hover:scale-105 w-full",
                     })}
                 </div>
+
+                <ShareButton className={"flex items-center gap-3 px-6 py-3 transition-all hover:scale-105 w-full"} />
             </nav>
         </>
     )

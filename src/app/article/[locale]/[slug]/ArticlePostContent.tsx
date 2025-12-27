@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm"
 import rehypeHighlight from "rehype-highlight"
 import rehypeSlug from "rehype-slug"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import {formatDate} from "@/lib/utils"
+import {formatDate, getBannerUrl} from "@/lib/utils"
 import {Calendar, EyeIcon, FileX, Github, GlobeIcon, Mail, SendIcon} from "lucide-react"
 import Image from "next/image"
 import {useTranslation} from "react-i18next"
@@ -39,7 +39,6 @@ export interface ArticleViewResponse {
         vc: number
         dt: string
         tp: string
-        bn: string
         id_a: number
         tt: string
         dc: string
@@ -47,9 +46,7 @@ export interface ArticleViewResponse {
     }
 }
 
-export const API_BASE = "https://api.instafel.app/content/mami"
-
-export default function ArticlePostContent({slug, locale}: BlogPostContentProps) {
+export default function ArticlePostContent({slug}: BlogPostContentProps) {
     const {t, i18n} = useTranslation("articles")
     const router = useRouter()
     const pathname = usePathname()
@@ -76,7 +73,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
 
                 if (isMounted) setSessionId(sessionIdValue);
 
-                const postRes = await fetch(`${API_BASE}/article_view`, {
+                const postRes = await fetch(`${process.env.API_BASE}/content/mami/article_view`, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
@@ -195,7 +192,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                             className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-8 shadow-sm border border-border/50"
                         >
                             <Image
-                                src={articleViewData.articleData.bn}
+                                src={getBannerUrl(articleViewData.articleData.id_a)}
                                 alt={articleViewData.articleData.tt}
                                 fill
                                 className="object-cover"
@@ -324,7 +321,7 @@ export default function ArticlePostContent({slug, locale}: BlogPostContentProps)
                                 <SocialButton icon={<Github/>} href={"https://github.com/mamiiblt"}
                                               ariaLabel={"GitHub"}/>
                                 <SocialButton icon={<SendIcon/>} href={"https://t.me/mamiiblt"} ariaLabel={"Telegram"}/>
-                                <SocialButton icon={<Mail/>} href={"mailto:mami@mamii.me"} ariaLabel={"Telegram"}/>
+                                <SocialButton icon={<Mail/>} href={"mailto:mami@mamii.dev"} ariaLabel={"Telegram"}/>
                             </div>
                         </div>
 

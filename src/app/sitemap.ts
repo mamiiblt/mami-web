@@ -1,7 +1,12 @@
 import { MetadataRoute } from "next"
-import {getAllArticlePosts} from "@/lib/article";
+import {pgPool} from "@/lib/serverDatabase";
 
-const baseUrl = "https://mamii.me"
+const baseUrl = "https://mamii.dev"
+
+async function getArticleSlugs() {
+    const response = await pgPool.query(`SELECT id FROM mami_articles`)
+    return response.rows.map(item => item.id);
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const regularRoutes = ["/", "/articles", "/projects", "/about"].map(
@@ -13,9 +18,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         })
     );
 
-    const articles = await getAllArticlePosts("tr")
-    const articleRoutes = articles.map(article => ({
-        url: `${baseUrl}/article/en/${article.slug}`,
+    const slugs = await getArticleSlugs()
+    const articleRoutes = slugs.map(slug => ({
+        url: `${baseUrl}/article/en/${slug}`,
 
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
@@ -23,8 +28,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         alternates: {
             languages: {
-                tr: `${baseUrl}/article/tr/${article.slug}`,
-                en: `${baseUrl}/article/en/${article.slug}`,
+                tr: `${baseUrl}/article/tr/${slug}`,
+                en: `${baseUrl}/article/en/${slug}`,
             },
         },
     }))

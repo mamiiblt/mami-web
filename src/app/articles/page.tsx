@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Spinner} from "@/components/ui/spinner";
-import {API_BASE} from "@/app/article/[locale]/[slug]/ArticlePostContent";
 import {useRouter, useSearchParams} from "next/navigation";
 import {motion, AnimatePresence} from "framer-motion";
 import {Page, PageHeader} from "@/components/PageUtils";
@@ -37,6 +36,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Separator} from "@/components/ui/separator";
+import {getBannerUrl} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -49,19 +49,16 @@ export interface DataResponse {
         },
         topics: string[]
         articles: {
-            id: string,
-            vc: number,
-            rt: number,
+            id: string
+            rt: number
             dt: string
-            bn: string
             tp: string
             tt: string
             dc: string
+            id_a: number
         }[]
     }
 }
-
-const DEBOUNCE_DELAY = 300;
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -114,7 +111,7 @@ export default function ArticlesPage() {
                     qSearch: search == null ? null : decodeURIComponent(search)
                 }
                 console.log(body)
-                const response = await fetch(`${API_BASE}/list_articles`, {
+                const response = await fetch(`${process.env.API_BASE}/content/mami/list_articles`, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
@@ -316,7 +313,7 @@ export default function ArticlesPage() {
                                                 className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/50 relative">
                                                 <div className="relative w-full h-48 overflow-hidden bg-secondary">
                                                     <Image
-                                                        src={post.bn}
+                                                        src={getBannerUrl(post.id_a)}
                                                         alt={post.tt}
                                                         fill
                                                         className="object-cover transition-transform duration-300"

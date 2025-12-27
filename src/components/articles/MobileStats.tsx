@@ -4,6 +4,7 @@ import {Clock, MessageCircle, ThumbsUpIcon, Tag} from "lucide-react"
 import { motion } from "framer-motion"
 import React, {ReactElement} from "react";
 import {LikeButtonProps} from "@/components/articles/LikeButton";
+import {ShareButton} from "@/components/articles/ShareButton";
 
 interface MobileStatsProps {
     publishTxt: string
@@ -31,6 +32,8 @@ export function MobileStats({publishTxt, topicTxt, commentTxt, likeTxt, likeButt
             {React.cloneElement(likeButton, {
                 className: "w-full flex items-center justify-center gap-2.5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]",
             })}
+
+            <ShareButton className={"w-full flex items-center justify-center gap-2.5 py-3 transition-all hover:scale-[1.02] active:scale-[0.98]"} />
         </motion.div>
     )
 }

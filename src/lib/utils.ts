@@ -2,6 +2,10 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import ISO6391 from "iso-639-1";
 
+export function getBannerUrl(articleIdNum: number): string {
+  return `https://raw.githubusercontent.com/instafel/images/refs/heads/main/marc/P${articleIdNum}.png`
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

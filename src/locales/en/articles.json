@@ -13,6 +13,10 @@
   "pleaseWait": "Please wait...",
   "notFound": "Article Not Found",
   "notFoundDesc": "This article not found right now. It maybe deleted or moved.",
+  "share": {
+    "state1": "Share",
+    "state2": "Link Copied to Clipboard"
+  },
   "comments": {
     "header": "Comments",
     "countComment": "{{count}} comment shared",

@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemap URL
-Sitemap: https://mamii.me/sitemap.xml
+Sitemap: https://mamii.dev/sitemap.xml

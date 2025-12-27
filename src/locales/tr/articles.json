@@ -13,6 +13,10 @@
   "pleaseWait": "Lütfen bekleyin...",
   "notFound": "Makale Bulunamadı",
   "notFoundDesc": "Bu makale maalesef bulunamadı. Silinmiş veya taşınmış olabilir.",
+  "share": {
+    "state1": "Paylaş",
+    "state2": "Bağlantı Panoya Kopyalandı"
+  },
   "comments": {
     "header": "Yorumlar",
     "countComment": "{{count}} yorum paylaşıldı",

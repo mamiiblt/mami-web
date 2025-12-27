@@ -4,7 +4,6 @@ import React, {useState} from "react"
 import {ThumbsUp} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useTranslation} from "react-i18next";
-import {API_BASE} from "@/app/article/[locale]/[slug]/ArticlePostContent";
 import {toast} from "sonner";
 
 export interface LikeButtonProps {
@@ -25,7 +24,7 @@ export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId
         setIsProcessing(true)
 
         try {
-            const request = await fetch(`${API_BASE}/${
+            const request = await fetch(`${process.env.API_BASE}/content/mami/${
                 isPostLiked ? "article_unlike" : "article_like"
             }`, {
                 method: "POST",
@@ -33,8 +32,8 @@ export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    article_db_id: articleDbId,
-                    session_id: sessionId
+                    id_a: articleDbId,
+                    sid: sessionId
                 }),
             });
             const data = await request.json()

@@ -1,34 +1,47 @@
 import React from "react";
-import {motion} from "framer-motion";
-import {Skeleton} from "@/components/ui/skeleton";
-import {getArticleSEO} from "@/lib/article";
+import {getBannerUrl} from "@/lib/utils";
+import {pgPool} from "@/lib/serverDatabase";
 
-function getFileTypeFromName(filename: string) {
-  const ext = filename.split(".").pop()?.toLowerCase();
-  if (!ext) return "unknown";
-  return {
-    jpg: "image/jpeg",
-    jpeg: "image/jpeg",
-    png: "image/png",
-    gif: "image/gif",
-    webp: "image/webp",
-    svg: "image/svg+xml",
-  }[ext] || "unknown";
+export const revalidate = 3600;
+
+async function getArticleSEOData(articleId: string, locale: string) {
+  const supportedLocales = ["en", "tr"]
+  if (!supportedLocales.includes(locale)) {
+    return null
+  }
+
+  const response = await pgPool.query(`
+        SELECT 
+            title_${locale} AS tt,
+            desc_${locale} AS dc,
+            date AS dt,
+            topic AS tp,
+            id_a::integer AS id_a
+        FROM mami_articles WHERE id = $1
+        LIMIT 1
+    `, [articleId])
+
+  if (response.rows.length == 0) {
+    return null;
+  }
+
+  return response.rows[0]
 }
 
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
-  const seo = await getArticleSEO(slug, locale);
-  if (!seo) return { title: "Not found", robots: { index: false } };
+  const seo = await getArticleSEOData(slug, locale)
+  console.log(seo)
+  if (seo == null) return { title: "Not found", robots: { index: false } };
+  const banner = getBannerUrl(seo.id_a)
 
-  const baseUrl = "https://mamii.me";
+  const baseUrl = "https://mamii.dev";
   const pageUrl = `${baseUrl}/article/${locale}/${slug}`;
 
   return {
-    title: seo.title,
-    description: seo.desc,
-    keywords: seo.seoKeywords,
-    authors: [{ name: 'mamiiblt', url: 'https://mamii.me/about' }],
+    title: seo.tt,
+    description: seo.dc,
+    authors: [{ name: 'mamiiblt', url: 'https://mamii.dev/about' }],
     alternates: {
       canonical: pageUrl,
       languages: {
@@ -37,28 +50,28 @@ export async function generateMetadata({ params }) {
       }
     },
     openGraph: {
-      title: seo.title,
-      description: seo.desc,
+      title: seo.tt,
+      description: seo.dc,
       url: pageUrl,
       type: "article",
       siteName: "mamii's articles",
-      publishedTime: seo.publishDateISO,
+      publishedTime: seo.dt,
       authors: ["M. Ali BULUT"],
-      section: seo.topic,
+      section: seo.tp,
       locale: locale === "tr" ? "tr_TR" : "en_US",
-      images: seo.banner
-          ? [{ url: seo.banner, width: 1200, height: 630, alt: seo.title, type: getFileTypeFromName(seo.banner) }]
+      images: banner
+          ? [{ url: banner, width: 1200, height: 630, alt: seo.tt, type: "image/png" }]
           : undefined,
     },
     twitter: {
       card: "summary_large_image",
       site: "@mamiiblt",
-      title: seo.title,
+      title: seo.tt,
       creator: "@mamiiblt",
       label1: "Written by",
       data1: "M. Ali BULUT",
-      description: seo.desc ,
-      images: seo.banner ? [seo.banner] : undefined,
+      description: seo.dc ,
+      images: banner ? [banner] : undefined,
     },
   };
 }
