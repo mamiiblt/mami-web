@@ -13,7 +13,6 @@ i18next
     )
   )
   .init({
-    debug: process.env.NODE_ENV === "development",
     supportedLngs: languages,
     fallbackLng,
     defaultNS,

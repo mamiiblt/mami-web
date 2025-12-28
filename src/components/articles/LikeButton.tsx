@@ -18,14 +18,15 @@ export interface LikeButtonProps {
 export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId, articleDbId, className}: LikeButtonProps) {
     const { t } = useTranslation("articles")
     const [isProcessing, setIsProcessing] = useState(false)
+    const [likedTextState, setLikedTextState] = useState(false)
 
     const handleLike = async () => {
         if (isProcessing) return
         setIsProcessing(true)
 
         try {
-            const request = await fetch(`${process.env.API_BASE}/content/mami/${
-                isPostLiked ? "article_unlike" : "article_like"
+            const request = await fetch(`/api/article/${
+                isPostLiked ? "unlike" : "like"
             }`, {
                 method: "POST",
                 headers: {
@@ -49,15 +50,20 @@ export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId
                     break;
             }
 
-            toast(data.status === "POST_LIKE_SUCCESS" || data.status === "POST_UNLIKE_SUCCESS"
-                ? t("likeToasts.STATUS_SUCCESS")
-                : t("likeToasts.STATUS_FAILURE"), {
-                description: t(`likeToasts.${data.status.trim() as string}`),
-                action: {
-                    label: t("likeToasts.buttonOkay"),
-                    onClick: () => { }
-                },
-            })
+            if (data.status != "POST_LIKE_SUCCESS" && data.status != "POST_UNLIKE_SUCCESS") {
+                toast(t("likeToasts.STATUS_FAILURE"), {
+                    description: t(`likeToasts.${data.status.trim() as string}`),
+                    action: {
+                        label: t("likeToasts.buttonOkay"),
+                        onClick: () => { }
+                    },
+                })
+            } else {
+                if (data.status == "POST_LIKE_SUCCESS") {
+                    setLikedTextState(true)
+                    setTimeout(() => setLikedTextState(false), 2000)
+                }
+            }
         } finally {
             setIsProcessing(false)
         }
@@ -71,7 +77,7 @@ export function LikeButton({isPostLiked, setIsPostLiked, setLikeCount, sessionId
             className={className}
         >
             <ThumbsUp className={`h-5 w-5 transition-all ${isPostLiked ? "fill-current" : ""}`} />
-            <span className="font-semibold">{isPostLiked ? t("liked") : t("like")}</span>
+            <span className="font-semibold">{likedTextState ? t("likedPost") : isPostLiked ? t("liked") : t("like")}</span>
         </Button>
     )
 }

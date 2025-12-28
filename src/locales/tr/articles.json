@@ -26,12 +26,10 @@
     "like": "Beğen",
     "dislike": "Beğenme"
   },
+  "likedPost": "Bu makaleyi beğendin",
   "likeToasts": {
     "buttonOkay": "Tamam",
-    "STATUS_SUCCESS": "Başarılı",
     "STATUS_FAILURE": "Bir hata oluştu...",
-    "POST_LIKE_SUCCESS": "Bu makaleyi beğendin",
-    "POST_UNLIKE_SUCCESS": "Beğenmeni geri çektin",
     "SESSION_ID_INVALID": "Session ID geçersiz, lütfen çerezlere izin ver.",
     "USER_NOT_LIKED_POST": "Bu postu önceden beğenmediğin için beğenmeni geri çekemezsin."
   }

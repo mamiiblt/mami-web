@@ -31,7 +31,6 @@ async function getArticleSEOData(articleId: string, locale: string) {
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const seo = await getArticleSEOData(slug, locale)
-  console.log(seo)
   if (seo == null) return { title: "Not found", robots: { index: false } };
   const banner = getBannerUrl(seo.id_a)
 

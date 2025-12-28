@@ -13,3 +13,4 @@ export const namespaces = [
   "projects",
 ];
 export const cookieName = "WPG_LANG";
+export const LANG_COOKIE_NAME = "WPG_LANG";

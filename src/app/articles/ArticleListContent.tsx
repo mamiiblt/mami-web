@@ -1,9 +1,8 @@
 "use client";
 
 import {useTranslation} from "react-i18next";
-import React, {useEffect, useState} from "react";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Spinner} from "@/components/ui/spinner";
+import React, {useState} from "react";
+import {Card} from "@/components/ui/card";
 import {useRouter, useSearchParams} from "next/navigation";
 import {motion, AnimatePresence} from "framer-motion";
 import {Page, PageHeader} from "@/components/PageUtils";
@@ -37,26 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Separator} from "@/components/ui/separator";
 import {getBannerUrl} from "@/lib/utils";
-
-export interface DataResponse {
-    status: string
-    data: {
-        page: {
-            current: number
-            total: number
-        },
-        topics: string[]
-        articles: {
-            id: string
-            rt: number
-            dt: string
-            tp: string
-            tt: string
-            dc: string
-            id_a: number
-        }[]
-    }
-}
+import {GetArticleListResponse} from "@/lib/articles/getArticleList";
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -82,57 +62,20 @@ const itemVariants = {
     },
 };
 
-export default function ArticlesPage() {
+export default function ArticleListContent(
+    { list, page, topic, search }
+    : {
+        list: GetArticleListResponse
+        page: number
+        topic: string
+        search: string
+    }
+) {
     const {t, i18n} = useTranslation("articles_list");
     const searchParams = useSearchParams()
-    const [list, setList] = useState<DataResponse | undefined>(undefined)
-    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-
-    const page = Number(searchParams.get('page') ?? 1)
-    const topic = searchParams.get('topic') ?? null
-    const search = searchParams.get('search') ?? null
     const [searchQuery, setSearchQuery] = useState(decodeURIComponent(search ? search : ""))
     const [selectedCategory, setSelectedCategory] = useState<string | null>(topic ? topic : "")
-
-    useEffect(() => {
-        let isMounted = true;
-
-        const init = async () => {
-            try {
-                setIsLoading(true)
-
-                const body = {
-                    page: Number(page),
-                    locale: i18n.language == "tr" ? "tr" : "en",
-                    qTopic: topic,
-                    qSearch: search == null ? null : decodeURIComponent(search)
-                }
-                console.log(body)
-                const response = await fetch(`${process.env.API_BASE}/content/mami/list_articles`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                const articleListData: DataResponse = await response.json();
-                if (isMounted) setList(articleListData)
-
-                console.log(articleListData)
-            } catch (err) {
-                console.error("Init error:", err);
-            } finally {
-                if (isMounted) setIsLoading(false);
-            }
-        };
-
-        init();
-        return () => {
-            isMounted = false
-        };
-    }, [searchParams]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
@@ -174,8 +117,8 @@ export default function ArticlesPage() {
         const pages = [];
         const maxVisiblePages = 5;
 
-        if (list.data.page.total <= maxVisiblePages) {
-            for (let i = 1; i <= list.data.page.total; i++) {
+        if (list.data.totalPageSize <= maxVisiblePages) {
+            for (let i = 1; i <= list.data.totalPageSize; i++) {
                 pages.push(i);
             }
         } else {
@@ -184,11 +127,11 @@ export default function ArticlesPage() {
                     pages.push(i);
                 }
                 pages.push("ellipsis");
-                pages.push(list.data.page.total);
-            } else if (page >= list.data.page.total - 2) {
+                pages.push(list.data.totalPageSize);
+            } else if (page >= list.data.totalPageSize - 2) {
                 pages.push(1);
                 pages.push("ellipsis");
-                for (let i = list.data.page.total - 3; i <= list.data.page.total; i++) {
+                for (let i = list.data.totalPageSize - 3; i <= list.data.totalPageSize; i++) {
                     pages.push(i);
                 }
             } else {
@@ -198,30 +141,12 @@ export default function ArticlesPage() {
                     pages.push(i);
                 }
                 pages.push("ellipsis");
-                pages.push(list.data.page.total);
+                pages.push(list.data.totalPageSize);
             }
         }
 
         return pages;
     };
-
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <Card className="w-80 shadow-lg">
-                    <CardHeader>
-                        <CardTitle className="text-center">{t("loading")}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col items-center gap-4">
-                        <Spinner className="h-12 w-12"/>
-                        <p className="text-muted-foreground text-center text-sm">{t("pleaseWait")}</p>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
-
     return (
         <Page
             width={6}
@@ -418,13 +343,13 @@ export default function ArticlesPage() {
                                 <PaginationItem>
                                     <PaginationNext
                                         onClick={() =>
-                                            page < list.data.page.total &&
+                                            page < list.data.totalPageSize &&
                                             handlePageChange(page + 1)
                                         }
                                         className={`
                             flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                             ${
-                                            page >= list.data.page.total
+                                            page >= list.data.totalPageSize
                                                 ? "opacity-50 cursor-not-allowed"
                                                 : "hover:bg-muted cursor-pointer"
                                         }

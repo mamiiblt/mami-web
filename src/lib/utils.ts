@@ -2,6 +2,15 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import ISO6391 from "iso-639-1";
 
+export const toStringParam = (
+    value?: string | string[]
+): string | null => {
+  if (!value) return null;
+  return decodeURIComponent(
+      Array.isArray(value) ? value[0] : value
+  );
+};
+
 export function getBannerUrl(articleIdNum: number): string {
   return `https://raw.githubusercontent.com/instafel/images/refs/heads/main/marc/P${articleIdNum}.png`
 }
