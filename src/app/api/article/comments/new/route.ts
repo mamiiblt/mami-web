@@ -1,12 +1,13 @@
 import {NextResponse} from "next/server";
 import {pgPool} from "@/lib/serverDatabase";
-import words from "profane-words"
 import {randomUUID} from "node:crypto";
 import MamiServerBot from "@/lib/telegramBot";
+import { Filter } from 'bad-words'
 
 export const MAX_CONTENT_LENGTH = 500
 export const MAX_NAME_LENGTH = 35
 const URL_REGEX = /(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
+const filter = new Filter()
 
 export async function POST(req: Request) {
 
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
     if (URL_REGEX.test(content)) return createResponse("COMMENT_CONTAINS_URL", secureLocale)
     if (content.length > MAX_CONTENT_LENGTH) return createResponse("CONTENT_TOO_LONG", secureLocale)
     if (author_name.length > MAX_NAME_LENGTH) return createResponse("AUTHOR_NAME_TOO_LONG", secureLocale)
-    if (hasProfanity(content) || hasProfanity(author_name)) return createResponse("CONTAINS_BAD_WORDS", secureLocale)
+    if (filter.isProfane(content) || filter.isProfane(author_name)) return createResponse("CONTAINS_BAD_WORDS", secureLocale)
     if (/(.)\1{5,}/.test(content)) return createResponse("REPEATED_CHAR_SPAM", secureLocale)
 
     await pgPool.query(`
@@ -124,15 +125,4 @@ function createResponse(code: string, locale: "tr" | "en"): NextResponse<NewComm
         code: code,
         message: resources[code]
     } as NewCommentResponse)
-}
-
-function hasProfanity(text: string): boolean {
-    const normalized = text
-        .toLowerCase()
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g, "")
-
-    return words.some(word =>
-        normalized.includes(word)
-    )
 }
