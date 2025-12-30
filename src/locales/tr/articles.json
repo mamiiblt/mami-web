@@ -32,5 +32,17 @@
     "STATUS_FAILURE": "Bir hata oluştu...",
     "SESSION_ID_INVALID": "Session ID geçersiz, lütfen çerezlere izin ver.",
     "USER_NOT_LIKED_POST": "Bu postu önceden beğenmediğin için beğenmeni geri çekemezsin."
-  }
+  },
+  "commentDelete": {
+    "buttonOkay": "Tamam",
+    "SUCCESS": "Başarıyla Tamamlandı",
+    "FAILURE": "Bir hata oluştu...",
+    "code": {
+      "COMMENT_NOT_FOUND": "Yorum veritabanında bulunamadı, belki önceden silinmiş olabilir.",
+      "SID_DOES_NOT_MATCH": "Bu yorumun sahibi sen değilsin, yani silemezsin.",
+      "DELETE_SUCCESS": "Yorum başarıyla silindi."
+    }
+  },
+  "noAnyCommentSharedTT": "Hiç yorum yapılmadı",
+  "noAnyCommentSharedDC": "İlk yorum yapan sen ol! Düşüncelerini paylaş ve konuşmayı başlat."
 }

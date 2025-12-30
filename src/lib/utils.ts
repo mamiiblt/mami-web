@@ -55,6 +55,41 @@ export function getLanguageDisplayName(languageCode: string, displayLocale = "en
   }
 }
 
+export const generatePageNumbers = (totalPageSize: number, currentPage: number) => {
+  const pages = [];
+  const maxVisiblePages = 5;
+
+  if (totalPageSize <= maxVisiblePages) {
+    for (let i = 1; i <= totalPageSize; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (currentPage <= 3) {
+      for (let i = 1; i <= 4; i++) {
+        pages.push(i);
+      }
+      pages.push("ellipsis");
+      pages.push(totalPageSize);
+    } else if (currentPage >= totalPageSize - 2) {
+      pages.push(1);
+      pages.push("ellipsis");
+      for (let i = totalPageSize - 3; i <= totalPageSize; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      pages.push("ellipsis");
+      for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+        pages.push(i);
+      }
+      pages.push("ellipsis");
+      pages.push(totalPageSize);
+    }
+  }
+
+  return pages;
+};
+
 function capitalizeFirstLetter(str: string, locale = "en"): string {
   return str
       ? str[0].toLocaleUpperCase(locale) + str.slice(1)

@@ -13,7 +13,7 @@ const conValues = {
     title: "CL-TT"
 }
 
-const SIZE_PER_PAGE = 10
+const SIZE_PER_PAGE = 9
 
 export default async function getArticleList(
     { page, topic, search, locale }: GetArticleListParams

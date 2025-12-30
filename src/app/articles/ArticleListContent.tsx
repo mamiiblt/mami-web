@@ -35,7 +35,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {Separator} from "@/components/ui/separator";
-import {getBannerUrl} from "@/lib/utils";
+import {generatePageNumbers, getBannerUrl} from "@/lib/utils";
 import {GetArticleListResponse} from "@/lib/articles/getArticleList";
 
 const containerVariants = {
@@ -113,40 +113,7 @@ export default function ArticleListContent(
         router.push(`?${params.toString()}`);
     }
 
-    const generatePageNumbers = () => {
-        const pages = [];
-        const maxVisiblePages = 5;
 
-        if (list.data.totalPageSize <= maxVisiblePages) {
-            for (let i = 1; i <= list.data.totalPageSize; i++) {
-                pages.push(i);
-            }
-        } else {
-            if (page <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pages.push(i);
-                }
-                pages.push("ellipsis");
-                pages.push(list.data.totalPageSize);
-            } else if (page >= list.data.totalPageSize - 2) {
-                pages.push(1);
-                pages.push("ellipsis");
-                for (let i = list.data.totalPageSize - 3; i <= list.data.totalPageSize; i++) {
-                    pages.push(i);
-                }
-            } else {
-                pages.push(1);
-                pages.push("ellipsis");
-                for (let i = page - 1; i <= page + 1; i++) {
-                    pages.push(i);
-                }
-                pages.push("ellipsis");
-                pages.push(list.data.totalPageSize);
-            }
-        }
-
-        return pages;
-    };
     return (
         <Page
             width={6}
@@ -313,12 +280,11 @@ export default function ArticleListContent(
                           `}
                                     >
                                         <ChevronLeft className="h-4 w-4"/>
-                                        <span className="hidden sm:inline">Previous</span>
                                     </PaginationPrevious>
                                 </PaginationItem>
 
 
-                                {generatePageNumbers().map((pageNum, index) => (
+                                {generatePageNumbers(list.data.totalPageSize, page).map((pageNum, index) => (
                                     <PaginationItem key={index}>
                                         {pageNum === "ellipsis" ? (
                                             <PaginationEllipsis className="px-3 py-2"/>
@@ -355,7 +321,6 @@ export default function ArticleListContent(
                                         }
                           `}
                                     >
-                                        <span className="hidden sm:inline">Next</span>
                                         <ChevronRight className="h-4 w-4"/>
                                     </PaginationNext>
                                 </PaginationItem>

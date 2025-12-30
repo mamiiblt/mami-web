@@ -32,5 +32,17 @@
     "STATUS_FAILURE": "An error occurred...",
     "SESSION_ID_INVALID": "Session ID is invalid, please allow browser cookies.",
     "USER_NOT_LIKED_POST": "You aren't liked this article already, so you cannot unlike it."
-  }
+  },
+  "commentDelete": {
+    "buttonOkay": "Okay",
+    "SUCCESS": "Successfully",
+    "FAILURE": "An error occurred...",
+    "code": {
+      "COMMENT_NOT_FOUND": "Comment not found in database, it may be deleted before.",
+      "SID_DOES_NOT_MATCH": "You are not owner of this comment, so you can't delete it",
+      "DELETE_SUCCESS": "Comment successfully deleted."
+    }
+  },
+  "noAnyCommentSharedTT": "No any comment shared yet",
+  "noAnyCommentSharedDC": "Be the first to comment! Share your thoughts and start the conversation."
 }

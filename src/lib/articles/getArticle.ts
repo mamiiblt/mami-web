@@ -22,12 +22,6 @@ export default async function getArticle(
         }
     }
 
-    console.log({
-        article_id,
-        session_id,
-        locale
-    })
-
     const articleDatas = await pgPool.query(`
         SELECT like_count::integer AS lc, view_count::integer AS vc, date AS dt, topic AS tp, id_a::integer AS id_a,
             title_${locale} AS tt,

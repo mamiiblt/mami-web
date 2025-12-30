@@ -4,6 +4,7 @@ import {ResponseStatus} from "@/lib/articles/consts";
 import PostNotFound from "@/components/articles/PostNotFound";
 import ErrorWhileLoadingContent from "@/components/articles/ErrorWhileLoadingContent";
 import ArticlePostContent from "@/app/article/[locale]/[slug]/ArticlePostContent";
+import getComments, {GetCommentResponse} from "@/lib/articles/getComments";
 
 export default async function BlogPostPage({
   params,
@@ -20,6 +21,11 @@ export default async function BlogPostPage({
   }
 
   const postResponse: GetArticleResponse = await getArticle(payload)
+  const commentsResponse: GetCommentResponse = await getComments({
+    id_a: postResponse.data.articleData.id_a,
+    sid: postResponse.data.gen.sid,
+    page: 1
+  })
 
   if (postResponse.status == ResponseStatus.NOT_FOUND) {
     return <PostNotFound />
@@ -33,6 +39,6 @@ export default async function BlogPostPage({
   }
 
   return (
-      <ArticlePostContent post={postResponse} slug={slug} session_id={sessionId} />
+      <ArticlePostContent post={postResponse} slug={slug} session_id={sessionId} fetchComments={commentsResponse} />
   )
 }

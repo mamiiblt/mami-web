@@ -19,14 +19,16 @@ import {LikeButton} from "@/components/articles/LikeButton";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {ArticleComments} from "@/components/articles/ArticleComments";
 import {GetArticleResponse} from "@/lib/articles/getArticle";
+import {GetCommentResponse} from "@/lib/articles/getComments";
 
 interface ArticlePostContentProps {
     post: GetArticleResponse
+    fetchComments: GetCommentResponse
     slug: string
     session_id: string
 }
 
-export default function ArticlePostContent({ post, slug, session_id }: ArticlePostContentProps) {
+export default function ArticlePostContent({ post, slug, session_id, fetchComments }: ArticlePostContentProps) {
     const {t, i18n} = useTranslation("articles")
     const router = useRouter()
     const pathname = usePathname()
@@ -113,7 +115,7 @@ export default function ArticlePostContent({ post, slug, session_id }: ArticlePo
                             publishTxt={t("readDur", {minutes: calculateReadingTimeMin(post.data.articleData.cn)})}
                             topicTxt={post.data.articleData.tp}
                             likeTxt={t("likeText", {count: likeCount})}
-                            commentTxt={t("commentText", {count: 0})}
+                            commentTxt={t("commentText", {count: fetchComments.data.comments.length })}
                             likeButton={<LikeButton
                                 isPostLiked={isPostLiked}
                                 setIsPostLiked={setIsPostLiked}
@@ -234,7 +236,7 @@ export default function ArticlePostContent({ post, slug, session_id }: ArticlePo
                             </div>
                         </div>
 
-                        <ArticleComments/>
+                        <ArticleComments fetchComments={fetchComments} sid={post.data.gen.sid} id_a={post.data.articleData.id_a} />
                     </article>
 
 
@@ -251,7 +253,7 @@ export default function ArticlePostContent({ post, slug, session_id }: ArticlePo
                             <DesktopStats
                                 publishTxt={t("readDur", {minutes: calculateReadingTimeMin(post.data.articleData.cn)})}
                                 topicTxt={post.data.articleData.tp}
-                                commentTxt={t("commentText", {count: 0})}
+                                commentTxt={t("commentText", {count: fetchComments.data.comments.length })}
                                 contentTitle={t("aboutArticle")}
                                 likeTxt={t("likeText", {count: likeCount})}
                                 likeButton={<LikeButton
