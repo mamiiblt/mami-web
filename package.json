@@ -57,6 +57,7 @@
     "react-i18next": "^16.5.0",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
+    "react-snowfall": "^2.4.0",
     "react-social-icons": "^6.24.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-highlight": "^7.0.2",

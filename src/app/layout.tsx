@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { defaultMetadata } from "@/config/metadata";
 import Footer from "@/components/Footer";
 import LocaleProvider from "@/i18n/LocaleProvider";
+import SnowEffect from "@/components/SnowEffect";
 const appleTitle = SITE_CONFIG.siteName;
 
 const geist = Geist({
@@ -32,7 +33,10 @@ export default function RootLayout({
           <LocaleProvider>
             <Navbar />
             <Toaster />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+                <SnowEffect />
+                {children}
+            </main>
             <Footer />
           </LocaleProvider>
         </ThemeProvider>
