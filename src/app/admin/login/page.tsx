@@ -45,7 +45,6 @@ export default function AdminLoginPage() {
             const expiresAt = new Date(data.expiresAt)
             const maxAgeSeconds = Math.floor((expiresAt.getTime() - Date.now()) / 1000)
             document.cookie = `sessionToken=${data.token}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Strict`
-            await new Promise((resolve) => setTimeout(resolve, 2000))
             router.push("/admin/dashboard")
         }
 
@@ -60,9 +59,9 @@ export default function AdminLoginPage() {
                         <div className="flex justify-center mb-2">
                             <UserRoundCog className="w-10 h-10 text-primary mb-2 mt-2" />
                         </div>
-                        <CardTitle className="text-3xl font-bold text-balance">Admin Login</CardTitle>
+                        <CardTitle className="text-3xl font-bold text-balance">MAdmin Login</CardTitle>
                         <CardDescription className="text-base text-muted-foreground">
-                            Login for access to admin dashboard
+                            Login for access to MAdmin Dashboard
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

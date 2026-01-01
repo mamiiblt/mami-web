@@ -3,7 +3,7 @@ import { defaultMetadata } from "@/config/metadata";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: `Admin Dashboard`,
+  title: `Home | MAdmin Dashboard`,
   description: "Admin Dashboard",
 };
 

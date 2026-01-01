@@ -3,8 +3,8 @@ import { defaultMetadata } from "@/config/metadata";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
-  title: `Login | MAdmin`,
-  description: "Login into MAdmin Dashboard",
+  title: `My Profile | MAdmin Dashboard`,
+  description: "MAdmin dashboard page",
 };
 
 export default function AdminLoginLayout({

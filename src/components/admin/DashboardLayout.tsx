@@ -13,9 +13,17 @@ import {
     MessageCircleIcon, ScrollText, RotateCcwIcon, LucideIcon, CircleUserRoundIcon, BoltIcon, LogOut
 } from "lucide-react"
 import {LoadingBar} from "@/components/ifl";
-import {getSavedSessionToken, logoutUser} from "@/lib/adminUtils";
+import {getSavedSessionToken, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
 import {useRouter} from "next/navigation";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Badge} from "@/components/ui/badge";
+import {League_Spartan} from "next/font/google";
+
+const leagueSpartan = League_Spartan({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
 
 interface AdminData {
     id: number
@@ -24,7 +32,7 @@ interface AdminData {
     pp_url: string
 }
 
-export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: LucideIcon, content: React.ReactNode, title: string }) {
+export function DashboardLayout({ children, title, description, pageIcon: Icon }: { pageIcon: LucideIcon, children: React.ReactNode, title: string, description: string }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [expandedCategories, setExpandedCategories] = useState<string[]>(["website", "instafel", "api"])
@@ -35,14 +43,11 @@ export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: 
         try {
 
             async function sendRequest() {
-                const sessionToken = getSavedSessionToken(router)
-                const response = await fetch(`${process.env.API_BASE}/madmin/content/admin_basic_info`, {
-                    headers: {
-                        "Authorization": `Token ${sessionToken}`
-                    }
-                });
+                const data: AdminData = await sendAdminRequest(getSavedSessionToken(router), {
+                    method: "GET",
+                    path: "content/admin_basic_info"
+                })
 
-                const data: AdminData = await response.json()
                 setAdminData(data)
                 setIsLoading(false)
             }
@@ -58,8 +63,8 @@ export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: 
         label: string,
         href: string
     }[] = [
-        { icon: Home, label: "Dashboard", href: "/admin/dashboard" },
-        { icon: CircleUserRoundIcon, label: "My Profile", href: "/admin/dashboard/profile" }
+        { icon: Home, label: "Home", href: "/admin/dashboard" },
+        { icon: CircleUserRoundIcon, label: "My Profile", href: "/admin/dashboard/my-profile" }
     ]
 
     const menuCategories = [
@@ -113,9 +118,9 @@ export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: 
       `}
             >
                 <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between p-6 border-b border-border">
+                    <div className="flex items-center justify-between pt-6 pl-6 pr-6 pb-5 border-b border-border">
                         <div className="flex items-center gap-2">
-                            <span className="font-bold text-lg">Dashboard</span>
+                            <span className={`font-bold text-3xl ${leagueSpartan.className}`}>MAdmin</span>
                         </div>
                         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
                             <X className="size-5" />
@@ -178,9 +183,9 @@ export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: 
                                 <AvatarImage src={adminData.pp_url} alt={adminData.fullname}/>
                                 <AvatarFallback>A</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1">
-                                <p className="text-sm font-medium">{adminData.fullname}</p>
-                                <p className="text-xs text-muted-foreground">{"@" + adminData.username}</p>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">{adminData.fullname}</p>
+                                <p className="text-xs text-muted-foreground truncate">{"@" + adminData.username}</p>
                             </div>
                             <Button
                                 variant="ghost"
@@ -198,15 +203,20 @@ export function DashboardLayout({ content, title, pageIcon: Icon }: { pageIcon: 
             </aside>
 
             <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-16 border-b border-border bg-card flex items-center px-6">
+                <header className="h-20 border-b border-border bg-card flex items-center px-6">
                     <Button variant="ghost" size="icon" className="lg:hidden mr-4" onClick={() => setSidebarOpen(true)}>
                         <Menu className="size-5" />
                     </Button>
-                    <Icon className="w-5 h-5 mr-3 " />
-                    <h2 className="text-lg font-semibold">{title}</h2>
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Icon className="w-5 h-5" />
+                            <p className="font-semibold">{title}</p>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{description}</p>
+                    </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto p-6 bg-background min-h-0">{content}</main>
+                <main className="flex-1 overflow-y-auto p-6 bg-background min-h-0">{children}</main>
             </div>
         </div>
     )
