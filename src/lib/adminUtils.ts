@@ -1,4 +1,34 @@
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
+import {permissionsManager} from "@/lib/permissionsManager";
+import {toast} from "sonner";
+
+export const ResponseStatus = {
+    SUCCESS: "SUCCESS",
+    FAILURE: "FAILURE",
+    AUTH_FAILED: "AUTH_FAILED",
+    INVALID_PERMISSION: "INVALID_PERMISSION"
+}
+
+export interface AdminResponse {
+    status: "SUCCESS" | "FAILURE" | "AUTH_FAILED" | "INVALID_PERMISSION",
+    data: {
+        msg: string;
+        [key: string]: any;
+    }
+}
+
+export function getSessionExpireDate() {
+    const sessionTokenExpireDate = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("sessionToken_expires="))
+        ?.split("=")[1] || null
+
+    if (sessionTokenExpireDate == null) {
+        return null
+    } else {
+        return new Date(sessionTokenExpireDate)
+    }
+}
 
 export function getSavedSessionToken(router: AppRouterInstance) {
     const sessionToken = document.cookie
@@ -14,43 +44,60 @@ export function getSavedSessionToken(router: AppRouterInstance) {
 }
 
 export function logoutUser(router: AppRouterInstance) {
-    document.cookie = `sessionToken=; Max-Age=0; Path=/; SameSite=Strict`
+    toast.success("Logout successfully")
     router.push("/admin/login")
+    setTimeout(() => {
+        document.cookie = `sessionToken=; Max-Age=0; Path=/; SameSite=Strict`
+        document.cookie = `sessionToken_expires=; Max-Age=0; Path=/; SameSite=Strict`
+    }, 2000)
 }
 
-interface AdminRequestConfig {
+interface AdminRequestConfig<T = any> {
     path: string,
     method: "POST" | "GET",
-    body?: object
+    body?: object,
+    onResponse?: (response: Response, status: string, data: any) => T
 }
 
-export async function sendAdminRequest(sessionToken: string, config: AdminRequestConfig): Promise<any> {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-        controller.abort();
-    }, 10000);
+export async function sendAdminRequest(
+    sessionToken: string,
+    config: AdminRequestConfig
+) {
     const requestUrl = `${process.env.API_BASE}/madmin/${config.path}`
+
+    let response: Response | undefined = undefined
+
     if (config.method === "POST") {
-        const response = await fetch(requestUrl, {
+        response = await fetch(requestUrl, {
                 method: "POST",
                 headers: {
                     "Authorization": `Token ${sessionToken}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(config.body) || "",
-                signal: controller.signal
+                body: JSON.stringify(config.body) || ""
             }
         )
-        return await response.json()
     } else {
-        const response = await fetch(requestUrl, {
+        response = await fetch(requestUrl, {
                 method: "GET",
                 headers: {
                     "Authorization": `Token ${sessionToken}`,
-                },
-                signal: controller.signal
+                }
             }
         )
-        return await response.json()
+    }
+
+    const data: AdminResponse = await response.json()
+
+    if (config.onResponse) {
+
+        if (data.status == ResponseStatus.INVALID_PERMISSION) {
+            permissionsManager.showInsufficientPermissions(
+                data.data.missing
+            )
+            console.log(data.data.missing)
+        } else {
+            return config.onResponse(response, data.status, data.data)
+        }
     }
 }

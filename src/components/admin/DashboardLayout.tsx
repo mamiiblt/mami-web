@@ -10,20 +10,19 @@ import {
     Menu,
     X,
     ChevronDown, PackageMinusIcon, SquaresExcludeIcon, UserRoundSearchIcon, CloudDownloadIcon, FileUp, NewspaperIcon,
-    MessageCircleIcon, ScrollText, RotateCcwIcon, LucideIcon, CircleUserRoundIcon, BoltIcon, LogOut
+    MessageCircleIcon, ScrollText, RotateCcwIcon, LucideIcon, CircleUserRoundIcon, BoltIcon, LogOut, InfoIcon,
+    MonitorIcon, CogIcon, PlusIcon, UserCogIcon
 } from "lucide-react"
 import {LoadingBar} from "@/components/ifl";
-import {getSavedSessionToken, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
+import {getSavedSessionToken, getSessionExpireDate, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
 import {useRouter} from "next/navigation";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Badge} from "@/components/ui/badge";
-import {League_Spartan} from "next/font/google";
+import {Bayon} from "next/font/google";
+import {toast} from "sonner";
 
-const leagueSpartan = League_Spartan({
-    subsets: ["latin"],
-    weight: ["600"],
+export const bayon = Bayon({
+    weight: "400"
 });
-
 
 interface AdminData {
     id: number
@@ -35,21 +34,73 @@ interface AdminData {
 export function DashboardLayout({ children, title, description, pageIcon: Icon }: { pageIcon: LucideIcon, children: React.ReactNode, title: string, description: string }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [expandedCategories, setExpandedCategories] = useState<string[]>(["website", "instafel", "api"])
+    const [expandedCategories, setExpandedCategories] = useState<string[]>(["server", "instafel", "admin"])
     const [isLoading, setIsLoading] = useState(true)
     const [adminData, setAdminData] = useState<AdminData | undefined>(undefined)
+    const [remainingTime, setRemainingTime] = useState<string>("")
+
+    useEffect(() => {
+        var isSessionExpiredDid = false
+
+        const isSessionExpired = () => {
+            if (!isSessionExpiredDid) {
+                setRemainingTime("Session expired")
+                toast.info("Session Expired", {
+                    description: "Your session has expired, please re-login.",
+                    action: {
+                        label: "Login",
+                        onClick: () => {
+                            router.push("/admin/login")
+                        }
+                    },
+                })
+
+                isSessionExpiredDid = true
+            }
+        }
+
+        const updateTimer = () => {
+            const sessionExpireTime = getSessionExpireDate()
+            if (sessionExpireTime == null) {
+                isSessionExpired()
+                return;
+            }
+            const now = new Date().getTime()
+            const expireTime = sessionExpireTime.getTime()
+            const diff = expireTime - now
+
+            if (diff <= 0) {
+                isSessionExpired()
+                return
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60))
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+            setRemainingTime(
+                `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+            )
+        }
+
+        updateTimer()
+        const interval = setInterval(updateTimer, 1000)
+
+        return () => clearInterval(interval)
+    }, [])
 
     useEffect(() => {
         try {
 
             async function sendRequest() {
-                const data: AdminData = await sendAdminRequest(getSavedSessionToken(router), {
+                await sendAdminRequest(getSavedSessionToken(router), {
                     method: "GET",
-                    path: "content/admin_basic_info"
+                    path: "content/admin_basic_info",
+                    onResponse: (response, status, data) => {
+                        setAdminData(data.content)
+                        setIsLoading(false)
+                    }
                 })
-
-                setAdminData(data)
-                setIsLoading(false)
             }
 
             sendRequest()
@@ -80,21 +131,23 @@ export function DashboardLayout({ children, title, description, pageIcon: Icon }
             ],
         },
         {
+            id: "admin",
+            label: "Admin",
+            items: [
+                { icon: MonitorIcon, label: "Service Monitor", href: "/admin/dashboard/admin/service-monitor" },
+                { icon: UserCogIcon, label: "Member Management", href: "/admin/dashboard/admin/member-management" },
+                { icon: ScrollText, label: "API - Audit Logs", href: "/admin/dashboard/admin/audit-logs" },
+                { icon: RotateCcwIcon, label: "API - Restart", href: "/admin/dashboard/admin/restart-api" },
+            ],
+        },
+        {
             id: "website",
             label: "mamii's website",
             items: [
                 { icon: MessageCircleIcon, label: "Comments", href: "/admin/dashboard/mami-web/comments" },
                 { icon: NewspaperIcon, label: "Articles", href: "/admin/dashboard/mami-web/articles" },
             ],
-        },
-        {
-            id: "api",
-            label: "API",
-            items: [
-                { icon: ScrollText, label: "Audit Logs", href: "/admin/dashboard/api/audit-logs" },
-                { icon: RotateCcwIcon, label: "Restart API", href: "/admin/dashboard/api/restart-api" },
-            ],
-        },
+        }
     ]
 
     const toggleCategory = (categoryId: string) => {
@@ -118,16 +171,16 @@ export function DashboardLayout({ children, title, description, pageIcon: Icon }
       `}
             >
                 <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between pt-6 pl-6 pr-6 pb-5 border-b border-border">
+                    <div className="flex items-center justify-between h-20 pt-6 pl-6 pr-6 pb-5 border-b border-border">
                         <div className="flex items-center gap-2">
-                            <span className={`font-bold text-3xl ${leagueSpartan.className}`}>MAdmin</span>
+                            <span className={`font-bold text-3xl ${bayon.className}`}>MAdmin</span>
                         </div>
                         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
                             <X className="size-5" />
                         </Button>
                     </div>
 
-                    <nav className="flex-1 p-4 overflow-y-auto">
+                    <nav className="flex-1 p-4 overflow-y-auto hide-scrollbar">
                         <div className="space-y-4">
 
                             <div className="space-y-1">
@@ -177,6 +230,13 @@ export function DashboardLayout({ children, title, description, pageIcon: Icon }
                         </div>
                     </nav>
 
+                    <div className="px-4 py-3 border-t border-border">
+                        <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Session time:</span>
+                            <span className="font-mono font-semibold text-foreground">{remainingTime}</span>
+                        </div>
+                    </div>
+
                     <div className="p-4 border-t border-border">
                         <div className="flex items-center gap-3">
                             <Avatar className="size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
@@ -216,7 +276,7 @@ export function DashboardLayout({ children, title, description, pageIcon: Icon }
                     </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto p-6 bg-background min-h-0">{children}</main>
+                <main className="flex-1 overflow-y-auto p-6 bg-background min-h-0 hide-scrollbar">{children}</main>
             </div>
         </div>
     )

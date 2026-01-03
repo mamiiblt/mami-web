@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_SITE_URL: "https://mamii.dev",
-    API_BASE: process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://api.instafel.app"
+    API_BASE: process.env.NODE_ENV === "development" ? "https://studious-orbit-4697x6x4wv636jp-3001.app.github.dev" : "https://api.instafel.app"
   },
   htmlLimitedBots: /.*/,
   reactStrictMode: false

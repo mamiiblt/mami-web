@@ -4,7 +4,7 @@ import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import {CircleUserRoundIcon, Eye, EyeOff, LockIcon} from "lucide-react";
 import React, {useEffect, useState} from "react";
 import {LoadingBar} from "@/components/ifl";
-import {getSavedSessionToken, sendAdminRequest} from "@/lib/adminUtils";
+import {getSavedSessionToken, ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {useRouter} from "next/navigation";
 import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Card} from "@/components/ui/card";
@@ -24,16 +24,13 @@ import {
 } from "@/components/ui/dialog";
 
 interface AdminInfo {
-    status: string
-    data: {
-        id: number
-        fullname: string
-        username: string
-        pp_url: string
-        user_tag: string
-        telegram_id: string
-        permissions_allow_list: { [k: string]: boolean; }
-    }
+    id: number
+    fullname: string
+    username: string
+    pp_url: string
+    user_tag: string
+    telegram_id: string
+    permissions_allow_list: { [k: string]: boolean; }
 }
 
 export default function DashboardPage() {
@@ -55,15 +52,16 @@ export default function DashboardPage() {
 
     useEffect(() => {
         async function sendRequest() {
-            const data: AdminInfo = await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest(getSavedSessionToken(router), {
                 method: "GET",
-                path: "content/admin_full_info"
+                path: "content/admin_full_info",
+                onResponse: (response, status, data) => {
+                    setAdminInfo(data.content)
+                    setFullName(data.content.fullname)
+                    setTelegramId(data.content.telegram_id)
+                    setIsLoading(false)
+                }
             })
-
-            setAdminInfo(data)
-            setFullName(data.data.fullname)
-            setTelegramId(data.data.telegram_id)
-            setIsLoading(false)
         }
 
         sendRequest()
@@ -74,28 +72,34 @@ export default function DashboardPage() {
 
         try {
             if (newPassword !== newPasswordAgain) {
-                toast("Hey!", {
-                    description: "New passwords don't match!",
-                    action: {
-                        label: "Okay",
-                        onClick: () => { }
-                    },
-                })
+                toast.error("Hey!", { description: "New passwords don't match!"})
                 return;
             }
 
-            const data = await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest(getSavedSessionToken(router), {
                 method: "POST",
                 path: "content/update_pass",
                 body: {
                     old_pass: oldPassword,
                     new_pass: newPassword
+                },
+                onResponse: (response, status, data) => {
+                    const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
+                    toastType(status, {description: data.msg });
+
+                    if (status === ResponseStatus.SUCCESS) {
+                        setIsPasswordDialogOpen(false)
+                        setShowOldPassword(false)
+                        setShowNewPassword(false)
+                        setShowConfirmPassword(false)
+                        setOldPassword("")
+                        setNewPassword("")
+                        setNewPasswordAgain("")
+                    }
                 }
             });
-
-            toast(data.status, { description: data.msg });
         } catch (err) {
-            toast("Error", { description: "Something went wrong" });
+            toast.error("Error", {description: "Something went wrong updating password."});
         } finally {
             setIsUpdatingPass(false);
         }
@@ -106,30 +110,23 @@ export default function DashboardPage() {
             async function sendRequest() {
                 setIsSaving(true)
 
-                const data: {
-                    status: string
-                    msg: string
-                } = await sendAdminRequest(getSavedSessionToken(router), {
+                await sendAdminRequest(getSavedSessionToken(router), {
                     method: "POST",
                     path: "content/update_profile",
                     body: {
                         new_fullName: fullName,
                         new_telegramId: telegramId
+                    },
+                    onResponse: (response, status, data) => {
+                        const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
+                        toastType(status, { description: data.msg })
+
+                        if (status == ResponseStatus.FAILURE) {
+                            setFullName(adminInfo.fullname)
+                            setTelegramId(adminInfo.telegram_id)
+                        }
                     }
                 })
-
-                toast(data.status, {
-                    description: data.msg,
-                    action: {
-                        label: "Okay",
-                        onClick: () => { }
-                    },
-                })
-
-                if (data.status == "FAILURE") {
-                    setFullName(adminInfo.data.fullname)
-                    setTelegramId(adminInfo.data.telegram_id)
-                }
 
                 setIsSaving(false)
             }
@@ -141,7 +138,8 @@ export default function DashboardPage() {
     }
 
     return (
-        <DashboardLayout pageIcon={CircleUserRoundIcon} title={"My Profile"} description={"View and edit your profile information"} >
+        <DashboardLayout pageIcon={CircleUserRoundIcon} title={"My Profile"}
+                         description={"View and edit your profile information"}>
             {
                 isLoading ? <LoadingBar/> :
                     <div className="flex flex-col gap-6">
@@ -153,10 +151,10 @@ export default function DashboardPage() {
                             <CardContent className="space-y-6">
                                 <div className="flex items-center gap-4">
                                     <Avatar className="size-20">
-                                        <AvatarImage src={adminInfo.data.pp_url || "/placeholder.svg"}
-                                                     alt={adminInfo.data.fullname}/>
+                                        <AvatarImage src={adminInfo.pp_url || "/placeholder.svg"}
+                                                     alt={adminInfo.fullname}/>
                                         <AvatarFallback className="text-2xl font-bold">
-                                            {adminInfo.data.fullname
+                                            {adminInfo.fullname
                                                 .split(" ")
                                                 .map((n) => n[0])
                                                 .join("")}
@@ -181,9 +179,9 @@ export default function DashboardPage() {
                                     <Label htmlFor="telegram_id">Telegram User ID</Label>
                                     <Input
                                         id="telegram_id"
-                                           value={telegramId}
-                                           onChange={(e) => setTelegramId(e.target.value)}
-                                           placeholder="Enter your full name"/>
+                                        value={telegramId}
+                                        onChange={(e) => setTelegramId(e.target.value)}
+                                        placeholder="Enter your full name"/>
                                 </div>
 
                                 <div className="space-y-2">
@@ -191,13 +189,13 @@ export default function DashboardPage() {
                                     <div className="flex items-center gap-2">
                                         <Input
                                             id="username"
-                                            value={adminInfo.data.username}
+                                            value={adminInfo.username}
                                             readOnly
                                             disabled
                                             className="bg-muted cursor-not-allowed flex-1"
                                         />
                                         <Badge variant="secondary" className="text-xs shrink-0">
-                                            {adminInfo.data.user_tag}
+                                            {adminInfo.user_tag}
                                         </Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground">Username cannot be changed</p>
@@ -209,7 +207,8 @@ export default function DashboardPage() {
                                         disabled={isSaving}>
                                         {isSaving ?
                                             <span className="flex items-center gap-2">
-                                                <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                                                <span
+                                                    className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
                                                 Saving...
                                             </span> :
                                             "Save Changes"
@@ -219,14 +218,15 @@ export default function DashboardPage() {
                                     <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
                                         <DialogTrigger asChild>
                                             <Button variant="outline" className="w-full sm:w-auto bg-transparent">
-                                                <LockIcon className="size-4 mr-2" />
+                                                <LockIcon className="size-4 mr-2"/>
                                                 Change My Password
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent className="sm:max-w-md">
                                             <DialogHeader>
                                                 <DialogTitle>Update Password</DialogTitle>
-                                                <DialogDescription>Please fill this form for update your password</DialogDescription>
+                                                <DialogDescription>Please fill this form for update your
+                                                    password</DialogDescription>
                                             </DialogHeader>
                                             <div className="space-y-4 py-4">
                                                 <div className="space-y-2">
@@ -236,6 +236,8 @@ export default function DashboardPage() {
                                                             id="old-password"
                                                             type={showOldPassword ? "text" : "password"}
                                                             placeholder="Enter your current password"
+                                                            value={oldPassword}
+                                                            onChange={(e) => setOldPassword(e.currentTarget.value)}
                                                         />
                                                         <Button
                                                             type="button"
@@ -243,13 +245,11 @@ export default function DashboardPage() {
                                                             size="sm"
                                                             className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                                                             onClick={() => setShowOldPassword(!showOldPassword)}
-                                                            value={oldPassword}
-                                                            onChange={(e) => setOldPassword(e.currentTarget.value)}
                                                         >
                                                             {showOldPassword ? (
-                                                                <EyeOff className="size-4 text-muted-foreground" />
+                                                                <EyeOff className="size-4 text-muted-foreground"/>
                                                             ) : (
-                                                                <Eye className="size-4 text-muted-foreground" />
+                                                                <Eye className="size-4 text-muted-foreground"/>
                                                             )}
                                                         </Button>
                                                     </div>
@@ -262,6 +262,8 @@ export default function DashboardPage() {
                                                             id="new-password"
                                                             type={showNewPassword ? "text" : "password"}
                                                             placeholder="Enter your current password"
+                                                            value={newPassword}
+                                                            onChange={(e) => setNewPassword(e.currentTarget.value)}
                                                         />
                                                         <Button
                                                             type="button"
@@ -269,13 +271,11 @@ export default function DashboardPage() {
                                                             size="sm"
                                                             className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                                                             onClick={() => setShowNewPassword(!showNewPassword)}
-                                                            value={newPassword}
-                                                            onChange={(e) => setNewPassword(e.currentTarget.value)}
                                                         >
                                                             {showNewPassword ? (
-                                                                <EyeOff className="size-4 text-muted-foreground" />
+                                                                <EyeOff className="size-4 text-muted-foreground"/>
                                                             ) : (
-                                                                <Eye className="size-4 text-muted-foreground" />
+                                                                <Eye className="size-4 text-muted-foreground"/>
                                                             )}
                                                         </Button>
                                                     </div>
@@ -299,22 +299,26 @@ export default function DashboardPage() {
                                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                                         >
                                                             {showConfirmPassword ? (
-                                                                <EyeOff className="size-4 text-muted-foreground" />
+                                                                <EyeOff className="size-4 text-muted-foreground"/>
                                                             ) : (
-                                                                <Eye className="size-4 text-muted-foreground" />
+                                                                <Eye className="size-4 text-muted-foreground"/>
                                                             )}
                                                         </Button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <DialogFooter className="flex gap-2">
-                                                <Button type="button" variant="outline" onClick={() => setIsPasswordDialogOpen(false)} disabled={isUpdatingPass}>
+                                                <Button type="button" variant="outline"
+                                                        onClick={() => setIsPasswordDialogOpen(false)}
+                                                        disabled={isUpdatingPass}>
                                                     Cancel
                                                 </Button>
-                                                <Button type="button" onClick={handlePassUpdate} disabled={isUpdatingPass}>
+                                                <Button type="button" onClick={handlePassUpdate}
+                                                        disabled={isUpdatingPass}>
                                                     {isUpdatingPass ?
                                                         <span className="flex items-center gap-2">
-                                                            <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                                                            <span
+                                                                className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
                                                             Updating...
                                                         </span> :
                                                         "Update Password"
@@ -335,7 +339,7 @@ export default function DashboardPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-2">
-                                    {Object.entries(adminInfo.data.permissions_allow_list).map(([key, value]) => (
+                                    {Object.entries(adminInfo.permissions_allow_list).map(([key, value]) => (
                                         <div
                                             key={key}
                                             className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors"

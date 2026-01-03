@@ -54,13 +54,13 @@ export function ArticleComments({ fetchComments, sid, id_a }: ArticleCommentsPro
 
             switch (data.code) {
                 case "COMMENT_NOT_FOUND":
-                    showToast(t("commentDelete.FAILURE"), t("commentDelete.code.COMMENT_NOT_FOUND"))
+                    showToast(t("commentDelete.FAILURE"), t("commentDelete.code.COMMENT_NOT_FOUND"), false)
                     break;
                 case "SID_DOES_NOT_MATCH":
-                    showToast(t("commentDelete.FAILURE"), t("commentDelete.code.SID_DOES_NOT_MATCH"))
+                    showToast(t("commentDelete.FAILURE"), t("commentDelete.code.SID_DOES_NOT_MATCH"), false)
                     break;
                 case "DELETE_SUCCESS":
-                    showToast(t("commentDelete.SUCCESS"), t("commentDelete.code.DELETE_SUCCESS"))
+                    showToast(t("commentDelete.SUCCESS"), t("commentDelete.code.DELETE_SUCCESS"), true)
                     setComments(prevState => prevState.filter(comment => comment.comment_id !== comment_id))
                     break;
             }
@@ -88,7 +88,7 @@ export function ArticleComments({ fetchComments, sid, id_a }: ArticleCommentsPro
             const response = await request.json()
 
             const title = response.code == "SHARE_SUCCESS" ? t("commentDelete.SUCCESS") : t("commentDelete.FAILURE")
-            showToast(title, response.message)
+            showToast(title, response.message, title == "SHARE_SUCCESS")
 
             if (response.code == "SHARE_SUCCESS") {
                 setNewComment("")
@@ -101,8 +101,9 @@ export function ArticleComments({ fetchComments, sid, id_a }: ArticleCommentsPro
         }
     }
 
-    const showToast = (title: string, message: string) => {
-        toast(title, {
+    const showToast = (title: string, message: string, toastIsSuccess: boolean) => {
+        const toastType = toastIsSuccess ? toast.success : toast.error
+        toastType(title, {
             description: message,
             action: {
                 label: t("commentDelete.buttonOkay"),

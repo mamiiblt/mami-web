@@ -9,7 +9,7 @@ const useMediaQuery = (query: string): boolean => {
     if (typeof window !== "undefined") {
       return window.matchMedia(query).matches;
     }
-    return false; // Default to false on server-side
+    return false; // Default to false on admin-side
   });
 
   useEffect(() => {
