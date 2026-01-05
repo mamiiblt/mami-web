@@ -38,7 +38,7 @@ export function InsufficientPermissionsDialog({open, onOpenChange, missingPermis
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                        If you need these permissions, please contact your system administrator.
+                        If you need these permissions, please contact to mamii for get permission.
                     </p>
 
                     <Button onClick={() => onOpenChange(false)} className="w-full">

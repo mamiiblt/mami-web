@@ -1,15 +1,15 @@
 "use client";
 
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
-import {UserCogIcon} from "lucide-react";
+import {ChevronDown, UserCogIcon} from "lucide-react";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Badge} from "@/components/ui/badge"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {
     Dialog,
     DialogContent,
@@ -30,14 +30,14 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pencil, Trash2, Eye, EyeOff, UserPlus } from "lucide-react"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Pencil, Trash2, Eye, EyeOff, UserPlus} from "lucide-react"
 import {getSavedSessionToken, ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {LoadingBar} from "@/components/ifl";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Checkbox} from "@/components/ui/checkbox";
-import {createAppRouteCode} from "next/dist/build/webpack/loaders/next-app-loader/create-app-route-code";
 import {toast} from "sonner";
+import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
 
 interface MemberInfo {
     id?: number;
@@ -65,19 +65,48 @@ export default function DashboardPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [memberList, setMemberList] = useState<MemberInfo[] | undefined>(undefined)
     const [permissionsList, setPermissionsList] = useState<Record<number, string> | undefined>(undefined)
+    const [permissionsListArr, setPermissionsListArr] = useState<string[]>([])
     const [editingMember, setEditingMember] = useState<MemberInfo | null>(null)
     const [newMember, setNewMember] = useState<MemberInfo | null>(newUserDefault)
     const [showPassword, setShowPassword] = useState(false)
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-    const [isUserCreating, setIsUserCreating] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
 
-    const handleEdit = (member: MemberInfo) => {
-        setEditingMember({ ...member })
+    const handleMemberEdit = async () => {
+        console.log(editingMember)
+
+        try {
+            await sendAdminRequest(getSavedSessionToken(router), {
+                method: "POST",
+                path: "content/edit_member",
+                body: {
+                    member: editingMember
+                },
+                onResponse: (response, status, data) => {
+
+                    const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
+                    toastType(status.toUpperCase(), {
+                        description: data.msg
+                    })
+
+                    if (status == ResponseStatus.SUCCESS) {
+                        setMemberList(prev => prev.map(user =>
+                            user.id === data.memberNewData.id
+                                ? {...user, ...data.memberNewData}
+                                : user
+                        ))
+                        setEditingMember(null)
+                        setShowPassword(false)
+                    }
+                }
+            })
+        } catch (e) {
+            console.error(e)
+            toast.error("Error", {description: "Something went wrong when editing user."});
+        }
     }
 
     const createNewMember = async () => {
-        setIsUserCreating(true)
-
         try {
             await sendAdminRequest(getSavedSessionToken(router), {
                 method: "POST",
@@ -97,28 +126,41 @@ export default function DashboardPage() {
                     })
 
                     if (status == ResponseStatus.SUCCESS) {
-                        // setNewMember(newUserDefault)
-                        //  setIsAddDialogOpen(false)
+                        const createdMemberData = data.createdMemberData as MemberInfo
+                        setMemberList(prev => [...prev, createdMemberData])
+                        setNewMember(newUserDefault)
+                        setIsAddDialogOpen(false)
                     }
                 }
             })
         } catch (e) {
             toast.error("Error", {description: "Something went wrong when creating user."});
-        } finally {
-            setIsUserCreating(false)
         }
     }
 
-    const handleSave = () => {
-        if (editingMember) {
-            setMemberList(memberList.map((m) => (m.id === editingMember.id ? editingMember : m)))
-            setEditingMember(null)
-            setShowPassword(false)
-        }
-    }
+    const handleDelete = async (id: number) => {
+        try {
+            await sendAdminRequest(getSavedSessionToken(router), {
+                method: "POST",
+                path: "content/delete_member",
+                body: {
+                    adminId: id
+                },
+                onResponse: (response, status, data) => {
+                    const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
+                    toastType(status.toUpperCase(), {
+                        description: data.msg
+                    })
 
-    const handleDelete = (id: number) => {
-        setMemberList(memberList.filter((m) => m.id !== id))
+                    if (status == ResponseStatus.SUCCESS) {
+                        setMemberList(memberList.filter((m) => m.id !== id))
+                    }
+                }
+            })
+        } catch (e) {
+            console.error(e)
+            toast.error("Error", {description: "Something went wrong when deleting user."});
+        }
     }
 
     useEffect(() => {
@@ -129,6 +171,7 @@ export default function DashboardPage() {
                 onResponse: (response, status, data) => {
                     setMemberList(data.content)
                     setPermissionsList(data.permissionsData)
+                    setPermissionsListArr(Object.values(data.permissionsData))
                     setIsLoading(false)
                 }
             })
@@ -137,27 +180,34 @@ export default function DashboardPage() {
         sendRequest()
     }, []);
 
-    const togglePermission = (permissionName: string, memberData: MemberInfo, setIsNewOrEditing: boolean) => {
-        const hasPermission = memberData.permissions.includes(permissionName)
+    const togglePermission = (
+        permissionName: string,
+        memberData: MemberInfo,
+        setIsNewOrEditing: boolean
+    ) => {
         const setFunction = setIsNewOrEditing ? setEditingMember : setNewMember
 
-        if (hasPermission) {
-            setFunction({
-                ...memberData,
-                permissions: memberData.permissions.filter((p) => p !== permissionName),
-            })
-        } else {
-            setFunction({
-                ...memberData,
-                permissions: [...memberData.permissions, permissionName],
-            })
-        }
+        const hasPermission = memberData.permissions.includes(permissionName)
+
+        let newPermissions = hasPermission
+            ? memberData.permissions.filter(p => p !== permissionName)
+            : [...memberData.permissions, permissionName]
+
+        newPermissions = newPermissions.filter(p =>
+            permissionsListArr.includes(p)
+        )
+
+        setFunction({
+            ...memberData,
+            permissions: newPermissions,
+        })
     }
 
     return (
-        <DashboardLayout pageIcon={UserCogIcon} title={"Member Management"} description={"Manage MAdmin users from there."} >
+        <DashboardLayout pageIcon={UserCogIcon} title={"Member Management"}
+                         description={"Manage MAdmin users from there."}>
             {
-                isLoading ? <LoadingBar /> : <Card>
+                isLoading ? <LoadingBar/> : <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
@@ -168,7 +218,7 @@ export default function DashboardPage() {
                                 <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                                     <DialogTrigger asChild>
                                         <Button className="gap-2">
-                                            <UserPlus className="size-4" />
+                                            <UserPlus className="size-4"/>
                                             Add Member
                                         </Button>
                                     </DialogTrigger>
@@ -184,7 +234,10 @@ export default function DashboardPage() {
                                                     <Input
                                                         id="fullname"
                                                         value={newMember.fullName}
-                                                        onChange={(e) => setNewMember({ ...newMember, fullName: e.target.value })}
+                                                        onChange={(e) => setNewMember({
+                                                            ...newMember,
+                                                            fullName: e.target.value
+                                                        })}
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
@@ -192,7 +245,10 @@ export default function DashboardPage() {
                                                     <Input
                                                         id="username"
                                                         value={newMember.userName}
-                                                        onChange={(e) => setNewMember({ ...newMember, userName: e.target.value })}
+                                                        onChange={(e) => setNewMember({
+                                                            ...newMember,
+                                                            userName: e.target.value
+                                                        })}
                                                     />
                                                 </div>
                                             </div>
@@ -202,7 +258,10 @@ export default function DashboardPage() {
                                                 <Input
                                                     id="pp_url"
                                                     value={newMember.ppUrl}
-                                                    onChange={(e) => setNewMember({ ...newMember, ppUrl: e.target.value })}
+                                                    onChange={(e) => setNewMember({
+                                                        ...newMember,
+                                                        ppUrl: e.target.value
+                                                    })}
                                                     placeholder="https://example.com/avatar.jpg"
                                                 />
                                             </div>
@@ -213,7 +272,7 @@ export default function DashboardPage() {
                                                     id="telegram_id"
                                                     value={newMember.telegramId}
                                                     onChange={(e) =>
-                                                        setNewMember({ ...newMember, telegramId: e.target.value })
+                                                        setNewMember({...newMember, telegramId: e.target.value})
                                                     }
                                                     placeholder="Telegram User ID of Member"
                                                 />
@@ -225,8 +284,11 @@ export default function DashboardPage() {
                                                     <Input
                                                         id="password"
                                                         type={showPassword ? "text" : "password"}
-                                                        value={newMember.password}
-                                                        onChange={(e) => setNewMember({ ...newMember, password: e.target.value })}
+                                                        value={newMember.password == undefined ? "" : newMember.password}
+                                                        onChange={(e) => setNewMember({
+                                                            ...newMember,
+                                                            password: e.target.value
+                                                        })}
                                                     />
                                                     <Button
                                                         type="button"
@@ -235,33 +297,49 @@ export default function DashboardPage() {
                                                         className="absolute right-0 top-0 h-full"
                                                         onClick={() => setShowPassword(!showPassword)}
                                                     >
-                                                        {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                                                        {showPassword ? <EyeOff className="size-4"/> :
+                                                            <Eye className="size-4"/>}
                                                     </Button>
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-3">
+                                            <div className="space-y-2">
                                                 <Label>Permissions</Label>
-                                                <div className="border rounded-lg p-4 space-y-3 bg-muted/50">
-                                                    {Object.entries(permissionsList).map(([id, permissionName]) => (
-                                                        <div key={id} className="flex items-center space-x-3">
-                                                            <Checkbox
-                                                                id={`perm-${id}`}
-                                                                checked={newMember.permissions.includes(permissionName)}
-                                                                onCheckedChange={() => togglePermission(permissionName, newMember, false)}
-                                                            />
-                                                            <Label
-                                                                htmlFor={`perm-${id}`}
-                                                                className="text-sm font-normal cursor-pointer flex-1"
-                                                            >
-                                                                {permissionName}
-                                                            </Label>
+                                                <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                                                    <CollapsibleTrigger
+                                                        className="flex w-full items-center justify-between rounded-lg border bg-muted/50 p-4 hover:bg-muted transition-colors">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-sm font-medium">
+                                                                {newMember.permissions.length > 0
+                                                                    ? `${newMember.permissions.length} permission(s) selected`
+                                                                    : "Select permissions"}
+                                                            </span>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                                <p className="text-xs text-muted-foreground">
-                                                    Selected: {newMember.permissions.length} permission(s)
-                                                </p>
+                                                        <ChevronDown
+                                                            className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}/>
+                                                    </CollapsibleTrigger>
+                                                    <CollapsibleContent className="mt-2">
+                                                        <div
+                                                            className="border rounded-lg p-4 space-y-3 bg-background max-h-[120px] overflow-y-auto">
+                                                            {Object.entries(permissionsList).map(([id, permissionName]) => (
+                                                                <div key={id} className="flex items-center space-x-3">
+                                                                    <Checkbox
+                                                                        id={`perm-${id}`}
+                                                                        checked={newMember.permissions.includes(permissionName)}
+                                                                        onCheckedChange={() => togglePermission(permissionName, newMember, false)}
+                                                                    />
+                                                                    <Label htmlFor={`perm-${id}`}
+                                                                           className="text-sm font-normal cursor-pointer flex-1">
+                                                                        {permissionName}
+                                                                    </Label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </CollapsibleContent>
+                                                </Collapsible>
+                                                {newMember.permissions.length > 0 && (
+                                                    <p className="text-xs text-muted-foreground">Selected: {newMember.permissions.join(", ")}</p>
+                                                )}
                                             </div>
                                         </div>
                                         <DialogFooter>
@@ -294,7 +372,8 @@ export default function DashboardPage() {
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <Avatar className="size-10">
-                                                    <AvatarImage src={member.ppUrl || "/placeholder.svg"} alt={member.fullName} />
+                                                    <AvatarImage src={member.ppUrl || "/placeholder.svg"}
+                                                                 alt={member.fullName}/>
                                                     <AvatarFallback>{member.fullName.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <span className="font-medium">{member.fullName}</span>
@@ -318,16 +397,19 @@ export default function DashboardPage() {
                                                     {member.permissions.length > 1 && (
                                                         <Popover>
                                                             <PopoverTrigger asChild>
-                                                                <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">
+                                                                <Button variant="ghost" size="sm"
+                                                                        className="h-6 px-2 text-xs">
                                                                     More
                                                                 </Button>
                                                             </PopoverTrigger>
                                                             <PopoverContent className="w-80">
                                                                 <div className="space-y-2">
-                                                                    <h4 className="font-medium text-sm">All Permissions</h4>
+                                                                    <h4 className="font-medium text-sm">All
+                                                                        Permissions</h4>
                                                                     <div className="flex flex-wrap gap-2">
                                                                         {member.permissions.map((perm) => (
-                                                                            <Badge key={perm} variant="secondary" className="text-xs">
+                                                                            <Badge key={perm} variant="secondary"
+                                                                                   className="text-xs">
                                                                                 {perm}
                                                                             </Badge>
                                                                         ))}
@@ -353,89 +435,130 @@ export default function DashboardPage() {
                                                     }}
                                                 >
                                                     <DialogTrigger asChild>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(member)}>
-                                                            <Pencil className="size-4" />
+                                                        <Button variant="ghost" size="icon" onClick={() => {
+                                                            setEditingMember({...member})
+                                                        }}>
+                                                            <Pencil className="size-4"/>
                                                         </Button>
                                                     </DialogTrigger>
                                                     <DialogContent className="max-w-2xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Edit Member</DialogTitle>
-                                                            <DialogDescription>Update member information and credentials</DialogDescription>
-                                                        </DialogHeader>
                                                         {editingMember && (
-                                                            <div className="space-y-4 py-4">
-                                                                <div className="grid grid-cols-2 gap-4">
+                                                            <>
+                                                                <DialogHeader>
+                                                                    <DialogTitle>Edit Member</DialogTitle>
+                                                                    <DialogDescription>Update {editingMember.fullName} information
+                                                                        and credentials</DialogDescription>
+                                                                </DialogHeader>
+                                                                <div className="space-y-4 py-4">
+                                                                    <div className="grid grid-cols-2 gap-4">
+                                                                        <div className="space-y-2">
+                                                                            <Label htmlFor="fullname">Full Name</Label>
+                                                                            <Input
+                                                                                id="fullname"
+                                                                                value={editingMember.fullName}
+                                                                                onChange={(e) => setEditingMember({
+                                                                                    ...editingMember,
+                                                                                    fullName: e.target.value
+                                                                                })}
+                                                                            />
+                                                                        </div>
+                                                                        <div className="space-y-2">
+                                                                            <Label htmlFor="pp_url">Profile Picture
+                                                                                URL</Label>
+                                                                            <Input
+                                                                                id="pp_url"
+                                                                                value={editingMember.ppUrl}
+                                                                                onChange={(e) => setEditingMember({
+                                                                                    ...editingMember,
+                                                                                    ppUrl: e.target.value
+                                                                                })}
+                                                                                placeholder="https://example.com/avatar.jpg"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+
                                                                     <div className="space-y-2">
-                                                                        <Label htmlFor="fullname">Full Name</Label>
+                                                                        <Label htmlFor="telegram_id">Telegram ID</Label>
                                                                         <Input
-                                                                            id="fullname"
-                                                                            value={editingMember.fullName}
-                                                                            onChange={(e) => setEditingMember({ ...editingMember, fullName: e.target.value })}
+                                                                            id="telegram_id"
+                                                                            value={editingMember.telegramId}
+                                                                            onChange={(e) =>
+                                                                                setEditingMember({
+                                                                                    ...editingMember,
+                                                                                    telegramId: e.target.value
+                                                                                })
+                                                                            }
+                                                                            placeholder="User Telegram ID"
                                                                         />
                                                                     </div>
+
                                                                     <div className="space-y-2">
-                                                                        <Label htmlFor="username">Username (Read-only)</Label>
-                                                                        <Input id="username" value={editingMember.userName} disabled />
+                                                                        <Label htmlFor="password">Password</Label>
+                                                                        <div className="relative">
+                                                                            <Input
+                                                                                id="password"
+                                                                                type={showPassword ? "text" : "password"}
+                                                                                value={editingMember.password == undefined ? "" : editingMember.password}
+                                                                                placeholder={"Enter new password if you want to change it"}
+                                                                                onChange={(e) => setEditingMember({
+                                                                                    ...editingMember,
+                                                                                    password: e.target.value
+                                                                                })}
+                                                                            />
+                                                                            <Button
+                                                                                type="button"
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="absolute right-0 top-0 h-full"
+                                                                                onClick={() => setShowPassword(!showPassword)}
+                                                                            >
+                                                                                {showPassword ?
+                                                                                    <EyeOff className="size-4"/> :
+                                                                                    <Eye className="size-4"/>}
+                                                                            </Button>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="space-y-2">
+                                                                        <Label>Permissions</Label>
+                                                                        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                                                                            <CollapsibleTrigger
+                                                                                className="flex w-full items-center justify-between rounded-lg border bg-muted/50 p-4 hover:bg-muted transition-colors">
+                                                                                <div className="flex items-center gap-2">
+                                                            <span className="text-sm font-medium">
+                                                                {editingMember.permissions.length > 0
+                                                                    ? `${editingMember.permissions.length} permission(s) selected`
+                                                                    : "Select permissions"}
+                                                            </span>
+                                                                                </div>
+                                                                                <ChevronDown
+                                                                                    className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}/>
+                                                                            </CollapsibleTrigger>
+                                                                            <CollapsibleContent className="mt-2">
+                                                                                <div
+                                                                                    className="border rounded-lg p-4 space-y-3 bg-background max-h-[120px] overflow-y-auto">
+                                                                                    {Object.entries(permissionsList).map(([id, permissionName]) => (
+                                                                                        <div key={id} className="flex items-center space-x-3">
+                                                                                            <Checkbox
+                                                                                                id={`perm-${id}`}
+                                                                                                checked={editingMember.permissions.includes(permissionName)}
+                                                                                                onCheckedChange={() => togglePermission(permissionName, editingMember, true)}
+                                                                                            />
+                                                                                            <Label htmlFor={`perm-${id}`}
+                                                                                                   className="text-sm font-normal cursor-pointer flex-1">
+                                                                                                {permissionName}
+                                                                                            </Label>
+                                                                                        </div>
+                                                                                    ))}
+                                                                                </div>
+                                                                            </CollapsibleContent>
+                                                                        </Collapsible>
+                                                                        {editingMember.permissions.length > 0 && (
+                                                                            <p className="text-xs text-muted-foreground">Selected: {editingMember.permissions.join(", ")}</p>
+                                                                        )}
                                                                     </div>
                                                                 </div>
-
-                                                                <div className="space-y-2">
-                                                                    <Label htmlFor="pp_url">Profile Picture URL</Label>
-                                                                    <Input
-                                                                        id="pp_url"
-                                                                        value={editingMember.ppUrl}
-                                                                        onChange={(e) => setEditingMember({ ...editingMember, ppUrl: e.target.value })}
-                                                                        placeholder="https://example.com/avatar.jpg"
-                                                                    />
-                                                                </div>
-
-                                                                <div className="space-y-2">
-                                                                    <Label htmlFor="telegram_id">Telegram ID</Label>
-                                                                    <Input
-                                                                        id="telegram_id"
-                                                                        value={editingMember.telegramId}
-                                                                        onChange={(e) =>
-                                                                            setEditingMember({ ...editingMember, telegramId: e.target.value })
-                                                                        }
-                                                                        placeholder="@username"
-                                                                    />
-                                                                </div>
-
-                                                                <div className="space-y-2">
-                                                                    <Label htmlFor="password">Password</Label>
-                                                                    <div className="relative">
-                                                                        <Input
-                                                                            id="password"
-                                                                            type={showPassword ? "text" : "password"}
-                                                                            value={editingMember.password}
-                                                                            onChange={(e) => setEditingMember({ ...editingMember, password: e.target.value })}
-                                                                        />
-                                                                        <Button
-                                                                            type="button"
-                                                                            variant="ghost"
-                                                                            size="icon"
-                                                                            className="absolute right-0 top-0 h-full"
-                                                                            onClick={() => setShowPassword(!showPassword)}
-                                                                        >
-                                                                            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                                                                        </Button>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="space-y-2">
-                                                                    <Label>Permissions (View Only)</Label>
-                                                                    <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-md">
-                                                                        {editingMember.permissions.map((perm) => (
-                                                                            <Badge key={perm} variant="secondary">
-                                                                                {perm}
-                                                                            </Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                    <p className="text-xs text-muted-foreground">
-                                                                        Permission editing will be available soon
-                                                                    </p>
-                                                                </div>
-                                                            </div>
+                                                            </>
                                                         )}
                                                         <DialogFooter>
                                                             <Button
@@ -447,7 +570,8 @@ export default function DashboardPage() {
                                                             >
                                                                 Cancel
                                                             </Button>
-                                                            <Button onClick={handleSave}>Save Changes</Button>
+                                                            <Button type={"button"} onClick={handleMemberEdit}>Apply
+                                                                Changes</Button>
                                                         </DialogFooter>
                                                     </DialogContent>
                                                 </Dialog>
@@ -455,15 +579,17 @@ export default function DashboardPage() {
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
                                                         <Button variant="ghost" size="icon">
-                                                            <Trash2 className="size-4 text-destructive" />
+                                                            <Trash2 className="size-4 text-destructive"/>
                                                         </Button>
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                This action cannot be undone. This will permanently delete the member{" "}
-                                                                <strong>{member.fullName}</strong> and remove their access.
+                                                                This action cannot be undone. This will permanently
+                                                                delete the member{" "}
+                                                                <strong>{member.fullName}</strong> and remove their
+                                                                access.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
