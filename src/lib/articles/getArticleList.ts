@@ -58,17 +58,21 @@ export default async function getArticleList(
     const offset = (page - 1) * SIZE_PER_PAGE
 
     const articlesResponse = await pgPool.query(`
-        SELECT 
-            id, rtm AS rt, date AS dt, topic AS tp, id_a::integer AS id_a, 
-            title_${locale} AS tt, desc_${locale} AS dc
-        FROM mami_articles 
-        ${conditionTerm ? `WHERE ${
-        conditionTerm
-            .replace(conValues.topic, "topic")
-            .replace(conValues.title, `title_${locale}`)
-    }` : ""}
+        SELECT id,
+               rtm             AS rt,
+               date            AS dt,
+               topic           AS tp,
+               id_a::integer   AS id_a,
+               title_${locale} AS tt,
+               desc_${locale}  AS dc
+        FROM mami_articles ${conditionTerm ? `WHERE ${
+                conditionTerm
+                        .replace(conValues.topic, "topic")
+                        .replace(conValues.title, `title_${locale}`)
+        }` : ""}
         ORDER BY dt
-        DESC LIMIT $1 OFFSET $2
+            DESC
+        LIMIT $1 OFFSET $2
     `, [SIZE_PER_PAGE, offset]);
 
     const topicsResponse = await pgPool.query(`SELECT DISTINCT topic FROM mami_articles`)
