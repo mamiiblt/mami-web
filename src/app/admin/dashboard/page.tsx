@@ -5,7 +5,12 @@ import {HomeIcon} from "lucide-react";
 
 export default function DashboardPage() {
     return (
-        <DashboardLayout pageIcon={HomeIcon} title={"Home"} description={"Welcome to Admin Panel"}>
+        <DashboardLayout
+            pageIcon={HomeIcon}
+            title={"Home"}
+            description={"Welcome to Admin Panel"}
+            loadingState={false}
+        >
             <div className="flex flex-col gap-6">
                 <div>
                     <h1 className="text-3xl font-bold">bö</h1>

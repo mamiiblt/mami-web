@@ -9,7 +9,12 @@ export default function DashboardPage() {
     const router = useRouter()
 
     return (
-        <DashboardLayout pageIcon={MonitorIcon} title={"Service Monitor"} description={"View technical & operational status of mamii's apps"} >
+        <DashboardLayout
+            pageIcon={MonitorIcon}
+            title={"Service Monitor"}
+            description={"View technical & operational status of mamii's apps"}
+            loadingState={false}
+        >
             {
                 <div>selam</div>
             }
