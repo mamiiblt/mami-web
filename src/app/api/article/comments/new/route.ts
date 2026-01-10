@@ -1,7 +1,6 @@
 import {NextResponse} from "next/server";
 import {pgPool} from "@/lib/serverDatabase";
 import {randomUUID} from "node:crypto";
-import MamiServerBot from "@/lib/telegramBot";
 import { Filter } from 'bad-words'
 
 export const MAX_CONTENT_LENGTH = 500
@@ -61,28 +60,6 @@ export async function POST(req: Request) {
         )
         VALUES ($1, $2, $3, $4, $5)
     `, [randomUUID(), id_a, sid, content.replace("\n", ""), author_name])
-
-    await MamiServerBot.sendMessage(
-        -1003280588467,
-        [
-            "<b>New Comment</b>\n",
-            `<blockquote>${content}</blockquote>`
-        ].join("\n"),
-        {
-            message_thread_id: 41,
-            parse_mode: "HTML",
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        {
-                            text: "View Article",
-                            url: `https://mamii.dev/article/en/${isArticleAvailable.rows[0].id}`
-                        }
-                    ]
-                ]
-            }
-        }
-    )
 
     return createResponse("SHARE_SUCCESS", secureLocale)
 }
