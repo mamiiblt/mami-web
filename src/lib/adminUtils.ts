@@ -1,6 +1,7 @@
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {permissionsManager} from "@/lib/permissionsManager";
 import {toast} from "sonner";
+import {router} from "next/client";
 
 export const ResponseStatus = {
     SUCCESS: "SUCCESS",
@@ -37,7 +38,7 @@ export function getSavedSessionToken(router: AppRouterInstance) {
         ?.split("=")[1] || null
 
     if (sessionToken == null) {
-        router.push("/admin/login")
+        return null
     } else {
         return sessionToken
     }
@@ -53,28 +54,42 @@ export function logoutUser(router: AppRouterInstance) {
 }
 
 interface AdminRequestConfig<T = any> {
+    router: AppRouterInstance,
+    redirectToLogin: boolean,
     path: string,
     method: "POST" | "GET",
-    body?: object,
+    body?: BodyInit,
     onResponse?: (response: Response, status: string, data: any) => T
 }
 
 export async function sendAdminRequest(
-    sessionToken: string,
     config: AdminRequestConfig
 ) {
+    const sessionToken = getSavedSessionToken(config.router)
     const requestUrl = `${process.env.API_BASE}/madmin/${config.path}`
-
     let response: Response | undefined = undefined
 
+    if (sessionToken == null) {
+        toast.warning("Session is expired", {
+            description: "Please re-login to MAdmin."
+        })
+        if (config.redirectToLogin) {
+            await router.push("/admin/login")
+        }
+
+        return;
+    }
+
     if (config.method === "POST") {
+        const isFormData = config.body instanceof FormData;
+
         response = await fetch(requestUrl, {
                 method: "POST",
                 headers: {
                     "Authorization": `Token ${sessionToken}`,
-                    "Content-Type": "application/json",
+                    ...(isFormData ? {} : { "Content-Type": "application/json" })
                 },
-                body: JSON.stringify(config.body) || ""
+                body: config.body || ""
             }
         )
     } else {

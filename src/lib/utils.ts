@@ -11,8 +11,8 @@ export const toStringParam = (
   );
 };
 
-export function getBannerUrl(articleIdNum: number): string {
-  return `https://raw.githubusercontent.com/instafel/images/refs/heads/main/marc/P${articleIdNum}.png`
+export function getBannerUrl(bannerFileName: string): string {
+  return `https://raw.githubusercontent.com/instafel/images/refs/heads/main/marc/${bannerFileName}.png`
 }
 
 export function cn(...inputs: ClassValue[]) {

@@ -3,8 +3,7 @@
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import {CircleUserRoundIcon, Eye, EyeOff, LockIcon} from "lucide-react";
 import React, {useEffect, useState} from "react";
-import {LoadingBar} from "@/components/ifl";
-import {getSavedSessionToken, ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
+import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {useRouter} from "next/navigation";
 import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Card} from "@/components/ui/card";
@@ -52,7 +51,9 @@ export default function DashboardPage() {
 
     useEffect(() => {
         async function sendRequest() {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: true,
                 method: "GET",
                 path: "content/admin_full_info",
                 onResponse: (response, status, data) => {
@@ -76,13 +77,15 @@ export default function DashboardPage() {
                 return;
             }
 
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: false,
                 method: "POST",
                 path: "content/update_pass",
-                body: {
+                body: JSON.stringify({
                     old_pass: oldPassword,
                     new_pass: newPassword
-                },
+                }),
                 onResponse: (response, status, data) => {
                     const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
                     toastType(status, {description: data.msg });
@@ -110,13 +113,15 @@ export default function DashboardPage() {
             async function sendRequest() {
                 setIsSaving(true)
 
-                await sendAdminRequest(getSavedSessionToken(router), {
+                await sendAdminRequest({
+                    router,
+                    redirectToLogin: false,
                     method: "POST",
                     path: "content/update_profile",
-                    body: {
+                    body: JSON.stringify({
                         new_fullName: fullName,
                         new_telegramId: telegramId
-                    },
+                    }),
                     onResponse: (response, status, data) => {
                         const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
                         toastType(status, { description: data.msg })

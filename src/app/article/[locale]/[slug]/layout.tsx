@@ -16,7 +16,8 @@ async function getArticleSEOData(articleId: string, locale: string) {
             desc_${locale} AS dc,
             date AS dt,
             topic AS tp,
-            id_a::integer AS id_a
+            id_a::integer AS id_a,
+            banner_fn 
         FROM mami_articles WHERE id = $1
         LIMIT 1
     `, [articleId])
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const seo = await getArticleSEOData(slug, locale)
   if (seo == null) return { title: "Not found", robots: { index: false } };
-  const banner = getBannerUrl(seo.id_a)
+  const banner = getBannerUrl(seo.banner_fn)
 
   const baseUrl = "https://mamii.dev";
   const pageUrl = `${baseUrl}/article/${locale}/${slug}`;

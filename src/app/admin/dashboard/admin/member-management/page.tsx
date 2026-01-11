@@ -76,12 +76,14 @@ export default function DashboardPage() {
         console.log(editingMember)
 
         try {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: false,
                 method: "POST",
                 path: "content/edit_member",
-                body: {
+                body: JSON.stringify({
                     member: editingMember
-                },
+                }),
                 onResponse: (response, status, data) => {
 
                     const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
@@ -108,17 +110,19 @@ export default function DashboardPage() {
 
     const createNewMember = async () => {
         try {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: false,
                 method: "POST",
                 path: "content/create_member",
-                body: {
+                body: JSON.stringify({
                     fullname: newMember.fullName,
                     username: newMember.userName,
                     password: newMember.password,
                     pp_url: newMember.ppUrl,
                     telegram_id: newMember.telegramId,
                     permissions: newMember.permissions
-                },
+                }),
                 onResponse: (response, status, data) => {
                     const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
                     toastType(status.toUpperCase(), {
@@ -140,12 +144,14 @@ export default function DashboardPage() {
 
     const handleDelete = async (id: number) => {
         try {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: false,
                 method: "POST",
                 path: "content/delete_member",
-                body: {
+                body: JSON.stringify({
                     adminId: id
-                },
+                }),
                 onResponse: (response, status, data) => {
                     const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
                     toastType(status.toUpperCase(), {
@@ -167,7 +173,9 @@ export default function DashboardPage() {
         if (!router) return
 
         const sendRequest = async () => {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: true,
                 method: "GET",
                 path: "content/members_info",
                 onResponse: (response, status, data) => {

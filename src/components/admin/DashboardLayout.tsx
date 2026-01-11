@@ -14,10 +14,10 @@ import {
     MonitorIcon, UserCogIcon, CogIcon
 } from "lucide-react"
 import {LoadingBar} from "@/components/ifl";
-import {getSavedSessionToken, getSessionExpireDate, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
+import {getSessionExpireDate, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
 import {useRouter} from "next/navigation";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Barlow_Condensed, Bayon} from "next/font/google";
+import {Barlow_Condensed} from "next/font/google";
 import {toast} from "sonner";
 
 export const bayon = Barlow_Condensed({
@@ -76,6 +76,7 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
                 return
             }
 
+
             const hours = Math.floor(diff / (1000 * 60 * 60))
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
             const seconds = Math.floor((diff % (1000 * 60)) / 1000)
@@ -112,7 +113,9 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
         try {
 
             async function sendRequest() {
-                await sendAdminRequest(getSavedSessionToken(router), {
+                await sendAdminRequest({
+                    router,
+                    redirectToLogin: true,
                     method: "GET",
                     path: "content/admin_basic_info",
                     onResponse: (response, status, data) => {

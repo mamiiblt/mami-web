@@ -64,7 +64,8 @@ export default async function getArticleList(
                topic           AS tp,
                id_a::integer   AS id_a,
                title_${locale} AS tt,
-               desc_${locale}  AS dc
+               desc_${locale}  AS dc,
+               banner_fn
         FROM mami_articles ${conditionTerm ? `WHERE ${
                 conditionTerm
                         .replace(conValues.topic, "topic")
@@ -104,6 +105,7 @@ export interface GetArticleListResponse {
             id_a: number
             tt: string
             dc: string
+            banner_fn: string
         }[]
     }
 }

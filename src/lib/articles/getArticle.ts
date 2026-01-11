@@ -26,7 +26,8 @@ export default async function getArticle(
         SELECT like_count::integer AS lc, view_count::integer AS vc, date AS dt, topic AS tp, id_a::integer AS id_a,
             title_${locale} AS tt,
             desc_${locale} AS dc,
-            cont_${locale} AS cn
+            cont_${locale} AS cn,
+            banner_fn
         FROM mami_articles
         WHERE id = $1
     `, [article_id])
@@ -99,6 +100,7 @@ export interface GetArticleResponse {
             tt: string
             dc: string
             cn: string
+            banner_fn: string
         }
     }
 }

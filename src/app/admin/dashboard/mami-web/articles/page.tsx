@@ -3,7 +3,7 @@
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import React, {useEffect, useMemo, useState} from "react";
 import {useRouter} from "next/navigation";
-import {getSavedSessionToken, sendAdminRequest} from "@/lib/adminUtils";
+import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,7 +19,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { NewspaperIcon, Edit, Trash2, Plus, Search, FileText } from "lucide-react"
+import {NewspaperIcon, Edit, Trash2, Plus, Search, FileText, LogOut, RefreshCcw} from "lucide-react"
 import {formatDate} from "@/lib/utils";
 import {
     DropdownMenu,
@@ -27,6 +27,7 @@ import {
     DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import {toast} from "sonner";
 
 interface ArticleListInfo {
     id: string;
@@ -45,22 +46,16 @@ export default function ArticlesListPage() {
     const [selectedArticle, setSelectedArticle] = useState<ArticleListInfo | null>(null)
     const [articleFetchLocale, setArticleFetchLocale] = useState<string>("en")
 
-    const [editFormData, setEditFormData] = useState<ArticleListInfo>({
-        id: "",
-        title: "",
-        desc: "",
-        date: "",
-        topic: "",
-    })
-
     useEffect(() => {
         const sendRequest = async () => {
-            await sendAdminRequest(getSavedSessionToken(router), {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: true,
                 method: "POST",
                 path: `content/articles_info`,
-                body: {
+                body: JSON.stringify({
                     locale: articleFetchLocale
-                },
+                }),
                 onResponse: (response, status, data) => {
                     setArticles(data.articles)
                     setIsLoading(false)
@@ -89,10 +84,30 @@ export default function ArticlesListPage() {
     }
 
     const handleDelete = () => {
-        if (selectedArticle) {
-            setArticles((prev) => prev.filter((article) => article.id !== selectedArticle.id))
-            setDeleteDialogOpen(false)
+        const sendRequest = async () => {
+            await sendAdminRequest({
+                router,
+                redirectToLogin: false,
+                method: "POST",
+                path: `content/delete_article`,
+                body: JSON.stringify({
+                    article_id: selectedArticle.id
+                }),
+                onResponse: (response, status, data) => {
+                    const toastType = status == ResponseStatus.SUCCESS ? toast.success : toast.error
+                    toastType(status, {
+                        description: data.msg
+                    })
+
+                    if (status == ResponseStatus.SUCCESS) {
+                        setArticles((prev) => prev.filter((article) => article.id !== selectedArticle.id))
+                        setDeleteDialogOpen(false)
+                    }
+                }
+            })
         }
+
+        sendRequest()
     }
 
     return (
@@ -124,6 +139,14 @@ export default function ArticlesListPage() {
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>,
+                <Button
+                    key={"refreshList"}
+                    variant="outline"
+                    size="icon"
+                    className="size-9"
+                >
+                    <RefreshCcw className="size-4"/>
+                </Button>,
                 <Button key="createNewArticle" onClick={() => {
                     router.push(`/admin/dashboard/mami-web/articles/editor`)
                 }} className="gap-2">
@@ -143,8 +166,8 @@ export default function ArticlesListPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>Article ID</TableHead>
                                     <TableHead>Title</TableHead>
-                                    <TableHead>Description</TableHead>
                                     <TableHead>Date</TableHead>
                                     <TableHead>Topic</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
@@ -153,10 +176,10 @@ export default function ArticlesListPage() {
                             <TableBody>
                                 {filteredArticles.map((article) => (
                                     <TableRow key={article.id}>
-                                        <TableCell className="font-medium">{article.title}</TableCell>
                                         <TableCell className="max-w-md">
-                                            <p className="text-sm text-muted-foreground line-clamp-2">{article.desc}</p>
+                                            <pre className="text-sm text-muted-foreground line-clamp-2">{article.id}</pre>
                                         </TableCell>
+                                        <TableCell className="font-medium">{article.title}</TableCell>
                                         <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                                             {formatDate(article.date)}
                                         </TableCell>

@@ -37,6 +37,7 @@ import {
 import {Separator} from "@/components/ui/separator";
 import {generatePageNumbers, getBannerUrl} from "@/lib/utils";
 import {GetArticleListResponse} from "@/lib/articles/getArticleList";
+import ArticleListCard from "@/components/articles/ArticleListCard";
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -112,7 +113,6 @@ export default function ArticleListContent(
         params.delete("page");
         router.push(`?${params.toString()}`);
     }
-
 
     return (
         <Page
@@ -198,58 +198,16 @@ export default function ArticleListContent(
                             >
                                 {list.data.articles.map((post, idx) => (
                                     <Link key={idx} href={`/article/${i18n.language}/${post.id}`}>
-                                        <motion.div variants={itemVariants} custom={idx}>
-                                            <Card
-                                                className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/50 relative">
-                                                <div className="relative w-full h-48 overflow-hidden bg-secondary">
-                                                    <Image
-                                                        src={getBannerUrl(post.id_a)}
-                                                        alt={post.tt}
-                                                        fill
-                                                        className="object-cover transition-transform duration-300"
-                                                    />
-                                                </div>
-
-                                                <div
-                                                    className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                                                    {post.tp}
-                                                </div>
-
-                                                <div className="p-6">
-                                                    <div className="flex flex-col h-full">
-                                                        <div className="flex-1 space-y-3">
-                                                            <h3 className="text-xl font-bold group-hover:text-primary transition-colors text-balance leading-snug">
-                                                                {post.tt}
-                                                            </h3>
-                                                            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
-                                                                {post.dc}
-                                                            </p>
-                                                        </div>
-
-                                                        <div className="mt-3 space-y-4">
-                                                            <div
-                                                                className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border">
-                                                                <div className="flex flex-wrap items-center gap-4">
-                                                                    <span className="flex items-center gap-1.5">
-                                                                        <Calendar className="h-3.5 w-3.5"/>
-                                                                        {new Date(post.dt).toLocaleDateString(i18n.language, {
-                                                                            month: "short",
-                                                                            day: "numeric",
-                                                                            year: "numeric",
-                                                                        })}
-                                                                    </span>
-                                                                    <span className="flex items-center gap-1.5">
-                                                                        <Clock className="h-3.5 w-3.5"/>
-                                                                        {t("readDur", {minutes: post.rt})}
-                                                                    </span>
-                                                                </div>
-                                                                <ArrowUpRight className="h-4 w-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"/>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Card>
-                                        </motion.div>
+                                        <ArticleListCard
+                                            idx={0}
+                                            bannerSrc={getBannerUrl(post.banner_fn)}
+                                            bannerAlt={post.tt}
+                                            topic={post.tp}
+                                            title={post.tt}
+                                            desc={post.dc}
+                                            dateIso={post.dt}
+                                            dateLng={i18n.language}
+                                            rtmString={t("readDur", {minutes: post.rt})} />
                                     </Link>
                                 ))}
                             </motion.div>
