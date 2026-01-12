@@ -175,7 +175,7 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
             items: [
                 {icon: MonitorIcon, label: "Service Monitor", href: "/admin/dashboard/admin/service-monitor"},
                 {icon: UserCogIcon, label: "Member Management", href: "/admin/dashboard/admin/member-management"},
-                {icon: HardDriveIcon, label: "CDN File Manager", href: "/admin/dashboard/admin/cdn-management"},
+                {icon: HardDriveIcon, label: "CDN File Manager", href: "/admin/dashboard/admin/cdn-file-manager"},
                 {icon: ScrollText, label: "API - Audit Logs", href: "/admin/dashboard/admin/audit-logs"},
                 {icon: RotateCcwIcon, label: "API - Restart", href: "/admin/dashboard/admin/restart-api"},
             ],
