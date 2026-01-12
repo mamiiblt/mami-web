@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cdn.mamii.dev",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "i.scdn.co",
         port: "",
         pathname: "/**",
@@ -19,7 +24,7 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_SITE_URL: "https://mamii.dev",
-    API_BASE: process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://api.instafel.app"
+    API_BASE: process.env.NODE_ENV === "development" ? "http://localhost:3003" : "https://api.instafel.app"
   },
   htmlLimitedBots: /.*/,
   reactStrictMode: false

@@ -31,8 +31,8 @@ import {toast} from "sonner";
 
 interface ArticleListInfo {
     id: string;
-    title: string; // title of en
-    desc: string; // desc of en
+    title: string;
+    desc: string;
     date: string;
     topic: string;
 }

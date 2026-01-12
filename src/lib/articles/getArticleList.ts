@@ -17,7 +17,7 @@ const SIZE_PER_PAGE = 9
 
 export default async function getArticleList(
     { page, topic, search, locale }: GetArticleListParams
-): globalThis.Promise<GetArticleListResponse> {
+): Promise<GetArticleListResponse> {
     if (!supportedArticleLocales.includes(locale)) {
         return {
             status: ResponseStatus.FAILURE,
@@ -65,7 +65,7 @@ export default async function getArticleList(
                id_a::integer   AS id_a,
                title_${locale} AS tt,
                desc_${locale}  AS dc,
-               banner_fn
+               banner_id       AS bid
         FROM mami_articles ${conditionTerm ? `WHERE ${
                 conditionTerm
                         .replace(conValues.topic, "topic")
@@ -105,7 +105,7 @@ export interface GetArticleListResponse {
             id_a: number
             tt: string
             dc: string
-            banner_fn: string
+            bid: string
         }[]
     }
 }

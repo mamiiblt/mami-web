@@ -21,7 +21,7 @@ export default async function BlogPostPage({
   }
 
   const postResponse: GetArticleResponse = await getArticle(payload)
-  const commentsResponse: GetCommentResponse = await getComments({
+  const commentsResponse= await getComments({
     id_a: postResponse.data.articleData.id_a,
     sid: postResponse.data.gen.sid,
     page: 1

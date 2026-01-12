@@ -200,7 +200,7 @@ export default function ArticleListContent(
                                     <Link key={idx} href={`/article/${i18n.language}/${post.id}`}>
                                         <ArticleListCard
                                             idx={0}
-                                            bannerSrc={getBannerUrl(post.banner_fn)}
+                                            bannerSrc={getBannerUrl(post.bid)}
                                             bannerAlt={post.tt}
                                             topic={post.tp}
                                             title={post.tt}

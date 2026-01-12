@@ -14,7 +14,7 @@ const logger = createLogger("ARTICLES", "getArticle")
 
 export default async function getArticle(
     { article_id, session_id, locale }: GetArticleParams
-): globalThis.Promise<GetArticleResponse> {
+): Promise<GetArticleResponse> {
     if (!supportedArticleLocales.includes(locale)) {
         return {
             status: ResponseStatus.FAILURE,
@@ -27,7 +27,7 @@ export default async function getArticle(
             title_${locale} AS tt,
             desc_${locale} AS dc,
             cont_${locale} AS cn,
-            banner_fn
+            banner_id AS bid
         FROM mami_articles
         WHERE id = $1
     `, [article_id])
@@ -100,7 +100,7 @@ export interface GetArticleResponse {
             tt: string
             dc: string
             cn: string
-            banner_fn: string
+            bid: string
         }
     }
 }

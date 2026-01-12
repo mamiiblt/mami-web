@@ -11,7 +11,7 @@ import {
     X,
     ChevronDown, PackageMinusIcon, SquaresExcludeIcon, UserRoundSearchIcon, CloudDownloadIcon, FileUp, NewspaperIcon,
     MessageCircleIcon, ScrollText, RotateCcwIcon, LucideIcon, CircleUserRoundIcon, LogOut,
-    MonitorIcon, UserCogIcon, CogIcon
+    MonitorIcon, UserCogIcon, CogIcon, HardDriveIcon
 } from "lucide-react"
 import {LoadingBar} from "@/components/ifl";
 import {getSessionExpireDate, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
@@ -175,6 +175,7 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
             items: [
                 {icon: MonitorIcon, label: "Service Monitor", href: "/admin/dashboard/admin/service-monitor"},
                 {icon: UserCogIcon, label: "Member Management", href: "/admin/dashboard/admin/member-management"},
+                {icon: HardDriveIcon, label: "CDN File Manager", href: "/admin/dashboard/admin/cdn-management"},
                 {icon: ScrollText, label: "API - Audit Logs", href: "/admin/dashboard/admin/audit-logs"},
                 {icon: RotateCcwIcon, label: "API - Restart", href: "/admin/dashboard/admin/restart-api"},
             ],
@@ -324,7 +325,7 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
                         </header>
 
                         <div
-                            className={`flex-1 m-4 overflow-y-auto bg-background sticky bottom-4 border-t border-b rounded-xl hide-scrollbar`}>
+                            className={`flex-1 m-4 overflow-y-auto bg-background sticky bottom-4 rounded-xl hide-scrollbar`}>
                             {children}
 
                             {

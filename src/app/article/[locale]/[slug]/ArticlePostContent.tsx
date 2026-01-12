@@ -69,7 +69,7 @@ export default function ArticlePostContent({ post, slug, session_id, fetchCommen
                         <ArticleContentViewer
                             writtenByText={t("writtenBy")}
                             content={post.data.articleData.cn}
-                            bannerSrc={getBannerUrl(post.data.articleData.banner_fn)}
+                            bannerSrc={getBannerUrl(post.data.articleData.bid)}
                             title={post.data.articleData.tt}
                             desc={post.data.articleData.dc}
                             viewText={t("viewText", {count: post.data.articleData.vc})}

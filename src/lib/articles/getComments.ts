@@ -8,8 +8,6 @@ interface GetCommentParams {
     page: number
 }
 
-const logger = createLogger("ARTICLES", "getComments")
-
 const COMMENT_PER_PAGE = 7
 
 export default async function getComments(

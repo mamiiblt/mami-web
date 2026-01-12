@@ -36,7 +36,7 @@ interface ArticleData {
     id: string
     date: string
     topic: string
-    banner_url: string
+    banner_id: string
     english: {
         title: string
         desc: string
@@ -70,7 +70,7 @@ export default function ArticlesListPage() {
                 id: "",
                 date: new Date(Date.now()).toISOString(),
                 topic: "",
-                banner_url: "",
+                banner_id: "",
                 turkish: {
                     title: "",
                     desc: "",
@@ -103,7 +103,7 @@ export default function ArticlesListPage() {
 
                     console.log(data.article)
                     setArticleData(data.article)
-                    setBannerSrc(data.article.banner_url)
+                    setBannerSrc(getBannerUrl(data.article.banner_id))
                     setIsLoading(false)
                 }
             })
@@ -147,12 +147,6 @@ export default function ArticlesListPage() {
         setBannerSrc(null)
     }
 
-    const handleRestoreBannerSaved = () => {
-        setBannerFile(null)
-        setBannerSrc(articleData.banner_url)
-        toast.success("Restored", { description: "Uploaded banner restored from API" })
-    }
-
     const handleUploadBanner = () => {
         const formData = new FormData();
 
@@ -165,7 +159,7 @@ export default function ArticlesListPage() {
                 router,
                 redirectToLogin: false,
                 method: "POST",
-                path: `content/upload_banner/${isEditMode ? articleData.id : "NEW_ARTICLE"}`,
+                path: `content/upload_banner`,
                 body: formData,
                 onResponse: (response, status, data) => {
                     const toastFn = status == ResponseStatus.SUCCESS ? toast.success : toast.warning
@@ -173,9 +167,8 @@ export default function ArticlesListPage() {
 
                     if (status == ResponseStatus.SUCCESS) {
                         setBannerFile(null)
-                        const newUrl = `https://raw.githubusercontent.com/instafel/images/refs/heads/main/marc/${data.bannerName}.png`
-                        setBannerSrc(newUrl)
-                        handleChange("banner_url", newUrl)
+                        setBannerSrc(getBannerUrl(data.newBannerId))
+                        handleChange("banner_id", data.newBannerId)
                     }
                 }
             })
@@ -328,16 +321,6 @@ export default function ArticlesListPage() {
                                         </CardTitle>
 
                                        <div className={"space-x-2 flex"}>
-                                           {isEditMode && <Button
-                                               key={"refreshList"}
-                                               variant="outline"
-                                               size="icon"
-                                               className="size-9"
-                                               onClick={handleRestoreBannerSaved}
-                                           >
-                                               <HardDriveDownload className="size-4"/>
-                                           </Button>}
-
                                            {bannerSrc && !bannerSrc.startsWith("https://") && <div>
                                                <Button
                                                    className={"bg-green-700 hover:bg-green-700"}
@@ -518,4 +501,8 @@ export default function ArticlesListPage() {
             </Dialog>
         </DashboardLayout>
     )
+}
+
+function getBannerUrl(bannerId: string) {
+    return `https://cdn.mamii.dev/mwb/article_banners/${bannerId}.png`
 }
