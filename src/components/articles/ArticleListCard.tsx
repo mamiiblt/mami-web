@@ -1,7 +1,7 @@
 import {motion} from "framer-motion";
 import {Card} from "@/components/ui/card";
 import Image from "next/image";
-import {ArrowUpRight, Calendar, Clock} from "lucide-react";
+import {ArrowUpRight, Calendar, Clock, EyeIcon, TagIcon} from "lucide-react";
 import React from "react";
 
 const itemVariants = {
@@ -27,8 +27,7 @@ export default function ArticleListCard(
         desc,
         dateIso,
         dateLng,
-        rtmString,
-
+        viewCount
     }: {
         idx: number,
         bannerSrc: string,
@@ -38,25 +37,27 @@ export default function ArticleListCard(
         desc: string,
         dateIso: string,
         dateLng: string,
-        rtmString: string
+        viewCount: number
     }) {
     return (
         <motion.div variants={itemVariants} custom={idx}>
             <Card
-                className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/50 relative">
+                className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/30 relative">
                 <div className="relative w-full h-48 overflow-hidden bg-secondary">
                     <Image
                         src={bannerSrc}
                         alt={bannerAlt}
                         fill
-                        unoptimized={true}
                         className="object-cover transition-transform duration-300"
                     />
                 </div>
 
                 <div
-                    className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                    {topic}
+                    className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full opacity-70 hover:opacity-100">
+                    <span className="flex items-center gap-1.5">
+                        <EyeIcon className="h-3.5 w-3.5"/>
+                        {viewCount}
+                    </span>
                 </div>
 
                 <div className="p-6">
@@ -83,8 +84,8 @@ export default function ArticleListCard(
                                                                         })}
                                                                     </span>
                                     <span className="flex items-center gap-1.5">
-                                                                        <Clock className="h-3.5 w-3.5"/>
-                                        {rtmString}
+                                                                        <TagIcon className="h-3.5 w-3.5"/>
+                                        {topic}
                                                                     </span>
                                 </div>
                                 <ArrowUpRight

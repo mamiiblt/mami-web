@@ -2,7 +2,7 @@
 
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import React, {useEffect, useMemo, useState} from "react";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,7 @@ interface ArticleListInfo {
 }
 
 export default function ArticlesListPage() {
+    const pathname = usePathname()
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(true)
     const [articles, setArticles] = useState<ArticleListInfo[] | undefined>(undefined)
@@ -49,7 +50,7 @@ export default function ArticlesListPage() {
     useEffect(() => {
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: true,
                 method: "POST",
                 path: `content/articles_info`,
@@ -86,7 +87,7 @@ export default function ArticlesListPage() {
     const handleDelete = () => {
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: `content/delete_article`,

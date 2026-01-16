@@ -67,7 +67,6 @@ export default function ArticleContentViewer(
                 <Image
                     src={bannerSrc}
                     alt={title}
-                    unoptimized={true}
                     fill
                     className="object-cover"
                     priority

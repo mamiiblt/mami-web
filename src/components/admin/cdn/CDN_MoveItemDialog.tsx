@@ -9,10 +9,11 @@ import {
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
-import React, {useState} from "react";
+import React from "react";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {toast} from "sonner";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
+import {usePathname} from "next/navigation";
 
 interface DialogInterfaceProps {
     router: AppRouterInstance
@@ -38,9 +39,11 @@ export default function CDN_MoveItemDialog(
         setMoveDialogNewPath
     }: DialogInterfaceProps
 ) {
+    const pathname = usePathname()
+
     const handleMoveItem = async () => {
         await sendAdminRequest({
-            router,
+            router, pathname,
             redirectToLogin: false,
             method: "POST",
             path: "content/cdn_move",

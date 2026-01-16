@@ -113,10 +113,7 @@ export default function Navbar() {
             <NavigationMenuList className="flex gap-1 md:gap-2">
               <AnimatePresence>
                 {navItems.map((link, index) => {
-                  const isActive =
-                    pathname ===
-                    ("/" + i18n.language + link.href.split("?")[0] ||
-                      "/" + i18n.language + link.href);
+                  const isActive = pathname.startsWith(link.href.split("?")[0])
 
                   return (
                     <motion.div

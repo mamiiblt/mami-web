@@ -55,6 +55,7 @@ export function logoutUser(router: AppRouterInstance) {
 
 interface AdminRequestConfig<T = any> {
     router: AppRouterInstance,
+    pathname: string,
     redirectToLogin: boolean,
     path: string,
     method: "POST" | "GET",
@@ -68,15 +69,16 @@ export async function sendAdminRequest(
     const sessionToken = getSavedSessionToken(config.router)
     const requestUrl = `${process.env.API_BASE}/madmin/${config.path}`
     let response: Response | undefined = undefined
+    console.log(config.pathname)
 
     if (sessionToken == null) {
-        toast.warning("Session is expired", {
-            description: "Please re-login to MAdmin."
-        })
         if (config.redirectToLogin) {
-            await router.push("/admin/login")
+            config.router.push(`/admin/login?redirect=${encodeURIComponent(config.pathname)}`)
+        } else {
+            toast.warning("Session is expired", {
+                description: "Please re-login to MAdmin."
+            })
         }
-
         return;
     }
 

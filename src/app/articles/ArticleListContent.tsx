@@ -2,16 +2,12 @@
 
 import {useTranslation} from "react-i18next";
 import React, {useState} from "react";
-import {Card} from "@/components/ui/card";
 import {useRouter, useSearchParams} from "next/navigation";
 import {motion, AnimatePresence} from "framer-motion";
 import {Page, PageHeader} from "@/components/PageUtils";
 import {
-    ArrowUpRight,
-    Calendar,
     ChevronLeft,
     ChevronRight,
-    Clock,
     Filter,
     NewspaperIcon,
     Search,
@@ -19,7 +15,6 @@ import {
 } from "lucide-react";
 import {Input} from "@/components/ui/input";
 import Link from "next/link";
-import Image from "next/image";
 import {
     Pagination,
     PaginationContent, PaginationEllipsis,
@@ -49,18 +44,6 @@ const containerVariants = {
         },
     },
     exit: {opacity: 0},
-};
-
-const itemVariants = {
-    hidden: {opacity: 0, y: 20},
-    show: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            type: "spring",
-            stiffness: 100,
-        },
-    },
 };
 
 export default function ArticleListContent(
@@ -206,8 +189,8 @@ export default function ArticleListContent(
                                             title={post.tt}
                                             desc={post.dc}
                                             dateIso={post.dt}
-                                            dateLng={i18n.language}
-                                            rtmString={t("readDur", {minutes: post.rt})} />
+                                            viewCount={post.vc}
+                                            dateLng={i18n.language} />
                                     </Link>
                                 ))}
                             </motion.div>

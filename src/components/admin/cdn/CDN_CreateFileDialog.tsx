@@ -15,6 +15,7 @@ import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {toast} from "sonner";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {ContentInterface} from "@/app/admin/dashboard/admin/cdn-file-manager/page";
+import {usePathname} from "next/navigation";
 
 interface DialogInterfaceProps {
     router: AppRouterInstance
@@ -33,12 +34,13 @@ export default function CDN_CreateFileDialog(
         setContents
     }: DialogInterfaceProps
 ) {
+    const pathname = usePathname()
     const [createFilename, setCreateFilename] = useState("")
     const [createContent, setCreateContent] = useState("")
 
     const handleCreateFile = async () => {
         await sendAdminRequest({
-            router,
+            router, pathname,
             redirectToLogin: false,
             method: "POST",
             path: "content/cdn_create_file",

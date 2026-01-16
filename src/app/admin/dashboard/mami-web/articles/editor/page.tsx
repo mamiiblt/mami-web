@@ -2,9 +2,9 @@
 
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import React, {useEffect, useState} from "react";
-import {useRouter, useSearchParams} from "next/navigation";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {
-    CodeXmlIcon, EyeIcon, GlobeIcon, HardDriveDownload,
+    CodeXmlIcon, EyeIcon, GlobeIcon,
     ImageIcon, MousePointer2Icon,
     NewspaperIcon, PenIcon,
     PlusIcon,
@@ -50,11 +50,12 @@ interface ArticleData {
 }
 
 export default function ArticlesListPage() {
+    const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(true)
     const idValue = searchParams.get("id") ?? undefined
-    const isEditMode = idValue != undefined
+    const [isEditMode, setIsEditMode] = useState(idValue != undefined)
     const [articleData, setArticleData] = useState<ArticleData | undefined>(undefined)
     const [activeTab, setActiveTab] = useState("general")
     const [bannerFile, setBannerFile] = useState<File | null>(null)
@@ -88,7 +89,7 @@ export default function ArticlesListPage() {
 
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/article_info",
@@ -101,7 +102,6 @@ export default function ArticlesListPage() {
                         return
                     }
 
-                    console.log(data.article)
                     setArticleData(data.article)
                     setBannerSrc(getBannerUrl(data.article.banner_id))
                     setIsLoading(false)
@@ -156,7 +156,7 @@ export default function ArticlesListPage() {
 
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: `content/upload_banner`,
@@ -180,7 +180,7 @@ export default function ArticlesListPage() {
     const handleAction = async () => {
         if (!isEditMode) {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/create_article",
@@ -198,13 +198,38 @@ export default function ArticlesListPage() {
                                 }
                             }
                         })
+
+                        setIsEditMode(true)
                     } else {
                         toast.warning(status, {description: data.msg})
                     }
                 }
             })
         } else {
-            // send edit request
+            await sendAdminRequest({
+                router, pathname,
+                redirectToLogin: false,
+                method: "POST",
+                path: "content/edit_article",
+                body: JSON.stringify({
+                    articleDataEdited: articleData
+                }),
+                onResponse: (response, status, data) => {
+                    if (status == ResponseStatus.SUCCESS) {
+                        toast.success("Changes Applied", {
+                            description: data.msg,
+                            action: {
+                                label: "View",
+                                onClick: () => {
+                                    window.open(`https://mamii.dev/article/en/${articleData.id}`, "_blank", "noopener,noreferrer")
+                                }
+                            }
+                        })
+                    } else {
+                        toast.warning(status, {description: data.msg})
+                    }
+                }
+            })
         }
     }
 
@@ -250,15 +275,15 @@ export default function ArticlesListPage() {
                     <TabsList className={`grid w-full grid-cols-3 mb-6`}>
                         <TabsTrigger value="general" className="flex items-center gap-2">
                             <NewspaperIcon className="w-4 h-4"/>
-                            General Details
+                            {editorLang == "turkish" ? "Genel Bilgiler" : "General Details"}
                         </TabsTrigger>
                         <TabsTrigger value="content" className="flex items-center gap-2">
                             <PenIcon className="w-4 h-4"/>
-                            Edit Content
+                            {editorLang == "turkish" ? "İçeriği Düzenle" : "Edit Content"}
                         </TabsTrigger>
                         <TabsTrigger value="preview" className="flex items-center gap-2">
                             <EyeIcon className="w-4 h-4"/>
-                            Article Preview
+                            {editorLang == "turkish" ? "Makale Önizlemesi" : "Article Preview"}
                         </TabsTrigger>
                     </TabsList>
 
@@ -276,11 +301,12 @@ export default function ArticlesListPage() {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="id" className="text-sm font-medium">
-                                            Article ID
+                                            Article ID {isEditMode && "(Not Editable)"}
                                         </Label>
                                         <Input
                                             id="id"
                                             placeholder="Enter an unique ID string..."
+                                            disabled={isEditMode}
                                             value={articleData.id}
                                             onChange={(e) => handleChange("id", e.target.value)}
                                         />
@@ -364,7 +390,7 @@ export default function ArticlesListPage() {
                                                                     topic={articleData.topic} title={articleData.turkish.title}
                                                                     desc={articleData.turkish.desc}
                                                                     dateIso={articleData.date} dateLng={"tr"}
-                                                                    rtmString={`5 dakika okuma süresi`}
+                                                                    viewCount={101}
                                                                 />
                                                             </div>
                                                             <div
@@ -375,7 +401,7 @@ export default function ArticlesListPage() {
                                                                     topic={articleData.topic} title={articleData.english.title}
                                                                     desc={articleData.english.desc}
                                                                     dateIso={articleData.date} dateLng={"en"}
-                                                                    rtmString={`5 min to read`}
+                                                                    viewCount={101}
                                                                 />
                                                             </div>
                                                         </div>
@@ -414,13 +440,13 @@ export default function ArticlesListPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <PenIcon className="w-5 h-5"/>
-                                    Edit Content
+                                    {editorLang == "turkish" ? "İçeriği Düzenle" : "Edit Content"}
                                     <Badge variant={"outline"}>{editorLang === "turkish" ? "Türkçe" : "English"}</Badge>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className={"space-y-4"}>
                                 <div className="space-y-2">
-                                    <Label htmlFor="title">Title</Label>
+                                    <Label htmlFor="title">{editorLang == "turkish" ? "Başlık" : "Title"}</Label>
                                     <Input
                                         id="title"
                                         placeholder="Enter title..."
@@ -432,7 +458,7 @@ export default function ArticlesListPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="desc">Description</Label>
+                                    <Label htmlFor="desc">{editorLang == "turkish" ? "Açıklama" : "Description"}</Label>
                                     <Textarea
                                         id="desc"
                                         placeholder="Enter description..."
@@ -446,7 +472,7 @@ export default function ArticlesListPage() {
                                 </div>
                                 <div className="space-y-2">
                                     <div>
-                                        <Label>Article Content</Label>
+                                        <Label htmlFor="desc">{editorLang == "turkish" ? "İçerik" : "Content"} (Markdown)</Label>
                                         <Textarea
                                             placeholder="Write article content here..."
                                             className="min-h-[400px] font-mono text-sm resize-none"
@@ -467,7 +493,7 @@ export default function ArticlesListPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <EyeIcon className="w-5 h-5"/>
-                                    Article Preview
+                                    {editorLang == "turkish" ? "Makale Önizlemesi" : "Article Preview"}
                                     <Badge variant={"outline"}>{editorLang === "turkish" ? "Türkçe" : "English"}</Badge>
                                 </CardTitle>
                             </CardHeader>
@@ -479,7 +505,7 @@ export default function ArticlesListPage() {
                                         bannerSrc={bannerSrc || "/placeholder.svg"}
                                         title={editorLang == "turkish" ? articleData.turkish.title : articleData.english.title}
                                         desc={editorLang == "turkish" ? articleData.turkish.desc : articleData.english.desc}
-                                        viewText={t("viewText", {count: 31})}
+                                        viewText={editorLang == "turkish" ? "31 kez görüntülendi" : "Viewed 31 times"}
                                         dateStr={formatDate(articleData.date, editorLang == "turkish" ? "tr" : "en")}
                                         dateIso={articleData.date}/>
                                 </Card>

@@ -3,7 +3,7 @@
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import {ChevronDown, Search, UserCogIcon, UserIcon} from "lucide-react";
 import React, {useEffect, useMemo, useState} from "react";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
@@ -60,6 +60,7 @@ const newUserDefault = {
 } as MemberInfo
 
 export default function DashboardPage() {
+    const pathname = usePathname()
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(true)
     const [memberList, setMemberList] = useState<MemberInfo[] | undefined>(undefined)
@@ -77,7 +78,7 @@ export default function DashboardPage() {
 
         try {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/edit_member",
@@ -111,7 +112,7 @@ export default function DashboardPage() {
     const createNewMember = async () => {
         try {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/create_member",
@@ -145,7 +146,7 @@ export default function DashboardPage() {
     const handleDelete = async (id: number) => {
         try {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/delete_member",
@@ -174,7 +175,7 @@ export default function DashboardPage() {
 
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: true,
                 method: "GET",
                 path: "content/members_info",

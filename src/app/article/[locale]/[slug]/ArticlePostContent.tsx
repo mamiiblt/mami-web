@@ -125,8 +125,7 @@ export default function ArticlePostContent({ post, slug, session_id, fetchCommen
     )
 }
 
-
-function calculateReadingTimeMin(content: string): number {
+export function calculateReadingTimeMin(content: string): number {
     const wordsPerMinute = 200;
     const words = content.trim().split(/\s+/).length;
     return Math.ceil(words / wordsPerMinute);

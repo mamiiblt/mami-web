@@ -59,13 +59,13 @@ export default async function getArticleList(
 
     const articlesResponse = await pgPool.query(`
         SELECT id,
-               rtm             AS rt,
                date            AS dt,
                topic           AS tp,
                id_a::integer   AS id_a,
                title_${locale} AS tt,
                desc_${locale}  AS dc,
-               banner_id       AS bid
+               banner_id       AS bid,
+               view_count      AS vc
         FROM mami_articles ${conditionTerm ? `WHERE ${
                 conditionTerm
                         .replace(conValues.topic, "topic")
@@ -99,13 +99,13 @@ export interface GetArticleListResponse {
         topics: string[]
         articles: {
             id: string
-            rt: number
             dt: string
             tp: string
             id_a: number
             tt: string
             dc: string
             bid: string
+            vc: number
         }[]
     }
 }

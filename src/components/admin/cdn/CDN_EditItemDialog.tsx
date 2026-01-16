@@ -16,6 +16,7 @@ import {toast} from "sonner";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {ContentInterface} from "@/app/admin/dashboard/admin/cdn-file-manager/page";
 import {FileUp, Upload} from "lucide-react";
+import {usePathname} from "next/navigation";
 
 interface DialogInterfaceProps {
     router: AppRouterInstance
@@ -38,10 +39,11 @@ export default function CDN_EditItemDialog(
         setEditFileContent
     }: DialogInterfaceProps
 ) {
+    const pathname = usePathname()
 
     const handleFileEdit = async () => {
         await sendAdminRequest({
-            router,
+            router, pathname,
             redirectToLogin: false,
             method: "POST",
             path: "content/cdn_edit_file",

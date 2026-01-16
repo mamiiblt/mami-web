@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import {LoadingBar} from "@/components/ifl";
 import {getSessionExpireDate, logoutUser, sendAdminRequest} from "@/lib/adminUtils";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Barlow_Condensed} from "next/font/google";
 import {toast} from "sonner";
@@ -39,6 +39,7 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
     loadingState: boolean,
     actionBarItems?: React.ReactNode[]
 }) {
+    const pathname = usePathname()
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [expandedCategories, setExpandedCategories] = useState<string[]>(["website", "instafel", "admin"])
@@ -114,8 +115,8 @@ export function DashboardLayout({children, title, description, pageIcon: Icon, a
 
             async function sendRequest() {
                 await sendAdminRequest({
-                    router,
-                    redirectToLogin: true,
+                    router, pathname,
+                    redirectToLogin: false,
                     method: "GET",
                     path: "content/admin_basic_info",
                     onResponse: (response, status, data) => {

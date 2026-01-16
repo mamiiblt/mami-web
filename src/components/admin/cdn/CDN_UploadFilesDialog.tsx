@@ -19,6 +19,7 @@ import {File, FileUp, Folder, Grid2X2, HardDriveIcon, RefreshCcw, Search, Upload
 import {Badge} from "@/components/ui/badge";
 import {DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {formatFileSize} from "@/lib/utils";
+import {usePathname} from "next/navigation";
 
 interface DialogInterfaceProps {
     router: AppRouterInstance
@@ -42,6 +43,7 @@ export default function CDN_UploadFilesDialog(
         setReloadState
     }: DialogInterfaceProps
 ) {
+    const pathname = usePathname()
     const [selectedFiles, setSelectedFiles] = useState<SelectedFileInfo[]>([])
     const [isUploading, setIsUploading] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -88,7 +90,7 @@ export default function CDN_UploadFilesDialog(
                     formData.append("current_dir", `${path}/${selectedInfo.file.name}`)
 
                     await sendAdminRequest({
-                        router,
+                        router, pathname,
                         redirectToLogin: false,
                         method: "POST",
                         path: "content/cdn_upload",

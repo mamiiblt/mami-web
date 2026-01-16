@@ -19,7 +19,7 @@ import {
     X
 } from "lucide-react";
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {toast} from "sonner";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
@@ -34,17 +34,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Input} from "@/components/ui/input";
 import {Spinner} from "@/components/ui/spinner";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog";
-import {Textarea} from "@/components/ui/textarea";
-import {Label} from "@/components/ui/label";
-import {Badge} from "@/components/ui/badge";
 import CDN_CreateFileDialog from "@/components/admin/cdn/CDN_CreateFileDialog";
 import CDN_CreateFolderDialog from "@/components/admin/cdn/CDN_CreateFolderDialog";
 import CDN_MoveItemDialog from "@/components/admin/cdn/CDN_MoveItemDialog";
@@ -60,6 +49,7 @@ export interface ContentInterface {
 }
 
 export default function DashboardPage() {
+    const pathname = usePathname()
     const router = useRouter()
     const [path, setPath] = useState("/");
     const [contents, setContents] = useState<ContentInterface[] | undefined>(undefined);
@@ -86,8 +76,8 @@ export default function DashboardPage() {
 
         const sendRequest = async () => {
             await sendAdminRequest({
-                router,
-                redirectToLogin: false,
+                router, pathname,
+                redirectToLogin: true,
                 method: "POST",
                 path: "content/cdn_files",
                 body: JSON.stringify({
@@ -117,7 +107,7 @@ export default function DashboardPage() {
         onOpen: (path: string) => window.open(`https://cdn.mamii.dev${path}`, "_blank", "noopener,noreferrer"),
         onDelete: async (itemPath: string, isFolder: boolean, itemName: string) => {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/cdn_delete",

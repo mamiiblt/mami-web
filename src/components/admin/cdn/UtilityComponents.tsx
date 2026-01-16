@@ -1,6 +1,6 @@
 
 import React from "react";
-import {Folder, File, Home, ChevronRight, ChevronLeft, SlashIcon} from "lucide-react";
+import {Folder, File, Home, ChevronLeft} from "lucide-react";
 import {Button} from "@/components/ui/button";
 
 export function FileIcon({type}: { type: "file" | "directory" }) {

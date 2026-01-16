@@ -4,7 +4,7 @@ import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import {CircleUserRoundIcon, Eye, EyeOff, LockIcon} from "lucide-react";
 import React, {useEffect, useState} from "react";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Card} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -33,6 +33,7 @@ interface AdminInfo {
 }
 
 export default function DashboardPage() {
+    const pathname = usePathname()
     const router = useRouter()
     const [adminInfo, setAdminInfo] = useState<AdminInfo | undefined>(undefined)
     const [fullName, setFullName] = useState<string>("")
@@ -52,7 +53,7 @@ export default function DashboardPage() {
     useEffect(() => {
         async function sendRequest() {
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: true,
                 method: "GET",
                 path: "content/admin_full_info",
@@ -78,7 +79,7 @@ export default function DashboardPage() {
             }
 
             await sendAdminRequest({
-                router,
+                router, pathname,
                 redirectToLogin: false,
                 method: "POST",
                 path: "content/update_pass",
@@ -114,7 +115,7 @@ export default function DashboardPage() {
                 setIsSaving(true)
 
                 await sendAdminRequest({
-                    router,
+                    router, pathname,
                     redirectToLogin: false,
                     method: "POST",
                     path: "content/update_profile",

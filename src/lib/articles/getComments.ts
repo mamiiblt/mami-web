@@ -1,5 +1,4 @@
 import {ResponseStatus} from "@/lib/articles/consts";
-import {createLogger} from "@/lib/serverLogger";
 import {pgPool} from "@/lib/serverDatabase";
 
 interface GetCommentParams {
@@ -15,8 +14,8 @@ export default async function getComments(
 ): globalThis.Promise<GetCommentResponse> {
 
     const totalSizeReq = await pgPool.query(`
-        SELECT COUNT(*) AS total FROM article_comments
-    `)
+        SELECT COUNT(*) AS total FROM article_comments WHERE article_id_a = $1
+    `, [id_a])
     const totalCommentCount = Number(totalSizeReq.rows[0].total)
     const totalPageSize = Math.ceil(totalCommentCount == 0 ? 1 : totalCommentCount / COMMENT_PER_PAGE);
 

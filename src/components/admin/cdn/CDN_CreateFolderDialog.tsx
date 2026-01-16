@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import React, {useState} from "react";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {toast} from "sonner";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {ContentInterface} from "@/app/admin/dashboard/admin/cdn-file-manager/page";
+import {usePathname} from "next/navigation";
 
 interface DialogInterfaceProps {
     router: AppRouterInstance
@@ -33,11 +33,12 @@ export default function CDN_CreateFolderDialog(
         setContents
     }: DialogInterfaceProps
 ) {
+    const pathname = usePathname()
     const [createFolderName, setCreateFolderName] = useState("")
 
     const handleCreateFolder = async () => {
         await sendAdminRequest({
-            router,
+            router, pathname,
             redirectToLogin: false,
             method: "POST",
             path: "content/cdn_create_folder",

@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {UserIcon, KeyIcon, ShieldUserIcon, EyeOff, Eye} from "lucide-react"
 import {toast} from "sonner";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {bayon} from "@/components/admin/DashboardLayout";
 
 export default function AdminLoginPage() {
+    const searchParams = useSearchParams()
     const router = useRouter()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -42,11 +43,13 @@ export default function AdminLoginPage() {
         })
 
         if (data.code == "LOGIN_SUCCESS") {
+            const redirectUri = searchParams.get('redirect') || undefined
+
             const expiresAt = new Date(data.expiresAt)
             const maxAgeSeconds = Math.floor((expiresAt.getTime() - Date.now()) / 1000)
             document.cookie = `sessionToken=${data.token}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Strict`
             document.cookie = `sessionToken_expires=${data.expiresAt}; Max-Age=3600; Path=/; SameSite=Strict`
-            router.push("/admin/dashboard")
+            router.push(redirectUri == undefined ? "/admin/dashboard" : decodeURIComponent(redirectUri))
         }
 
         setIsLoading(false)
