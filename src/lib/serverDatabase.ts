@@ -10,7 +10,7 @@ export const pgPool =
         user: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         host:
-            process.env.NODE_ENV === "development"
+            process.env.DOCKER_BUILD_ENV === "debug_mode"
                 ? process.env.DB_HOSTNAME_PUBLIC
                 : process.env.DB_HOSTNAME_INTERNAL,
         port: Number(process.env.DB_PORT),
