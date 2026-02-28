@@ -3,9 +3,16 @@ import {pgPool} from "@/lib/serverDatabase";
 
 const baseUrl = "https://mamii.dev"
 
+export const dynamic = "force-dynamic";
+
 async function getArticleSlugs() {
-    const response = await pgPool.query(`SELECT id FROM mami_articles`)
-    return response.rows.map(item => item.id);
+    try {
+        const response = await pgPool.query(`SELECT id FROM mami_articles`);
+        return response.rows.map(item => item.id);
+    } catch (err) {
+        console.error("Error fetching article slugs:", err);
+        return [];
+    }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
