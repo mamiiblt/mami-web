@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { defaultMetadata } from "@/config/metadata"
 import LocaleProvider from "@/i18n/LocaleProvider"
 import LayoutShell from "@/components/LayoutShell"
+import Script from "next/script";
 
 const appleTitle = SITE_CONFIG.siteName
 
@@ -36,6 +37,11 @@ export default function RootLayout({
                 </LayoutShell>
             </LocaleProvider>
         </ThemeProvider>
+        <Script
+          src="https://stats.mamii.dev/script.js"
+          data-website-id="485da8eb-fe48-4ae1-9b96-5c6b5af95be3"
+          strategy="afterInteractive"
+        />
         </body>
         </html>
     )
