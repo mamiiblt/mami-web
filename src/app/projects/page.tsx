@@ -42,15 +42,15 @@ export default function ProjectsPage() {
       featured: true,
     },
     {
-      id: "instafel-updater",
-      title: "Instafel Updater",
-      description: t("p_descriptions.instafel-updater"),
-      image: "/pbanners/instafel-updater.png",
-      category: t("categories.android-app"),
-      technologies: ["Java"],
-      github: "https://github.com/mamiiblt/instafel-updater",
-      website: "https://instafel.app/about_updater",
-      featured: false,
+      id: "tg-brat-bot",
+      title: "brat Sticker Bot",
+      description: t("p_descriptions.tg-brat-bot"),
+      image: "/pbanners/brat_bot_banner.png",
+      category: t("categories.telegram"),
+      technologies: ["NodeJS", "TypeScript"],
+      github: "https://github.com/mamiiblt/tg-brat-bot",
+      website: "https://t.me/brat_sticker_bot",
+      featured: true,
     },
   ];
 
@@ -202,7 +202,7 @@ export default function ProjectsPage() {
                           className="flex items-center gap-2"
                         >
                           <ExternalLink className="h-4 w-4" />
-                          <span>{t("website")}</span>
+                          <span>{t("open")}</span>
                         </Link>
                       </MotionButton>
                     )}

@@ -2,12 +2,13 @@
   "title": "Projects",
   "desc": "You can find the projects I have worked on and am currently working on here.",
   "featured": "Featured",
-  "website": "Website",
+  "open": "Open",
   "p_descriptions": {
     "instafel": "Provides fast & up-to-date Instagram alpha experience",
-    "instafel-updater": "A solution app for automatic updating of Instafel"
+    "tg-brat-bot": "You can create customized brat stickers easily with that bot!"
   },
   "categories": {
-    "android-app": "Android App"
+    "android-app": "Android App",
+    "telegram": "Telegram"
   }
 }
