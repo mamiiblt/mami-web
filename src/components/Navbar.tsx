@@ -72,8 +72,8 @@ function useTheme() {
 export default function Navbar() {
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
-  const [scrolled, setScrolled] = React.useState(false)
   const [dropdownOpen, setDropdownOpen] = React.useState(false)
+  const [scrolled, setScrolled] = React.useState(false)
   const { t, i18n } = useTranslation("common");
   const { isDark, toggle } = useTheme()
 
@@ -108,7 +108,7 @@ export default function Navbar() {
 
   const handleLanguageChange = (langCode: string) => i18n.changeLanguage(langCode, () => {
     document.cookie = `${cookieName}=${langCode}; path=/`;
-  }).then(r => setDropdownOpen(false))
+  })
 
   return (
       <>
@@ -166,14 +166,13 @@ export default function Navbar() {
             </ul>
 
             <div className="flex items-center gap-1">
-              <DropdownMenu>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button
                       size="icon-sm"
                       variant="ghost"
                       className="rounded-full"
                       aria-label="Toggle language"
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
                     <Languages className="size-4" />
                   </Button>
@@ -247,43 +246,51 @@ export default function Navbar() {
         <div aria-hidden="true" className="h-[4.25rem] sm:h-[4.5rem]" />
 
         <AnimatePresence>
+          {(open || dropdownOpen) && (
+              <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-0 z-40 bg-background/40 backdrop-blur-sm"
+                  onClick={() => {
+                    setOpen(false)
+                    setDropdownOpen(false)
+                  }}
+                  aria-hidden="true"
+              />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
           {open && (
-              <>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-40 bg-background/40 backdrop-blur-sm md:hidden"
-                    onClick={() => setOpen(false)}
-                />
-                <motion.div
-                    initial={{ opacity: 0, y: -12, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -12, scale: 0.98 }}
-                    transition={{ duration: 0.22, ease: "easeOut" }}
-                    className="fixed inset-x-4 top-20 z-50 rounded-3xl border border-border bg-background/95 p-3 shadow-xl shadow-black/10 backdrop-blur-xl md:hidden"
-                >
-                  <nav className="flex flex-col gap-1">
-                    {navItems.map((item, index) => {
-                      const isActive = pathname.startsWith(item.href)
-                      return (
-                          <motion.div
-                              key={item.href}
-                              initial={{ opacity: 0, x: -12 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.05 }}
+              <motion.div
+                  initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  className="fixed inset-x-4 top-20 z-50 rounded-3xl border border-border bg-background/95 p-3 shadow-xl shadow-black/10 backdrop-blur-xl md:hidden"
+              >
+                <nav className="flex flex-col gap-1">
+                  {navItems.map((item, index) => {
+                    const isActive = pathname.startsWith(item.href)
+                    return (
+                        <motion.div
+                            key={item.href}
+                            initial={{ opacity: 0, x: -12 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                        >
+                          <Link
+                              href={item.href}
+                              onClick={() => setOpen(false)}
+                              className={cn(
+                                  "flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-colors",
+                                  isActive
+                                      ? "bg-muted text-foreground"
+                                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                              )}
                           >
-                            <Link
-                                href={item.href}
-                                onClick={() => setOpen(false)}
-                                className={cn(
-                                    "flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-colors",
-                                    isActive
-                                        ? "bg-muted text-foreground"
-                                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-                                )}
-                            >
                         <span
                             className={cn(
                                 "flex size-9 items-center justify-center rounded-full transition-colors",
@@ -292,14 +299,13 @@ export default function Navbar() {
                         >
                           {item.icon}
                         </span>
-                              {item.title}
-                            </Link>
-                          </motion.div>
-                      )
-                    })}
-                  </nav>
-                </motion.div>
-              </>
+                            {item.title}
+                          </Link>
+                        </motion.div>
+                    )
+                  })}
+                </nav>
+              </motion.div>
           )}
         </AnimatePresence>
       </>

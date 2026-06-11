@@ -217,7 +217,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
             </motion.p>
 
             <motion.div
-                className={`${isPlaying ? "mb-4" : "mb-8"} flex flex-wrap justify-center gap-3`}
+                className={`${isPlaying ? "mb-4" : "mb-6"} flex flex-wrap justify-center gap-3`}
                 variants={containerVariants}
             >
                 {socialLinks.map((link, index) => (
