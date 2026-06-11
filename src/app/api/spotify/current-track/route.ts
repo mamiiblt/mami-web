@@ -1,60 +1,77 @@
 import { NextResponse } from "next/server";
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN;
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID!;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET!;
+const REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN!;
 
 async function getAccessToken() {
-  const response = await fetch("https://accounts.spotify.com/api/token", {
+  const res = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(
-        `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
-      ).toString("base64")}`,
+      Authorization:
+          "Basic " +
+          Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
     },
     body: new URLSearchParams({
       grant_type: "refresh_token",
-      refresh_token: SPOTIFY_REFRESH_TOKEN!,
+      refresh_token: REFRESH_TOKEN,
     }),
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to get access token");
-  }
+  const data = await res.json();
+  if (!res.ok) throw new Error("Token error");
 
-  const data = await response.json();
   return data.access_token;
 }
 
 export async function GET() {
   try {
-    const accessToken = await getAccessToken();
+    const token = await getAccessToken();
 
-    const response = await fetch(
-      "https://api.spotify.com/v1/me/player/currently-playing",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+    const res = await fetch(
+        "https://api.spotify.com/v1/me/player/currently-playing",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
     );
 
-    if (response.status === 204) {
-      return NextResponse.json({ is_playing: false, item: null });
+    if (res.status === 204) {
+      return await getRecent(token);
     }
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch current track");
+    const data = await res.json();
+
+    if (data?.is_playing === true) {
+      return NextResponse.json({
+        type: "currently-playing",
+        resp: data,
+      });
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("Spotify API error:", error);
+    return await getRecent(token);
+  } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch current track" },
-      { status: 500 }
+        { error: "Spotify error" },
+        { status: 500 }
     );
   }
+}
+
+async function getRecent(token: string) {
+  const res = await fetch(
+      "https://api.spotify.com/v1/me/player/recently-played?limit=5",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+  );
+
+  const data = await res.json();
+
+  console.log(data)
+
+  return NextResponse.json({
+    type: "recently-played",
+    resp: data.items,
+  });
 }

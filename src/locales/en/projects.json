@@ -3,12 +3,15 @@
   "desc": "You can find the projects I have worked on and am currently working on here.",
   "featured": "Featured",
   "open": "Open",
+  "source_code": "Source Code",
   "p_descriptions": {
     "instafel": "Provides fast & up-to-date Instagram alpha experience",
-    "tg-brat-bot": "You can create customized brat stickers easily with that bot!"
+    "tg-brat-bot": "You can create customized brat stickers easily with that bot!",
+    "mwb": "The project of the website you are currently viewing right now!"
   },
   "categories": {
     "android-app": "Android App",
-    "telegram": "Telegram"
+    "telegram": "Telegram",
+    "web": "Web-platform"
   }
 }

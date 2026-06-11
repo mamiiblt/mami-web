@@ -14,7 +14,7 @@ export const itemVariants = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 300, damping: 24 },
+        transition: { type: "spring" as const, stiffness: 300, damping: 24 },
     },
 };
 
@@ -23,11 +23,11 @@ export const profileVariants = {
     visible: {
         opacity: 1,
         scale: 1,
-        transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 },
+        transition: { type: "spring" as const, stiffness: 300, damping: 20, delay: 0.2 },
     },
     hover: {
         scale: 1.05,
-        transition: { type: "spring", stiffness: 300, damping: 10 },
+        transition: { type: "spring" as const, stiffness: 300, damping: 10 },
     },
 };
 
@@ -36,7 +36,7 @@ export const buttonVariants = {
     hover: {
         scale: 1.03,
         boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.1)",
-        transition: { type: "spring", stiffness: 400, damping: 10 },
+        transition: { type: "spring" as const, stiffness: 400, damping: 10 },
     },
     tap: { scale: 0.97 },
 };
@@ -47,8 +47,8 @@ export const socialButtonVariants = {
         scale: 1.1,
         rotate: [0, -10, 10, -5, 5, 0],
         transition: {
-            type: "tween",
-            ease: "easeInOut",
+            type: "tween" as const,
+            ease: "easeInOut" as const,
             duration: 0.6,
         },
     },
@@ -60,11 +60,11 @@ export const cardVariants = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 300, damping: 24 },
+        transition: { type: "spring" as const, stiffness: 300, damping: 24 },
     },
     hover: {
         y: -5,
         boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
-        transition: { type: "spring", stiffness: 400, damping: 10 },
+        transition: { type: "spring" as const, stiffness: 400, damping: 10 },
     },
 };

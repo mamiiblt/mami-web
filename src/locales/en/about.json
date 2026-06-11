@@ -24,6 +24,16 @@
   "tool-tech": "Tools & Technologies",
   "spotify": {
     "playing": "Listening",
+    "listened": "Last Tracks",
+    "last": {
+      "title": "My last played songs",
+      "time": {
+        "just_now": "Just now",
+        "m_ago": "{{value}} minutes ago",
+        "h_ago": "{{value}} hours ago",
+        "d_ago": "{{value}} days ago"
+      }
+    },
     "open": "Open in Spotify"
   },
   "aboutMe": "Who am I?"

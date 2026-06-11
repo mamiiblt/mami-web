@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { defaultMetadata } from "@/config/metadata";
+import {ReactNode} from "react";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function AdminLoginLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="bg-primary-foreground dark:bg-primary-background">

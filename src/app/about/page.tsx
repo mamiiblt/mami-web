@@ -4,13 +4,10 @@ import { useState, useEffect, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  CodeIcon,
-  DatabaseIcon,
   StarIcon,
   FireIcon,
   UserGroupIcon,
   CodeFolderIcon, GithubIcon, TelegramIcon, Linkedin02Icon, SpotifyIcon, NewTwitterIcon, InstagramIcon, Coffee01Icon,
-  DartIcon,
 } from "@hugeicons/core-free-icons";
 import { motion } from "framer-motion";
 import {
@@ -21,17 +18,14 @@ import {
 } from "@/components/about/ContentCards";
 import {containerVariants} from "@/components/about/MotionSpecs";
 import {ProfileCard} from "@/components/about/ProfileCard";
-import {DiJava} from "react-icons/di";
 import {
   AmazonwebservicesOriginalWordmark,
-  AndroidOriginal,
-  AndroidstudioOriginal, ArchlinuxOriginal, AzureOriginal, BootstrapOriginal, DartOriginal,
-  DockerOriginal, ElectronOriginal, EslintOriginal, ExpressOriginal, FedoraPlain, FirebaseOriginal,
+  AndroidOriginal, ArchlinuxOriginal, AzureOriginal, BootstrapOriginal, DartOriginal,
+  DockerOriginal, ElectronOriginal, EslintOriginal, FirebaseOriginal,
   FlutterOriginal, GitpodOriginal, GooglecloudOriginal, IntellijOriginal,
   JavaOriginal, JetpackcomposeOriginal,
-  KotlinOriginal, MongodbOriginal, NextjsOriginal, NodejsOriginal, NuxtjsOriginal, PostgresqlOriginal, PostmanOriginal,
-  ReactnativeOriginal,
-  ReactOriginal, SupabaseOriginal, VercelLine, VercelOriginal, VisualstudioOriginal, VscodeOriginal,
+  KotlinOriginal, MongodbOriginal, NodejsOriginal, NuxtjsOriginal, PostgresqlOriginal, PostmanOriginal,
+  ReactOriginal, SupabaseOriginal, VisualstudioOriginal, VscodeOriginal,
   VuejsOriginal, WebstormOriginal
 } from "devicons-react";
 

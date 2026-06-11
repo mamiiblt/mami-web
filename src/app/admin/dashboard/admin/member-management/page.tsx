@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import {Card} from "@/components/ui/card"
 import {Pencil, Trash2, Eye, EyeOff, UserPlus} from "lucide-react"
-import {getSavedSessionToken, ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
+import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Checkbox} from "@/components/ui/checkbox";
 import {toast} from "sonner";

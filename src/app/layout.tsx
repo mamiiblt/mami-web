@@ -1,4 +1,4 @@
-import { Geist } from "next/font/google"
+import { Geist, Inter } from "next/font/google"
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { SITE_CONFIG } from "@/config/config"
@@ -7,6 +7,9 @@ import { defaultMetadata } from "@/config/metadata"
 import LocaleProvider from "@/i18n/LocaleProvider"
 import LayoutShell from "@/components/LayoutShell"
 import Script from "next/script";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const appleTitle = SITE_CONFIG.siteName
 
@@ -22,7 +25,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
         <head>
             <meta name="apple-mobile-web-app-title" content={appleTitle} />
         </head>

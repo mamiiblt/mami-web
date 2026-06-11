@@ -1,7 +1,7 @@
 import {motion} from "framer-motion";
 import {Card} from "@/components/ui/card";
 import Image from "next/image";
-import {ArrowUpRight, Calendar, Clock, EyeIcon, TagIcon} from "lucide-react";
+import {ArrowUpRight, Calendar, EyeIcon, TagIcon} from "lucide-react";
 import React from "react";
 
 const itemVariants = {
@@ -10,7 +10,7 @@ const itemVariants = {
         opacity: 1,
         y: 0,
         transition: {
-            type: "spring",
+            type: "spring" as const,
             stiffness: 100,
         },
     },
@@ -41,8 +41,8 @@ export default function ArticleListCard(
     }) {
     return (
         <motion.div variants={itemVariants} custom={idx}>
-            <Card
-                className="group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/30 relative">
+            <div
+                className="group/card flex flex-col gap-(--card-spacing)  rounded-2xl py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10  group h-full overflow-hidden hover:shadow-xl transition-all duration-300 bg-card border-border hover:border-primary/30 relative">
                 <div className="relative w-full h-48 overflow-hidden bg-secondary">
                     <Image
                         src={bannerSrc}
@@ -94,7 +94,7 @@ export default function ArticleListCard(
                         </div>
                     </div>
                 </div>
-            </Card>
+            </div>
         </motion.div>
     )
 }

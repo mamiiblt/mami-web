@@ -39,7 +39,7 @@ export function Page({
   content: ReactNode;
 }) {
   return (
-    <div>
+    <div className={"bg-background"}>
       <div>
         <div className={`container max-w-${width}xl mx-auto py-8 px-4`}>
           {header && header}

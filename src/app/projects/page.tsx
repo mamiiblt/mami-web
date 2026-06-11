@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, Send, FolderGit2 } from "lucide-react";
+import { ExternalLink, Send, FolderGit2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
       id: "instafel",
       title: "Instafel",
       description: t("p_descriptions.instafel"),
-      image: "/pbanners/instafel.png",
+      image: "/pbanners/p_ifl.png",
       category: t("categories.android-app"),
       technologies: ["Java", "Smali", "React"],
       github: "https://github.com/mamiiblt/instafel",
@@ -42,10 +42,21 @@ export default function ProjectsPage() {
       featured: true,
     },
     {
+      id: "mwb",
+      title: "mamii's website",
+      description: t("p_descriptions.mwb"),
+      image: "/pbanners/p_mwb.png",
+      category: t("categories.web"),
+      technologies: ["NextJS", "React", "TypeScript"],
+      github: "https://github.com/mamiiblt/mwb",
+      website: "https://mamii.dev",
+      featured: true,
+    },
+    {
       id: "tg-brat-bot",
       title: "brat Sticker Bot",
       description: t("p_descriptions.tg-brat-bot"),
-      image: "/pbanners/brat_bot_banner.png",
+      image: "/pbanners/p_bs_bot.png",
       category: t("categories.telegram"),
       technologies: ["NodeJS", "TypeScript"],
       github: "https://github.com/mamiiblt/tg-brat-bot",
@@ -74,7 +85,7 @@ export default function ProjectsPage() {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 24,
       },
@@ -82,7 +93,7 @@ export default function ProjectsPage() {
     hover: {
       y: -10,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 24,
       },
@@ -93,7 +104,7 @@ export default function ProjectsPage() {
     initial: { scale: 1 },
     hover: {
       scale: 1.05,
-      transition: { type: "spring", stiffness: 400, damping: 10 },
+      transition: { type: "spring" as const, stiffness: 400, damping: 10 },
     },
     tap: { scale: 0.95 },
   };
@@ -179,8 +190,8 @@ export default function ProjectsPage() {
                           rel="noopener noreferrer"
                           className="flex items-center gap-2"
                         >
-                          <Github className="h-4 w-4" />
-                          <span>GitHub</span>
+                          <FolderGit2 className="h-4 w-4" />
+                          <span>{t("source_code")}</span>
                         </Link>
                       </MotionButton>
                     )}

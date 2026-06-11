@@ -22,7 +22,7 @@ interface SpotifyInfoDialogProps {
     t: TFunction
 }
 
-export function SpotifyInfoDialog({song, isOpen, isPlaying, onOpenChange, t}: SpotifyInfoDialogProps) {
+export function SpotifyCurrentPlayingInfoDialog({song, isOpen, isPlaying, onOpenChange, t}: SpotifyInfoDialogProps) {
     return (
         <>
             {isPlaying && <Dialog open={isOpen} onOpenChange={onOpenChange}>

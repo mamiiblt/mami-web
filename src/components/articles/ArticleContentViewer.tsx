@@ -1,5 +1,7 @@
+"use client";
+
 import {motion} from "framer-motion";
-import {Calendar, EyeIcon, Github, GlobeIcon, Mail, SendIcon} from "lucide-react";
+import {Calendar, EyeIcon, GlobeIcon, Mail, SendIcon} from "lucide-react";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -8,6 +10,8 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeHighlight from "rehype-highlight";
 import React, {ComponentPropsWithoutRef, ReactElement} from "react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Github, GithubIcon} from "@hugeicons/core-free-icons";
+import {HugeiconsIcon} from "@hugeicons/react";
 
 export default function ArticleContentViewer(
     {
@@ -174,15 +178,15 @@ export default function ArticleContentViewer(
                     </Avatar>
                     <div className="flex flex-col">
                         <span className="text-sfm text-muted-foreground">{writtenByText}</span>
-                        <span className="text-base font-medium text-foreground">M. Ali BULUT</span>
+                        <span className="text-base font-medium text-foreground">Muhammed Ali Bulut</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <SocialButton icon={<GlobeIcon/>} href={"/about"} ariaLabel={"About"}/>
-                    <SocialButton icon={<Github/>} href={"https://github.com/mamiiblt"}
+                    <SocialButton icon={<HugeiconsIcon icon={GithubIcon} />} href={"https://github.com/mamiiblt"}
                                   ariaLabel={"GitHub"}/>
                     <SocialButton icon={<SendIcon/>} href={"https://t.me/mamiiblt"} ariaLabel={"Telegram"}/>
-                    <SocialButton icon={<Mail/>} href={"mailto:mami@mamii.dev"} ariaLabel={"Telegram"}/>
+                    <SocialButton icon={<Mail/>} href={"mailto:mamii@mamii.dev"} ariaLabel={"Telegram"}/>
                 </div>
             </div>
 

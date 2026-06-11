@@ -23,43 +23,50 @@ export default function AdminLoginPage() {
         e.preventDefault()
         setIsLoading(true)
 
-        const response = await fetch(`${process.env.API_BASE}/madmin/auth/login`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ username: username.trim(), password: password.trim() })
-        });
+        try {
+            const response = await fetch(`${process.env.API_BASE}/madmin/auth/login`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ username: username.trim(), password: password.trim() })
+            });
 
-        const data: {
-            code: string
-            msg: string
-            token?: string
-            expiresAt?: string
-        } = await response.json()
+            const data: {
+                code: string
+                msg: string
+                token?: string
+                expiresAt?: string
+            } = await response.json()
 
 
-        const toastStatus = data.code == "LOGIN_SUCCESS" ? toast.success : toast.error
-        toastStatus(data.code == "LOGIN_SUCCESS" ? "Logged" : "Failure", {
-            description: data.msg
-        })
+            const toastStatus = data.code == "LOGIN_SUCCESS" ? toast.success : toast.error
+            toastStatus(data.code == "LOGIN_SUCCESS" ? "Logged" : "Failure", {
+                description: data.msg
+            })
 
-        if (data.code == "LOGIN_SUCCESS") {
-            const redirectUri = searchParams.get('redirect') || undefined
+            if (data.code == "LOGIN_SUCCESS") {
+                const redirectUri = searchParams.get('redirect') || undefined
 
-            const expiresAt = new Date(data.expiresAt)
-            const maxAgeSeconds = Math.floor((expiresAt.getTime() - Date.now()) / 1000)
-            document.cookie = `sessionToken=${data.token}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Strict`
-            document.cookie = `sessionToken_expires=${data.expiresAt}; Max-Age=3600; Path=/; SameSite=Strict`
-            router.push(redirectUri == undefined ? "/admin/dashboard" : decodeURIComponent(redirectUri))
+                const expiresAt = new Date(data.expiresAt)
+                const maxAgeSeconds = Math.floor((expiresAt.getTime() - Date.now()) / 1000)
+                document.cookie = `sessionToken=${data.token}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Strict`
+                document.cookie = `sessionToken_expires=${data.expiresAt}; Max-Age=3600; Path=/; SameSite=Strict`
+                router.push(redirectUri == undefined ? "/admin/dashboard" : decodeURIComponent(redirectUri))
+            }
+
+            setIsLoading(false)
+        } catch (e) {
+            toast.error("An error occurred", {
+                description: "An error occurred while connecting to API",
+            })
+            console.error(e)
         }
-
-        setIsLoading(false)
     }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <div className="w-full max-w-md">
                 <Card className="border-border/50 shadow-2xl">
-                    <CardHeader className="space-y-3 text-center pb-8">
+                    <CardHeader className="space-y-3 text-center pb-3">
                         <div className="flex justify-center mb-2">
                             <ShieldUserIcon className="w-10 h-10 text-primary mb-2 mt-2" />
                         </div>

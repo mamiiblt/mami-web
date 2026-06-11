@@ -24,6 +24,16 @@
   "tool-tech": "Araçlar & Teknolojiler",
   "spotify": {
     "playing": "Dinliyor",
+    "listened": "Dinliyordu",
+    "last": {
+      "title": "Son Dinlediğim Şarkılar",
+      "time": {
+        "just_now": "az önce",
+        "m_ago": "{{value}} dakika önce",
+        "h_ago": "{{value}} saat önce",
+        "d_ago": "{{value}} gün önce"
+      }
+    },
     "open": "Spotify'da Aç"
   },
   "aboutMe": "Ben Kimim?"

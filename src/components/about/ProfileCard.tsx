@@ -1,14 +1,14 @@
 import {useEffect, useState} from "react";
 import {TFunction} from "i18next";
-import {useRouter} from "next/navigation";
-import {AnimatePresence, motion} from "framer-motion";
+import { motion} from "framer-motion";
 import Image from "next/image";
 import {HugeiconsIcon} from "@hugeicons/react";
-import {PlayIcon, Rotate01FreeIcons, SpotifyIcon} from "@hugeicons/core-free-icons";
+import {MusicNote02Icon, PlayIcon} from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import {containerVariants, itemVariants, profileVariants, socialButtonVariants} from "@/components/about/MotionSpecs";
 import {Button} from "@/components/ui/button";
-import {SpotifyInfoDialog} from "@/components/about/SpotifyInfoDialog";
+import {SpotifyCurrentPlayingInfoDialog} from "@/components/about/SpotifyCurrentPlayingInfoDialog";
+import {SpotifyLastPlayedSongsInfoDialog} from "@/components/about/SpotifyLastPlayedSongsInfoDialog";
 
 export interface CurrentTrack {
     name: string;
@@ -19,8 +19,10 @@ export interface CurrentTrack {
 }
 
 function useSpotifyCurrentTrack() {
-    const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
+    const [listLastTracks, setListLastTracks] = useState(false);
+    const [lastTracks, setLastTracks] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,18 +32,23 @@ function useSpotifyCurrentTrack() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.is_playing && data.item) {
+                    if (data.type == "currently-playing" && data.resp.is_playing) {
                         setCurrentTrack({
-                            name: data.item.name,
-                            artist: data.item.artists.map((artist) => artist.name).join(", "),
-                            album: data.item.album.name,
-                            image: data.item.album.images[0]?.url,
-                            external_url: data.item.external_urls.spotify,
+                            name: data.resp.item.name,
+                            artist: data.resp.item.artists.map((artist) => artist.name).join(", "),
+                            album: data.resp.item.album.name,
+                            image: data.resp.item.album.images[0]?.url,
+                            external_url: data.resp.item.external_urls.spotify,
                         } as CurrentTrack);
-                        setIsPlaying(data.is_playing);
-                    } else {
-                        setCurrentTrack(null);
-                        setIsPlaying(false);
+
+                        setIsPlaying(data.resp.is_playing);
+                    }
+
+                    console.log(data.type)
+
+                    if (data.type == "recently-played") {
+                        setListLastTracks(true);
+                        setLastTracks(data.resp);
                     }
                 }
             } catch (error) {
@@ -59,16 +66,15 @@ function useSpotifyCurrentTrack() {
         return () => clearInterval(interval);
     }, []);
 
-    return {currentTrack, isPlaying, loading};
+    return {currentTrack, isPlaying, loading, listLastTracks, lastTracks};
 }
 
 const MotionButton = motion.create(Button);
 
 export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; }) {
-    const router = useRouter();
     const [imageLoaded, setImageLoaded] = useState(false);
-    const {currentTrack, isPlaying, loading} = useSpotifyCurrentTrack();
-    const [isOpen, setIsOpen] = useState(false)
+    const {currentTrack, isPlaying, listLastTracks, lastTracks} = useSpotifyCurrentTrack();
+    const [activeDialog, setActiveDialog] = useState<"current" | "recent" | null>(null);
 
     return (
         <motion.div
@@ -78,13 +84,18 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 visible: {opacity: 1, y: 0},
             }}
         >
-            <SpotifyInfoDialog
+            <SpotifyCurrentPlayingInfoDialog
                 song={currentTrack}
                 isPlaying={isPlaying}
-                isOpen={isOpen}
-                onOpenChange={(status) => {
-                    setIsOpen(status)
-                }}
+                isOpen={activeDialog === "current"}
+                onOpenChange={(v) => !v && setActiveDialog(null)}
+                t={t}
+            />
+
+            <SpotifyLastPlayedSongsInfoDialog
+                lastPlayedSongsRaw={lastTracks}
+                isOpen={activeDialog === "recent"}
+                onOpenChange={(v) => !v && setActiveDialog(null)}
                 t={t}
             />
 
@@ -94,8 +105,11 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 }`}
                 variants={profileVariants}
                 onClick={() => {
-                    setIsOpen(true)
-                    console.log(isOpen)
+                    if (isPlaying && currentTrack) {
+                        setActiveDialog("current");
+                    } else if (listLastTracks) {
+                        setActiveDialog("recent");
+                    }
                 }}
                 whileHover="hover"
             >
@@ -131,7 +145,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                     />
                 </div>
 
-                {currentTrack && (
+                {isPlaying && (
                     <motion.div
                         className="absolute -bottom-2 -right-2 flex items-center gap-2 bg-green-500 text-white px-3 py-1 rounded-full shadow-lg text-xs font-semibold"
                         initial={{ scale: 0, opacity: 0 }}
@@ -149,6 +163,27 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                             <HugeiconsIcon icon={PlayIcon} className="h-3 w-3" />
                         </motion.div>
                         <span>{t("spotify.playing")}</span>
+                    </motion.div>
+                )}
+
+                {listLastTracks && (
+                    <motion.div
+                        className="absolute -bottom-2 -right-2 flex items-center gap-2 bg-gray-500 text-white px-3 py-1 rounded-full shadow-lg text-xs font-semibold"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        whileHover={{ scale: 1.1 }}
+                    >
+                        <motion.div
+                            animate={isPlaying ? { scale: [1, 1.2, 1] } : {}}
+                            transition={{
+                                repeat: isPlaying ? Number.POSITIVE_INFINITY : 0,
+                                duration: 1.5,
+                            }}
+                        >
+                            <HugeiconsIcon icon={MusicNote02Icon} className="h-3 w-3" />
+                        </motion.div>
+                        <span>{t("spotify.listened")}</span>
                     </motion.div>
                 )}
             </motion.div>

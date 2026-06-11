@@ -9,6 +9,7 @@ export async function GET() {
   const scopes = [
     "user-read-currently-playing",
     "user-read-playback-state",
+    "user-read-recently-played"
   ].join(" ");
 
   const params = new URLSearchParams({

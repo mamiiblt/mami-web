@@ -5,5 +5,5 @@ export const SITE_CONFIG = {
   description: "Personal blog of mamiiblt a.k.a. mamii.",
   contactDescription:
     "Have a question or want to work together? Feel free to reach out!",
-  email: "mami@mamii.dev",
+  email: "mamii@mamii.dev",
 };

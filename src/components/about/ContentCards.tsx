@@ -4,15 +4,12 @@ import {
     Analytics01Icon,
     ComputerProgrammingIcon,
     FireIcon, HeartCheckIcon, LinkSquareIcon, Mail02Icon,
-    SourceCodeIcon, TelegramIcon,
-    UserArrowLeftRightIcon
-} from "@hugeicons/core-free-icons";
+    SourceCodeIcon, TelegramIcon} from "@hugeicons/core-free-icons";
 import {AnimatePresence, motion} from "framer-motion";
 import {buttonVariants, cardVariants, containerVariants, itemVariants} from "@/components/about/MotionSpecs";
 import {TFunction} from "i18next";
 import {Button} from "@/components/ui/button";
-import {Badge} from "@/components/ui/badge";
-import GithubCalendar from "react-github-calendar";
+import { GitHubCalendar } from 'react-github-calendar'
 import Link from "next/link";
 import {ComponentType, useState} from "react";
 import {ChevronDown} from "lucide-react";
@@ -52,7 +49,7 @@ export function AboutCard_Contact({classNameVal, t, }: { classNameVal?: string; 
             <AnimatedContactButton href={"/articles"} icon={LinkSquareIcon} label={t("nav.articles")}/>
             <AnimatedContactButton href={"https://github.com/sponsors/mamiiblt"} icon={HeartCheckIcon}
                                    label={t("nav.support")}/>
-            <AnimatedContactButton href={"mailto:mami@mamii.dev"} icon={Mail02Icon} label={t("nav.mail")}/>
+            <AnimatedContactButton href={"mailto:mamii@mamii.dev"} icon={Mail02Icon} label={t("nav.mail")}/>
 
             <motion.div variants={itemVariants} className="md:col-span-2">
                 <MotionButton
@@ -92,7 +89,7 @@ export function AboutCard_ContGraph({classNameVal,t,
                             {t("stats.contgraph")}
                         </h4>
                     </div>
-                    <GithubCalendar username="mamiiblt"/>
+                    <GitHubCalendar username="mamiiblt"/>
                 </CardContent>
             </Card>
         </motion.div>
@@ -142,7 +139,7 @@ export function AboutCard_Skills({
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                             style={{ overflow: "hidden" }}
                         >
-                            <div className="grid grid-cols-3 gap-3 sm:grid-cols-7">
+                            <div className="grid grid-cols-3 gap-3 sm:grid-cols-7 p-1">
                                 {skills.map((skill, index) => (
                                     <Card key={index} className={"p-1"}>
                                         <div key={index} className="flex flex-col items-center gap-1" title={skill.name}>
@@ -199,11 +196,7 @@ export function AboutCard_Statistics({
                     >
                         {stats.map((stat, index) => (
                             <motion.div key={index} variants={itemVariants}>
-                                <MotionCard
-                                    className="p-4 text-center"
-                                    variants={cardVariants}
-                                    whileHover="hover"
-                                >
+                                <Card className="p-4 text-center">
                                     <CardContent className="p-0">
                                         <div className="mb-2 flex justify-center text-primary">
                                             {stat.icon}
@@ -213,7 +206,7 @@ export function AboutCard_Statistics({
                                             {stat.label}
                                         </div>
                                     </CardContent>
-                                </MotionCard>
+                                </Card>
                             </motion.div>
                         ))}
                     </motion.div>

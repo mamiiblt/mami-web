@@ -1,11 +1,6 @@
 import { Metadata } from "next";
 import { defaultMetadata } from "@/config/metadata";
-import { JetBrains_Mono } from "next/font/google";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-});
+import {ReactNode} from "react";
 
 export const metadata: Metadata = {
   ...defaultMetadata,
@@ -16,11 +11,11 @@ export const metadata: Metadata = {
 export default function AboutLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div>
-      <div className="bg-primary-foreground dark:bg-primary-background">
+      <div className="bg-background">
         {children}
       </div>
     </div>

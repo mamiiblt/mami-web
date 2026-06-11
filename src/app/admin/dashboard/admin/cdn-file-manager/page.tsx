@@ -2,23 +2,18 @@
 
 import {DashboardLayout} from "@/components/admin/DashboardLayout";
 import {
-    ChevronRight, CircleCheck,
     File,
     FilePenLine,
-    FileUp,
     FileUpIcon,
     Folder,
     Grid2X2,
     HardDriveIcon,
-    Home,
     RefreshCcw,
     RouteIcon,
     Search,
     Trash2,
-    Upload,
-    X
 } from "lucide-react";
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {ResponseStatus, sendAdminRequest} from "@/lib/adminUtils";
 import {toast} from "sonner";

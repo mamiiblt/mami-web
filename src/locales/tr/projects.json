@@ -3,9 +3,12 @@
   "desc": "Üzerinde çalıştığım ve çalışmakta olduğum projeleri burada bulabilirsiniz.",
   "featured": "Öne Çıkan",
   "open": "Görüntüle",
+  "source_code": "Kaynak Kodu",
   "p_descriptions": {
     "instafel": "Yamalayıcı sayesinde Hızlı ve güncel Instagram alpha deneyimi sunar",
-    "tg-brat-bot": "Bu bot aracılığıyla hızlıca brat çıkartmaları oluşturabilirsiniz!"
+    "tg-brat-bot": "Bu bot aracılığıyla hızlıca brat çıkartmaları oluşturabilirsiniz!",
+    "mwb": "Tam olarak şu an gezindiğiniz sitenin projesidir, isterseniz inceleyebilirsiniz!"
+
   },
   "categories": {
     "android-app": "Android Uygulaması",
