@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/dialog'
 import {TFunction} from "i18next"
 import {useMemo} from "react"
+import {HugeiconsIcon} from "@hugeicons/react";
+import {HistoryFreeIcons} from "@hugeicons/core-free-icons";
 
 interface SpotifyInfoDialogProps {
     lastPlayedSongsRaw: any[]
@@ -73,7 +75,8 @@ export function SpotifyLastPlayedSongsInfoDialog({
                 onOpenAutoFocus={(e) => e.preventDefault()}
                 aria-describedby="spotify-songs-list"
             >
-                <DialogTitle>
+                <DialogTitle className={"flex items-center gap-2"}>
+                    <HugeiconsIcon icon={HistoryFreeIcons} />
                     {t("spotify.last.title")}
                 </DialogTitle>
 

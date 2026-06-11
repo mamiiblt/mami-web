@@ -1,5 +1,6 @@
 {
   "navbar": {
+    "changeLang": "Görüntüleme Dilini Değiştir",
     "items": {
       "articles": "Yazılarım",
       "projects": "Projelerim",

@@ -3,7 +3,7 @@ import {TFunction} from "i18next";
 import { motion} from "framer-motion";
 import Image from "next/image";
 import {HugeiconsIcon} from "@hugeicons/react";
-import {MusicNote02Icon, PlayIcon} from "@hugeicons/core-free-icons";
+import {HistoryIcon, MusicNote02Icon, PlayIcon, PlaylistIcon} from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import {containerVariants, itemVariants, profileVariants, socialButtonVariants} from "@/components/about/MotionSpecs";
 import {Button} from "@/components/ui/button";
@@ -42,9 +42,9 @@ function useSpotifyCurrentTrack() {
                         } as CurrentTrack);
 
                         setIsPlaying(data.resp.is_playing);
+                        setListLastTracks(false)
+                        setLastTracks(null)
                     }
-
-                    console.log(data.type)
 
                     if (data.type == "recently-played") {
                         setListLastTracks(true);
@@ -130,7 +130,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 )}
 
                 <div
-                    className={`relative h-full w-full overflow-hidden rounded-4xl border-2 border-border ${
+                    className={`relative h-full w-full overflow-hidden rounded-4xl ${!currentTrack && !isPlaying ? "border-3 border-border" : ""} ${
                         imageLoaded ? "opacity-100" : "opacity-0"
                     }`}
                 >
@@ -168,7 +168,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
 
                 {listLastTracks && (
                     <motion.div
-                        className="absolute -bottom-2 -right-2 flex items-center gap-2 bg-gray-500 text-white px-3 py-1 rounded-full shadow-lg text-xs font-semibold"
+                        className="absolute -bottom-2 -right-2 flex items-center bg-secondary gap-2 text-foreground border-b px-3 py-1 rounded-full shadow-lg text-xs font-semibold"
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 300 }}
@@ -181,7 +181,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                                 duration: 1.5,
                             }}
                         >
-                            <HugeiconsIcon icon={MusicNote02Icon} className="h-3 w-3" />
+                            <HugeiconsIcon icon={HistoryIcon} className="h-4 w-4 text-foreground" />
                         </motion.div>
                         <span>{t("spotify.listened")}</span>
                     </motion.div>

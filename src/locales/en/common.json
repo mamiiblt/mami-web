@@ -1,5 +1,6 @@
 {
   "navbar": {
+    "changeLang": "Change Language",
     "items": {
       "articles": "Articles",
       "projects": "Projects",

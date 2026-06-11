@@ -4,16 +4,28 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+
 import {
-  Menu,
   X,
-  Moon,
-  Sun,
   Newspaper,
-  FolderCode,
-  Sparkles,
-  Languages,
-} from "lucide-react"
+  SparklesIcon, Sun01Icon, CodeFolderIcon, Moon02Icon, Menu01Icon
+} from "@hugeicons/core-free-icons"
+
+import { League_Spartan } from "next/font/google"
+
+import { cn } from "@/lib/utils"
+import {Button, buttonVariants} from "@/components/ui/button"
+import {useTranslation} from "react-i18next";
+import {cookieName, navLanguages} from "@/i18n/settings";
+import {
+  DropdownMenu, DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel, DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {HugeiconsIcon} from "@hugeicons/react";
+import {Languages} from "lucide-react";
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -28,11 +40,6 @@ function GithubIcon({ className }: { className?: string }) {
       </svg>
   )
 }
-import { League_Spartan } from "next/font/google"
-
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
-import {useTranslation} from "react-i18next";
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -66,6 +73,7 @@ export default function Navbar() {
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
   const [scrolled, setScrolled] = React.useState(false)
+  const [dropdownOpen, setDropdownOpen] = React.useState(false)
   const { t, i18n } = useTranslation("common");
   const { isDark, toggle } = useTheme()
 
@@ -73,17 +81,17 @@ export default function Navbar() {
     {
       title: t("navbar.items.articles"),
       href: `/articles`,
-      icon: Newspaper
+      icon: <HugeiconsIcon icon={Newspaper} className={"size-5"} />
     },
     {
       title: t("navbar.items.projects"),
       href: "/projects",
-      icon: FolderCode
+      icon: <HugeiconsIcon icon={CodeFolderIcon} className={"size-5"} />
     },
     {
       title: t("navbar.items.about"),
       href: "/about",
-      icon: Sparkles
+      icon: <HugeiconsIcon icon={SparklesIcon} className={"size-5"} />
     },
   ];
 
@@ -98,6 +106,10 @@ export default function Navbar() {
     setOpen(false)
   }, [pathname])
 
+  const handleLanguageChange = (langCode: string) => i18n.changeLanguage(langCode, () => {
+    document.cookie = `${cookieName}=${langCode}; path=/`;
+  }).then(r => setDropdownOpen(false))
+
   return (
       <>
         <motion.header
@@ -108,7 +120,7 @@ export default function Navbar() {
         >
           <nav
               className={cn(
-                  "mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 rounded-full border border-border px-3 pl-5 transition-all duration-300",
+                  "mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 rounded-3xl border border-border px-3 pl-5 transition-all duration-300",
                   scrolled
                       ? "bg-background/70 shadow-lg shadow-black/5 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
                       : "bg-background/80 backdrop-blur-md",
@@ -154,16 +166,35 @@ export default function Navbar() {
             </ul>
 
             <div className="flex items-center gap-1">
-              <Link href="/switch_lang">
-                <Button
-                    size="icon-sm"
-                    variant="ghost"
-                    className="rounded-full"
-                    aria-label="Toggle language"
-                >
-                  <Languages className="size-4" />
-                </Button>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="rounded-full"
+                      aria-label="Toggle language"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                  >
+                    <Languages className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>{t("navbar.changeLang")}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {navLanguages.map((lang) => {
+                      return (<DropdownMenuCheckboxItem
+                          key={lang.code}
+                          checked={i18n.language === lang.code}
+                          onCheckedChange={() => handleLanguageChange(lang.code)}
+                      >
+                        {lang.flagSvg}
+                        {lang.name}
+                      </DropdownMenuCheckboxItem>)
+                    })}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <Button
                   size="icon-sm"
@@ -181,7 +212,7 @@ export default function Navbar() {
                       transition={{ duration: 0.2 }}
                       className="flex"
                   >
-                    {isDark ? <Moon className="size-4" /> : <Sun className="size-4" />}
+                    {isDark ? <HugeiconsIcon icon={Moon02Icon} className={"size-4"} /> : <HugeiconsIcon icon={Sun01Icon} className={"size-4"} />}
                   </motion.span>
                 </AnimatePresence>
               </Button>
@@ -207,7 +238,7 @@ export default function Navbar() {
                   aria-expanded={open}
                   onClick={() => setOpen((o) => !o)}
               >
-                {open ? <X className="size-5" /> : <Menu className="size-5" />}
+                {open ? <HugeiconsIcon icon={X} className={"size-5"} /> : <HugeiconsIcon icon={Menu01Icon} className={"size-5"} />}
               </Button>
             </div>
           </nav>
@@ -236,7 +267,6 @@ export default function Navbar() {
                   <nav className="flex flex-col gap-1">
                     {navItems.map((item, index) => {
                       const isActive = pathname.startsWith(item.href)
-                      const Icon = item.icon
                       return (
                           <motion.div
                               key={item.href}
@@ -257,10 +287,10 @@ export default function Navbar() {
                         <span
                             className={cn(
                                 "flex size-9 items-center justify-center rounded-full transition-colors",
-                                isActive ? "bg-primary   text-primary-foreground" : "bg-muted",
+                                isActive ? "bg-primary text-primary-foreground" : "bg-muted",
                             )}
                         >
-                          <Icon className="size-4" />
+                          {item.icon}
                         </span>
                               {item.title}
                             </Link>
