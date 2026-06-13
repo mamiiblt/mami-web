@@ -1,0 +1,14 @@
+{
+  "loading": "Cargando lista de artículos",
+  "pleaseWait": "Por favor, espera...",
+  "allTitle": "Mis artículos",
+  "allDescription": "Aquí puedes encontrar todos los artículos que he publicado",
+  "searchPlaceholder": "Buscar en artículos...",
+  "found": "{{count}} artículos encontrados",
+  "readDur": "{{minutes}} min de lectura",
+  "nPTitle": "No se encontraron artículos",
+  "nPDesc": "No se encontraron artículos que coincidan con estos criterios. Intenta cambiar los términos de búsqueda.",
+  "prev": "Anterior",
+  "next": "Siguiente",
+  "all": "Todos"
+}

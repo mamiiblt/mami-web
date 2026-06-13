@@ -1,0 +1,48 @@
+{
+  "readDur": "{{minutes}} Min. Lesezeit",
+  "backToArticles": "Zurück zu den Artikeln",
+  "otpTitle": "Inhaltsverzeichnis",
+  "writtenBy": "Geschrieben von",
+  "viewText": "{{count}} Aufrufe",
+  "commentText": "{{count}} Kommentare",
+  "like": "Gefällt mir",
+  "liked": "Gefällt dir",
+  "likeText": "{{count}} Likes",
+  "aboutArticle": "Über den Artikel",
+  "loading": "Artikel wird geladen",
+  "pleaseWait": "Bitte warten...",
+  "notFound": "Artikel nicht gefunden",
+  "notFoundDesc": "Dieser Artikel konnte leider nicht gefunden werden. Er wurde möglicherweise gelöscht oder verschoben.",
+  "share": {
+    "state1": "Teilen",
+    "state2": "Link in die Zwischenablage kopiert"
+  },
+  "comments": {
+    "header": "Kommentare",
+    "countComment": "{{count}} Kommentare veröffentlicht",
+    "yourName": "Dein Name...",
+    "writeCom": "Schreibe deinen Kommentar...",
+    "shareCom": "Kommentar teilen",
+    "like": "Gefällt mir",
+    "dislike": "Gefällt mir nicht"
+  },
+  "likedPost": "Du hast diesen Artikel geliked",
+  "likeToasts": {
+    "buttonOkay": "Okay",
+    "STATUS_FAILURE": "Ein Fehler ist aufgetreten...",
+    "SESSION_ID_INVALID": "Ungültige Session-ID, bitte Cookies erlauben.",
+    "USER_NOT_LIKED_POST": "Du kannst den Like nicht zurücknehmen, da du diesen Beitrag zuvor nicht geliked hast."
+  },
+  "commentDelete": {
+    "buttonOkay": "Okay",
+    "SUCCESS": "Erfolgreich abgeschlossen",
+    "FAILURE": "Ein Fehler ist aufgetreten...",
+    "code": {
+      "COMMENT_NOT_FOUND": "Kommentar wurde in der Datenbank nicht gefunden, möglicherweise bereits gelöscht.",
+      "SID_DOES_NOT_MATCH": "Du bist nicht der Eigentümer dieses Kommentars und kannst ihn daher nicht löschen.",
+      "DELETE_SUCCESS": "Kommentar erfolgreich gelöscht."
+    }
+  },
+  "noAnyCommentSharedTT": "Noch keine Kommentare",
+  "noAnyCommentSharedDC": "Sei der Erste! Teile deine Gedanken und starte die Diskussion."
+}

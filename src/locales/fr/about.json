@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "name": "Muhammed Ali",
+    "subtitle": "Développeur Full-Stack",
+    "photo": "Photo de profil"
+  },
+  "about": "Bonjour! Je travaille principalement sur des projets de développement Android, Web, IA et de rétro-ingénierie. Pendant mon temps libre, je teste généralement de nouvelles technologies, développe des projets open source ou contribue à leur amélioration.",
+  "nav": {
+    "projects": "Mes projets",
+    "articles": "Mes articles",
+    "support": "Me soutenir",
+    "mail": "E-mail",
+    "contactme": "Me contacter"
+  },
+  "stats": {
+    "stats": "Statistiques",
+    "stars": "Étoiles GitHub",
+    "cont": "Contributions",
+    "contgraph": "Graphique de contributions",
+    "repo": "Dépôts",
+    "act": "{{count}} actifs",
+    "com": "Communauté"
+  },
+  "tool-tech": "Outils & Technologies",
+  "spotify": {
+    "playing": "En cours d’écoute",
+    "listened": "A écouté",
+    "last": {
+      "title": "Dernières chansons écoutées",
+      "time": {
+        "just_now": "à l’instant",
+        "m_ago": "il y a {{value}} minutes",
+        "h_ago": "il y a {{value}} heures",
+        "d_ago": "il y a {{value}} jours"
+      }
+    },
+    "open": "Ouvrir sur Spotify"
+  },
+  "aboutMe": "Qui suis-je ?"
+}

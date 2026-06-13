@@ -1,0 +1,48 @@
+{
+  "readDur": "{{minutes}} min de lectura",
+  "backToArticles": "Volver a los artículos",
+  "otpTitle": "Contenido",
+  "writtenBy": "Escrito por",
+  "viewText": "{{count}} visualizaciones",
+  "commentText": "{{count}} comentarios",
+  "like": "Me gusta",
+  "liked": "Te gusta",
+  "likeText": "{{count}} me gusta",
+  "aboutArticle": "Sobre el artículo",
+  "loading": "Cargando artículo",
+  "pleaseWait": "Por favor, espera...",
+  "notFound": "Artículo no encontrado",
+  "notFoundDesc": "Lamentablemente, este artículo no pudo encontrarse. Puede haber sido eliminado o movido.",
+  "share": {
+    "state1": "Compartir",
+    "state2": "Enlace copiado al portapapeles"
+  },
+  "comments": {
+    "header": "Comentarios",
+    "countComment": "{{count}} comentarios publicados",
+    "yourName": "Tu nombre...",
+    "writeCom": "Escribe tu comentario...",
+    "shareCom": "Publicar comentario",
+    "like": "Me gusta",
+    "dislike": "No me gusta"
+  },
+  "likedPost": "Te ha gustado este artículo",
+  "likeToasts": {
+    "buttonOkay": "Aceptar",
+    "STATUS_FAILURE": "Ha ocurrido un error...",
+    "SESSION_ID_INVALID": "ID de sesión no válido. Por favor, permite las cookies.",
+    "USER_NOT_LIKED_POST": "No puedes retirar tu me gusta porque no habías marcado esta publicación como favorita anteriormente."
+  },
+  "commentDelete": {
+    "buttonOkay": "Aceptar",
+    "SUCCESS": "Completado correctamente",
+    "FAILURE": "Ha ocurrido un error...",
+    "code": {
+      "COMMENT_NOT_FOUND": "No se encontró el comentario en la base de datos. Es posible que ya haya sido eliminado.",
+      "SID_DOES_NOT_MATCH": "No eres el propietario de este comentario, por lo que no puedes eliminarlo.",
+      "DELETE_SUCCESS": "Comentario eliminado correctamente."
+    }
+  },
+  "noAnyCommentSharedTT": "Aún no hay comentarios",
+  "noAnyCommentSharedDC": "¡Sé el primero en comentar! Comparte tus ideas e inicia la conversación."
+}

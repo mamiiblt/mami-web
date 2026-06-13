@@ -1,0 +1,26 @@
+{
+  "navbar": {
+    "changeLang": "Cambiar idioma de visualización",
+    "items": {
+      "articles": "Mis artículos",
+      "projects": "Mis proyectos",
+      "about": "Sobre mí"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "auto": "Automático"
+    }
+  },
+  "footer": {
+    "smap-header": "Mapa del sitio",
+    "site-map": {
+      "home": "Inicio",
+      "articles": "Mis artículos",
+      "projects": "Mis proyectos",
+      "about": "Sobre mí"
+    },
+    "copyright": "2026 Muhammed Ali, Todos los derechos reservados."
+  }
+}

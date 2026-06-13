@@ -1,0 +1,26 @@
+{
+  "navbar": {
+    "changeLang": "Anzeigesprache ändern",
+    "items": {
+      "articles": "Meine Artikel",
+      "projects": "Meine Projekte",
+      "about": "Über mich"
+    },
+    "appearance": {
+      "title": "Darstellung",
+      "light": "Hell",
+      "dark": "Dunkel",
+      "auto": "Automatisch"
+    }
+  },
+  "footer": {
+    "smap-header": "Sitemap",
+    "site-map": {
+      "home": "Startseite",
+      "articles": "Meine Artikel",
+      "projects": "Meine Projekte",
+      "about": "Über mich"
+    },
+    "copyright": "2026 Muhamed Ali, Alle Rechte vorbehalten."
+  }
+}

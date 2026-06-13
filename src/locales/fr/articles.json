@@ -1,0 +1,48 @@
+{
+  "readDur": "{{minutes}} min de lecture",
+  "backToArticles": "Retour aux articles",
+  "otpTitle": "Table des matières",
+  "writtenBy": "Écrit par",
+  "viewText": "{{count}} vues",
+  "commentText": "{{count}} commentaires",
+  "like": "J’aime",
+  "liked": "Aimé",
+  "likeText": "{{count}} j’aime",
+  "aboutArticle": "À propos de l’article",
+  "loading": "Chargement de l’article",
+  "pleaseWait": "Veuillez patienter...",
+  "notFound": "Article introuvable",
+  "notFoundDesc": "Cet article est introuvable. Il a peut-être été supprimé ou déplacé.",
+  "share": {
+    "state1": "Partager",
+    "state2": "Lien copié dans le presse-papiers"
+  },
+  "comments": {
+    "header": "Commentaires",
+    "countComment": "{{count}} commentaires publiés",
+    "yourName": "Votre nom...",
+    "writeCom": "Écrivez votre commentaire...",
+    "shareCom": "Publier le commentaire",
+    "like": "J’aime",
+    "dislike": "Je n’aime pas"
+  },
+  "likedPost": "Tu as aimé cet article",
+  "likeToasts": {
+    "buttonOkay": "OK",
+    "STATUS_FAILURE": "Une erreur s’est produite...",
+    "SESSION_ID_INVALID": "ID de session invalide, veuillez autoriser les cookies.",
+    "USER_NOT_LIKED_POST": "Vous ne pouvez pas retirer votre like car vous n’avez pas aimé ce post auparavant."
+  },
+  "commentDelete": {
+    "buttonOkay": "OK",
+    "SUCCESS": "Succès",
+    "FAILURE": "Une erreur s’est produite...",
+    "code": {
+      "COMMENT_NOT_FOUND": "Commentaire introuvable dans la base de données, il a peut-être déjà été supprimé.",
+      "SID_DOES_NOT_MATCH": "Vous n’êtes pas le propriétaire de ce commentaire, vous ne pouvez donc pas le supprimer.",
+      "DELETE_SUCCESS": "Commentaire supprimé avec succès."
+    }
+  },
+  "noAnyCommentSharedTT": "Aucun commentaire",
+  "noAnyCommentSharedDC": "Soyez le premier à commenter ! Partagez vos idées et lancez la discussion."
+}

@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "name": "Muhammed Ali",
+    "subtitle": "Full-Stack Softwareentwickler",
+    "photo": "Profilfoto"
+  },
+  "about": "Hallo! Ich arbeite hauptsächlich an Android-Entwicklung, Web-, KI- und Reverse-Engineering-Projekten. In meiner Freizeit teste ich neue Technologien, entwickle Open-Source-Projekte oder trage zu deren Weiterentwicklung bei.",
+  "nav": {
+    "projects": "Meine Projekte",
+    "articles": "Meine Artikel",
+    "support": "Unterstütze mich",
+    "mail": "E-Mail",
+    "contactme": "Kontakt aufnehmen"
+  },
+  "stats": {
+    "stats": "Statistiken",
+    "stars": "GitHub-Sterne",
+    "cont": "Beiträge",
+    "contgraph": "Beitragsgrafik",
+    "repo": "Repositorys",
+    "act": "{{count}} aktiv",
+    "com": "Community"
+  },
+  "tool-tech": "Tools & Technologien",
+  "spotify": {
+    "playing": "Spielt gerade",
+    "listened": "Hat gehört",
+    "last": {
+      "title": "Zuletzt gehörte Songs",
+      "time": {
+        "just_now": "gerade eben",
+        "m_ago": "vor {{value}} Minuten",
+        "h_ago": "vor {{value}} Stunden",
+        "d_ago": "vor {{value}} Tagen"
+      }
+    },
+    "open": "In Spotify öffnen"
+  },
+  "aboutMe": "Wer bin ich?"
+}

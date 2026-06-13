@@ -1,0 +1,12 @@
+{
+  "hero": {
+    "1": "Bienvenido a la isla de mamii",
+    "2": ""
+  },
+  "heroButtons": {
+    "viewProjects": "Mis proyectos",
+    "aboutMe": "Sobre mí",
+    "readArticles": "Leer mis artículos"
+  },
+  "desc": "En este sitio puedes encontrar mis artículos, mis proyectos y todo sobre mí."
+}

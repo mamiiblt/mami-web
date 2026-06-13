@@ -1,0 +1,16 @@
+{
+  "title": "Mes projets",
+  "desc": "Vous pouvez trouver ici les projets sur lesquels je travaille et ceux sur lesquels j’ai travaillé.",
+  "featured": "Mis en avant",
+  "open": "Voir",
+  "source_code": "Code source",
+  "p_descriptions": {
+    "instafel": "Offre une expérience Instagram Alpha rapide et à jour grâce à un patcher",
+    "tg-brat-bot": "Ce bot vous permet de créer rapidement des stickers brat !",
+    "mwb": "C’est le projet du site que vous consultez actuellement, vous pouvez l’explorer si vous le souhaitez !"
+  },
+  "categories": {
+    "android-app": "Application Android",
+    "telegram": "Telegram"
+  }
+}
