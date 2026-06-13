@@ -98,7 +98,7 @@ export function AboutCard_ContGraph({classNameVal,t,
 
 interface Skill {
     name: string,
-    icon: ComponentType<{ size: number, className?: string }>
+    icon: ComponentType<{ size: number, className?: string }>,
 }
 
 export function AboutCard_Skills({
@@ -131,7 +131,7 @@ export function AboutCard_Skills({
 
                     <div className="relative overflow-hidden">
                         <motion.div
-                            className="w-full max-w-2xl"
+                            className="w-full max-w-3xl"
                             variants={itemVariants}
                             animate={{
                                 height: isExpanded ? "auto" : "170px",
@@ -141,7 +141,7 @@ export function AboutCard_Skills({
                         >
                             <div className="grid grid-cols-3 gap-3 sm:grid-cols-7 p-1">
                                 {skills.map((skill, index) => (
-                                    <Card key={index} className={"p-1"}>
+                                    <Card key={index} className={"p-1 bg-primary/3"}>
                                         <div key={index} className="flex flex-col items-center gap-1" title={skill.name}>
                                             <div className="flex h-10 w-10 items-center justify-center">
                                                 <skill.icon size={25} />
@@ -191,12 +191,12 @@ export function AboutCard_Statistics({
                         </h4>
                     </div>
                     <motion.div
-                        className="grid w-full max-w-2xl grid-cols-2 gap-4 md:grid-cols-4"
+                        className="grid w-full max-w-3xl grid-cols-2 gap-4 md:grid-cols-4"
                         variants={containerVariants}
                     >
                         {stats.map((stat, index) => (
                             <motion.div key={index} variants={itemVariants}>
-                                <Card className="p-4 text-center">
+                                <Card className="p-4 text-center bg-primary/3">
                                     <CardContent className="p-0">
                                         <div className="mb-2 flex justify-center text-primary">
                                             {stat.icon}

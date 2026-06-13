@@ -1,68 +1,76 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, {ReactNode, Suspense} from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { FooterLoading } from "./loading";
+
 import {
+  CopyrightFreeIcons,
   GithubIcon,
-  Linkedin02Icon,
-  TelegramIcon,
+  Mail02Icon,
+  TelegramIcon, UserArrowLeftRightIcon,
 } from "@hugeicons/core-free-icons";
 
+function SocialButton({ href, label, children }: {
+  href: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+      <motion.a
+          whileHover={{ y: -3 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          className="flex size-8 items-center justify-center rounded-full border border-border bg-background/60 text-muted-foreground backdrop-blur-md transition-colors hover:bg-muted hover:text-foreground"
+      >
+        {children}
+      </motion.a>
+  );
+}
 export default function Footer() {
+
   const { t } = useTranslation("common");
 
   return (
-    <Suspense fallback={null}>
-      <motion.footer
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative border-t border-border bg-background"
-      >
-        <div className="absolute inset-0 pointer-events-none" />
-
-        <div className="relative container mx-auto px-4 py-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-muted-foreground">
-                {t("footer.copyright")}
-              </p>
-              <div className="flex items-center gap-4">
-                <motion.a
-                  whileHover={{ y: -3 }}
-                  href="https://github.com/mamiiblt"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="GitHub"
-                  target="_blank"
-                >
-                  <HugeiconsIcon icon={GithubIcon} className="h-5 w-5" />
-                </motion.a>
-                <motion.a
-                  whileHover={{ y: -3 }}
-                  href="https://t.me/mamiiblt"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="Telegram"
-                  target="_blank"
-                >
-                  <HugeiconsIcon icon={TelegramIcon} className="h-5 w-5" />
-                </motion.a>
-
-                <motion.a
-                  whileHover={{ y: -3 }}
-                  href="https://www.linkedin.com/in/muhammed-ali-bulut-1a7b00364"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="LinkedIn"
-                  target="_blank"
-                >
-                  <HugeiconsIcon icon={Linkedin02Icon} className="h-5 w-5" />
-                </motion.a>
+      <Suspense fallback={null}>
+        <footer className="px-4 pb-6 sm:px-4">
+          <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="mx-auto max-w-7xl overflow-hidden rounded-3xl border border-border bg-card/60 shadow-lg shadow-black/5 backdrop-blur-xl supports-[backdrop-filter]:bg-card/40"
+          >
+            <div className="px-6 py-5 sm:px-8">
+              <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
+                <div className="flex justify-center items-center gap-1 text-muted-foreground">
+                  <HugeiconsIcon icon={CopyrightFreeIcons} size={15} />
+                  <p className="text-sm text-muted-foreground">
+                    {t("footer.copyright")}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <SocialButton href="/about" label="About Developer">
+                    <HugeiconsIcon icon={UserArrowLeftRightIcon} className="size-4" />
+                  </SocialButton>
+                  <SocialButton href="https://github.com/mamiiblt" label="GitHub">
+                    <HugeiconsIcon icon={GithubIcon} className="size-4" />
+                  </SocialButton>
+                  <SocialButton href="https://t.me/mamiiblt" label="Telegram">
+                    <HugeiconsIcon icon={TelegramIcon} className="size-4" />
+                  </SocialButton>
+                  <SocialButton href="mailto:mamii@mamii.dev" label="Mail">
+                    <HugeiconsIcon icon={Mail02Icon} className="size-4" />
+                  </SocialButton>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </motion.footer>
-    </Suspense>
+          </motion.div>
+        </footer>
+      </Suspense>
   );
 }

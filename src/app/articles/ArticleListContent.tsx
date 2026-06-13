@@ -33,6 +33,7 @@ import {Separator} from "@/components/ui/separator";
 import {generatePageNumbers, getBannerUrl} from "@/lib/utils";
 import {GetArticleListResponse} from "@/lib/articles/getArticleList";
 import ArticleListCard from "@/components/articles/ArticleListCard";
+import {supportedArticleLocales} from "@/lib/articles/consts";
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -179,20 +180,23 @@ export default function ArticleListContent(
                                 animate="show"
                                 className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
                             >
-                                {list.data.articles.map((post, idx) => (
-                                    <Link key={idx} href={`/article/${i18n.language}/${post.id}`}>
-                                        <ArticleListCard
-                                            idx={0}
-                                            bannerSrc={getBannerUrl(post.bid)}
-                                            bannerAlt={post.tt}
-                                            topic={post.tp}
-                                            title={post.tt}
-                                            desc={post.dc}
-                                            dateIso={post.dt}
-                                            viewCount={post.vc}
-                                            dateLng={i18n.language} />
-                                    </Link>
-                                ))}
+                                {list.data.articles.map((post, idx) => {
+                                    const isLangSupported = supportedArticleLocales.includes(i18n.language)
+                                    return ((
+                                        <Link key={idx} href={`/article/${isLangSupported ? i18n.language : "en"}/${post.id}`}>
+                                            <ArticleListCard
+                                                idx={0}
+                                                bannerSrc={getBannerUrl(post.bid)}
+                                                bannerAlt={post.tt}
+                                                topic={post.tp}
+                                                title={post.tt}
+                                                desc={post.dc}
+                                                dateIso={post.dt}
+                                                viewCount={post.vc}
+                                                dateLng={i18n.language} />
+                                        </Link>
+                                    ))
+                                })}
                             </motion.div>
                         )}
                     </AnimatePresence>

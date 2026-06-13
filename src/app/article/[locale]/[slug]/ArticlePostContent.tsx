@@ -13,6 +13,7 @@ import {ArticleComments} from "@/components/articles/ArticleComments";
 import {GetArticleResponse} from "@/lib/articles/getArticle";
 import {GetCommentResponse} from "@/lib/articles/getComments";
 import ArticleContentViewer from "@/components/articles/ArticleContentViewer";
+import {supportedArticleLocales} from "@/lib/articles/consts";
 
 interface ArticlePostContentProps {
     post: GetArticleResponse
@@ -34,10 +35,15 @@ export default function ArticlePostContent({ post, slug, session_id, fetchCommen
 
         const init = async () => {
             try {
-                // redirect to correct language
-                const pathLocale = pathname.split("/")[2]
-                if (pathLocale != i18n.language) {
-                    router.push(pathname.replace(pathLocale, i18n.language))
+                const pathLocale = pathname.split("/")[2];
+
+                const targetLocale = supportedArticleLocales.includes(i18n.language)
+                    ? i18n.language
+                    : "en";
+
+                if (pathLocale !== targetLocale) {
+                    router.push(pathname.replace(pathLocale, targetLocale));
+                    return;
                 }
 
                 if (post.data.gen.iscn) {
@@ -47,17 +53,19 @@ export default function ArticlePostContent({ post, slug, session_id, fetchCommen
                         body: JSON.stringify({value: post.data.gen.sid}),
                     });
 
-                    if (isMounted) setSessionId(post.data.gen.sid);
+                    if (isMounted) {
+                        setSessionId(post.data.gen.sid);
+                    }
                 }
-
             } catch (err) {
                 console.error("Init error:", err);
             }
         };
 
         init();
+
         return () => {
-            isMounted = false
+            isMounted = false;
         };
     }, []);
 

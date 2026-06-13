@@ -43,7 +43,7 @@ export function SpotifyCurrentPlayingInfoDialog({song, isOpen, isPlaying, onOpen
                     <VisuallyHidden>
                         <DialogTitle />
                     </VisuallyHidden>
-                    <div className="flex flex-col items-center gap-4 py-4">
+                    <div className="flex flex-col items-center gap-4">
                         <motion.div
                             initial={{opacity: 0, y: 8}}
                             animate={{opacity: 1, y: 0}}

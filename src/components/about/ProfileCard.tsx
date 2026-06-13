@@ -1,9 +1,14 @@
 import {useEffect, useState} from "react";
 import {TFunction} from "i18next";
-import { motion} from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import Image from "next/image";
 import {HugeiconsIcon} from "@hugeicons/react";
-import {HistoryIcon, MusicNote02Icon, PlayIcon, PlaylistIcon} from "@hugeicons/core-free-icons";
+import {
+    HistoryIcon,
+    Location01Icon,
+    PlayIcon,
+    SparklesFreeIcons
+} from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import {containerVariants, itemVariants, profileVariants, socialButtonVariants} from "@/components/about/MotionSpecs";
 import {Button} from "@/components/ui/button";
@@ -75,6 +80,52 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
     const [imageLoaded, setImageLoaded] = useState(false);
     const {currentTrack, isPlaying, listLastTracks, lastTracks} = useSpotifyCurrentTrack();
     const [activeDialog, setActiveDialog] = useState<"current" | "recent" | null>(null);
+
+
+    const items = [
+        {
+            key: "role",
+            content: <>{t("profile.subtitle")}</>,
+        },
+        {
+            key: "alias",
+            content: <>a.k.a. mamii, mamiiblt</>,
+        },
+        {
+            key: "location",
+            content: (
+                <span className="inline-flex items-center gap-1.5">
+                <HugeiconsIcon
+                    icon={Location01Icon}
+                    size={16}
+                    strokeWidth={2}
+                    className="shrink-0"
+                    aria-hidden="true"
+                />
+                Türkiye
+                <HugeiconsIcon
+                    icon={SparklesFreeIcons}
+                    size={16}
+                    strokeWidth={2}
+                    className="shrink-0"
+                    aria-hidden="true"
+                />
+                    18 y/o
+                </span>
+            ),
+        },
+    ]
+
+    const [index, setIndex] = useState(0)
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            setIndex((prev) => (prev + 1) % items.length)
+        }, 2700)
+        return () => clearInterval(id)
+    }, [items.length])
+
+    const current = items[index]
 
     return (
         <motion.div
@@ -189,7 +240,7 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
             </motion.div>
 
             <motion.h1
-                className="mb-1 text-2xl font-bold tracking-tight"
+                className=" text-2xl font-bold tracking-tight"
                 variants={{
                     hidden: { opacity: 0, y: 20 },
                     visible: {
@@ -202,22 +253,23 @@ export function ProfileCard({socialLinks, t}: { socialLinks: any; t: TFunction; 
                 {t("profile.name")}
             </motion.h1>
 
-            <motion.p
-                className="mb-4 text-base font-light tracking-wide text-muted-foreground"
-                variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { type: "spring", stiffness: 300, damping: 24 },
-                    },
-                }}
-            >
-                {t("profile.subtitle")}
-            </motion.p>
+            <div className="flex h-8 items-center justify-center overflow-hidden mb-3">
+                <AnimatePresence mode="wait">
+                    <motion.p
+                        key={current.key}
+                        className="text-base font-light tracking-wide text-muted-foreground"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.45, ease: "easeInOut" }}
+                    >
+                        {current.content}
+                    </motion.p>
+                </AnimatePresence>
+            </div>
 
             <motion.div
-                className={`${isPlaying ? "mb-4" : "mb-6"} flex flex-wrap justify-center gap-3`}
+                className={"mb-6 flex flex-wrap justify-center gap-3"}
                 variants={containerVariants}
             >
                 {socialLinks.map((link, index) => (

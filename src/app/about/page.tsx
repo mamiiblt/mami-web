@@ -51,7 +51,7 @@ export default function HomePage() {
             variants={containerVariants}
         >
           <motion.div
-              className="container mx-auto flex max-w-4xl flex-col items-center px-4 pt-16 pb-4 text-center"
+              className="container mx-auto flex max-w-5xl flex-col items-center px-4 pt-16 pb-4 text-center"
               variants={containerVariants}
           >
             <ProfileCard t={t} socialLinks={[
@@ -85,30 +85,30 @@ export default function HomePage() {
               },
             ]} />
 
-            <AboutCard_AboutMe t={t} classNameVal="mb-4 w-full max-w-2xl"/>
-            <AboutCard_Statistics t={t} classNameVal="mb-4 w-full max-w-2xl" stats={[
+            <AboutCard_AboutMe t={t} classNameVal="mb-4 w-full max-w-3xl"/>
+            <AboutCard_Statistics t={t} classNameVal="mb-4 w-full max-w-3xl" stats={[
               {
                 label: t("stats.stars"),
-                value: "1.1k",
+                value: "1.3k",
                 icon: <HugeiconsIcon icon={StarIcon} className="h-4 w-4"/>,
               },
               {
                 label: t("stats.cont"),
-                value: "4.1k",
+                value: "6.2k",
                 icon: <HugeiconsIcon icon={FireIcon} className="h-4 w-4"/>,
               },
               {
                 label: t("stats.repo"),
-                value: "12+",
+                value: "14+",
                 icon: <HugeiconsIcon icon={CodeFolderIcon} className="h-4 w-4"/>,
               },
               {
                 label: t("stats.com"),
-                value: t("stats.act", {count: 2}),
+                value: t("stats.act", {count: 3 }),
                 icon: <HugeiconsIcon icon={UserGroupIcon} className="h-4 w-4"/>,
               },
             ]}/>
-            <AboutCard_Skills t={t} classNameVal="mb-4 w-full max-w-2xl" skills={[
+            <AboutCard_Skills t={t} classNameVal="mb-4 w-full max-w-3xl" skills={[
                 // Software Languages & Frameworks
               { name: "Java", icon: JavaOriginal },
               { name: "Kotlin", icon: KotlinOriginal },
@@ -142,8 +142,8 @@ export default function HomePage() {
               { name: "ESLint", icon: EslintOriginal },
               { name: "Postman", icon: PostmanOriginal },
             ]}/>
-            <AboutCard_ContGraph t={t} classNameVal="mb-4 w-full max-w-2xl"/>
-            <AboutCard_Contact t={t} classNameVal="mb-4 grid w-full max-w-2xl gap-4 md:grid-cols-2"/>
+            <AboutCard_ContGraph t={t} classNameVal="mb-4 w-full max-w-3xl"/>
+            <AboutCard_Contact t={t} classNameVal="mb-4 grid w-full max-w-3xl gap-4 md:grid-cols-2"/>
           </motion.div>
         </motion.div>
       </Suspense>

@@ -19,10 +19,7 @@ export default async function getArticleList(
     { page, topic, search, locale }: GetArticleListParams
 ): Promise<GetArticleListResponse> {
     if (!supportedArticleLocales.includes(locale)) {
-        return {
-            status: ResponseStatus.FAILURE,
-            desc: "locale should be en or tr"
-        }
+        locale = "en"
     }
 
     if (page < 1) {

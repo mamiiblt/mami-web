@@ -48,7 +48,7 @@ export default function ProjectsPage() {
       image: "/pbanners/p_mwb.png",
       category: t("categories.web"),
       technologies: ["NextJS", "React", "TypeScript"],
-      github: "https://github.com/mamiiblt/mwb",
+      github: "https://github.com/mamiiblt/mami-web",
       website: "https://mamii.dev",
       featured: true,
     },
